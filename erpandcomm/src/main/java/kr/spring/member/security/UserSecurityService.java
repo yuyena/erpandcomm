@@ -28,7 +28,7 @@ public class UserSecurityService implements UserDetailsService {
 		log.debug("[Spring Security Login Check1] UserSecurityService 실행");
 		log.debug("[Spring Security Login Check1] 로그인 아이디 : " + id);
 		MemberVO member = memberService.selectCheckMember(id);
-		if (member==null || member.getAuthority().equals(UserRole.INACTIVE.getValue())) {
+		if (member==null || member.getAuth().equals(UserRole.INACTIVE.getValue())) {
 			log.debug("[Spring Security Login Check1] 로그인 아이디가 없거나 탈퇴회원");			
 			throw new UsernameNotFoundException("UserNotFound");
 		} // if

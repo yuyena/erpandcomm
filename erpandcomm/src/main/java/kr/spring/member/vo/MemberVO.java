@@ -18,13 +18,12 @@ import lombok.ToString;
 @ToString(exclude = {"photo"})
 public class MemberVO {
 	
-	private long mem_num;
-	@Pattern(regexp="^[A-Za-z0-9]{4,14}$")
-	private String id;
-	private String nick_name;
-	private String authority;
+	private long user_num;
+	@Pattern(regexp="^[A-Za-z0-9]{10,11}$")
+	private String employee_code;
+	private String auth;
 	@NotBlank
-	private String name;
+	private String user_name;
 	@Pattern(regexp="^[A-Za-z0-9]{4,12}$")
 	private String passwd;
 	@NotBlank
@@ -32,35 +31,20 @@ public class MemberVO {
 	@Email
 	@NotBlank
 	private String email;
-	@Size(min=5,max=5)
-	private String zipcode;
-	@NotBlank
-	private String address1;
-	@NotBlank
-	private String address2;
 	private byte[] photo;
 	private String photo_name;
-	private Date reg_date;
-	private Date modify_date;
+	private Date hire_date;
+	private Date resignation_date;
+	private long salary;
+	private long department_num;
+	private long position_num;
+	private long grade_num;
+	
 	
 	// 비밀번호 변경 시 현재 비밀번호를 저장하는 용도로 사용
 	@Pattern(regexp="^[A-Za-z0-9]{4,12}$")
 	private String now_passwd;
 	
-	// 대댓 작성 시 부모글 아이디/별명
-	private String parent_id;
-	private String pnick_name;
-	
-	public String getparentName() {
-		if(pnick_name == null) return parent_id;
-		return pnick_name;
-	}
-	
-	// 별명이 미등록 되어있으면 id 반환, 별명이 등록되어 있으면 별명 반환
-	public String getUserName() {
-		if(nick_name == null) return id;
-		return nick_name;
-	}
 	
 	// 비밀번호 일치 여부 체크
 	public boolean isCheckedPassword(String userPasswd) {
@@ -72,15 +56,15 @@ public class MemberVO {
 	
 	public int getAuthorityOrdinal() {
 		
-		if (authority == null) return -1;
+		if (auth == null) return -1;
 		
-		if (authority.equals(UserRole.INACTIVE.getValue())) {
+		if (auth.equals(UserRole.INACTIVE.getValue())) {
 			return UserRole.INACTIVE.ordinal(); // 0
-		} else if (authority.equals(UserRole.SUSPENDED.getValue())) {
+		} else if (auth.equals(UserRole.SUSPENDED.getValue())) {
 			return UserRole.SUSPENDED.ordinal(); // 1
-		} else if (authority.equals(UserRole.USER.getValue())) {
+		} else if (auth.equals(UserRole.USER.getValue())) {
 			return UserRole.USER.ordinal(); // 2
-		} else if (authority.equals(UserRole.ADMIN.getValue())) {
+		} else if (auth.equals(UserRole.ADMIN.getValue())) {
 			return UserRole.ADMIN.ordinal(); // 3
 		} else {
 			return -1;

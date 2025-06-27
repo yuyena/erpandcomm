@@ -73,7 +73,7 @@ public class SecurityConfig {
 							// 커서텀 로그인 페이지
 							.loginPage("/member/login")
 							// 사용자명의 name 속성 지정
-							.usernameParameter("id")
+							.usernameParameter("employee_code")
 							// 비밀번호의 name 속성 지정
 							.passwordParameter("passwd")
 							.successHandler(authenticationSuccessHandler)

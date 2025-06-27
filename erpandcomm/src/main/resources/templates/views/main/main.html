@@ -1,94 +1,15 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{layouts/layout_basic}">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Office ERP - 로그인</title>
-    <link rel="stylesheet" th:href="@{/assets/css/main.css}">
-    <script type="text/javascript" th:src="@{/assets/js/member.login.js}"></script>
+<meta charset="UTF-8">
+<title>메인</title>
+<link rel="stylesheet" th:href="@{/assets/css/main.css}">
 </head>
 <body>
-    <div class="login-container">
-        <div class="logo-section">
-            <div class="logo">
-                <div class="logo-icon">📊</div>
-                Office ERP
-            </div>
-            <div class="subtitle">업무 관리 시스템에 로그인하세요</div>
-            <div class="align-center error-invalid error-color" th:if="${error == 'error'}">아이디 또는 비밀번호 불일치</div>
-			<div class="align-center error-invalid error-color" th:if="${error == 'error_suspended'}">정지회원입니다</div>
-        </div>
-
-        <form th:action="@{login}" id="member_login" method="post">
-	        
-            <div class="form-group">
-                <label class="form-label" for="usercode"> 사번</label>
-                <input type="text" id="usercode" name="usercode" class="form-input" placeholder="사용자 ID를 입력하세요" required>
-            </div>
-            <div class="form-group">
-                <label class="form-label" for="password">비밀번호</label>
-                <input type="password" id="password" name="password" class="form-input" 
-                    placeholder="비밀번호를 입력하세요" required>
-            </div>
-
-            <div class="login-options">
-                <label class="remember_me">
-                    <input type="checkbox" name="remember-me" id="remember-me">
-                    로그인 상태 유지
-                </label>
-                <a href="#" class="forgot-password">비밀번호 찾기</a>
-            </div>
-
-            <button type="submit" class="login-button">
-                로그인
-            </button>
-        </form>
-
-        <div class="divider">
-            <span>또는</span>
-        </div>
-
-        <div class="footer-text">
-            계정이 없으신가요? <a href="#">회원가입</a>
-        </div>
-    </div>
-
-    <script>
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            
-            if (!username || !password) {
-                alert('사용자 ID와 비밀번호를 모두 입력해주세요.');
-                return;
-            }
-            
-            // 로그인 처리 로직 (실제 구현시 서버 연동)
-            const button = document.querySelector('.login-button');
-            const originalText = button.textContent;
-            
-            button.textContent = '로그인 중...';
-            button.disabled = true;
-            
-            setTimeout(() => {
-                alert('로그인 성공! (데모)');
-                button.textContent = originalText;
-                button.disabled = false;
-            }, 1500);
-        });
-
-        // 입력 필드 포커스 효과
-        document.querySelectorAll('.form-input').forEach(input => {
-            input.addEventListener('focus', function() {
-                this.parentElement.style.transform = 'translateY(-2px)';
-            });
-            
-            input.addEventListener('blur', function() {
-                this.parentElement.style.transform = 'translateY(0)';
-            });
-        });
-    </script>
+<div layout:fragment="content" class="page-main">
+	<h3>메인</h3>
+</div>
 </body>
 </html>

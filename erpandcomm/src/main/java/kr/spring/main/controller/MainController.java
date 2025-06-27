@@ -1,5 +1,6 @@
 package kr.spring.main.controller;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,15 +16,16 @@ public class MainController {
 	
 	@GetMapping("/")
 	public String init(@AuthenticationPrincipal PrincipalDetails principal) {
-		if (principal!=null && principal.getMemberVO().getAuthority().equals(UserRole.ADMIN.getValue())) {
+		if (principal!=null && principal.getMemberVO().getAuth().equals(UserRole.ADMIN.getValue())) {
 			return "redirect:/main/admin";
 		} // if
 		
 		return "redirect:/main/main";
 	}
 	
+	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/main/main")
-	public String main(Model model) {
+	public String main(@AuthenticationPrincipal PrincipalDetails principal,Model model) {
 		return "views/main/main";
 	}
 	

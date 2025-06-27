@@ -40,7 +40,7 @@ public class PrincipalDetails implements UserDetails {
 			@Override
 			public String getAuthority() {
 				log.debug("memberVO : " + memberVO);
-				return memberVO.getAuthority();
+				return memberVO.getAuth();
 			}
 		});
 		return collect;
@@ -54,7 +54,7 @@ public class PrincipalDetails implements UserDetails {
 	// 사용자 아이디(username) 반환
 	@Override
 	public String getUsername() {
-		return memberVO.getId();
+		return memberVO.getEmployee_code();
 	}
 	
 	/*
