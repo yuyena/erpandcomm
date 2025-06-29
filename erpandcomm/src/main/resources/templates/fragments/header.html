@@ -19,7 +19,7 @@
 			</div>
 			<div class="menu-item">
 				<img alt="프사" th:src="@{/member/photoView}" width="20" height="20" class="my-photo">
-				<span class="user-name" th:text="${#authentication.principal.memberVO.userName}"></span>
+				<span class="user-name" th:text="${#authentication.principal.memberVO.user_name}"></span>
 			</div>
 			<div class="menu-item">
 				<a href="#" id="logout"><img th:src="@{/assets/images/logout.png}" width="20" height="20">로그아웃</a>

@@ -42,15 +42,14 @@
 	<!-- 로그인 처리 -->
 	<select id="selectCheckMember" parameterType="string" resultType="memberVO">
 		SELECT
-		  mem_num,
-		  id,
-		  authority,
-		  nick_name,
+		  user_num,
+		  employee_code,
+		  auth,
 		  passwd,
 		  email
-		FROM spmember JOIN spmember_detail
-		USING (mem_num)
-		WHERE id=#{id}
+		FROM euser JOIN euser_detail
+		USING (user_num)
+		WHERE employee_code=#{employee_code}
 	</select>
 	
 	<!-- 회원정보수정 -->

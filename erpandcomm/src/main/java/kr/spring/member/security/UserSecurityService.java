@@ -3,6 +3,7 @@ package kr.spring.member.security;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import kr.spring.member.service.MemberService;
@@ -23,15 +24,23 @@ public class UserSecurityService implements UserDetailsService {
 	private final MemberService memberService;
 
 	@Override
-	public UserDetails loadUserByUsername(String id) throws UsernameNotFoundException {
+	public UserDetails loadUserByUsername(String employee_code) throws UsernameNotFoundException {
 		
+		// 임시: 새 비밀번호 생성 및 출력
+	    BCryptPasswordEncoder tempEncoder = new BCryptPasswordEncoder();
+	    String newEncoded = tempEncoder.encode("password123");
+	    log.debug("=== 새로운 암호화된 비밀번호 (password123): {}", newEncoded);
+	    log.debug("=== 이 값을 DB에 업데이트하세요 ===");
+	    
 		log.debug("[Spring Security Login Check1] UserSecurityService 실행");
-		log.debug("[Spring Security Login Check1] 로그인 아이디 : " + id);
-		MemberVO member = memberService.selectCheckMember(id);
+		log.debug("[Spring Security Login Check1] 로그인 아이디 : " + employee_code);
+		MemberVO member = memberService.selectCheckMember(employee_code);
 		if (member==null || member.getAuth().equals(UserRole.INACTIVE.getValue())) {
 			log.debug("[Spring Security Login Check1] 로그인 아이디가 없거나 탈퇴회원");			
 			throw new UsernameNotFoundException("UserNotFound");
 		} // if
+		log.debug("DB 비밀번호: {}", member.getPasswd());
+		log.debug("입력값과 비교 결과: {}", new BCryptPasswordEncoder().matches("password123", member.getPasswd())); // ✅ 여기만 변경
 		return new PrincipalDetails(member);
 	}
 

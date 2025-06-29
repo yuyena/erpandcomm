@@ -9,8 +9,7 @@ public interface MemberService {
 	
 	// 회원관리 - 일반회원
 	public void insertMember(MemberVO member);
-	public MemberVO selectIdAndNickName(Map<String, String> map);
-	public MemberVO selectCheckMember(String id);
+	public MemberVO selectCheckMember(String employee_code);
 	public MemberVO selectMember(Long mem_num);
 	public void updateMember(MemberVO member);
 	public void updatePassword(MemberVO member);

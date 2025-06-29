@@ -25,7 +25,11 @@ public class CustomFailureHandler extends SimpleUrlAuthenticationFailureHandler 
 		
 		log.debug("[Spring Security Lgoin Check 2] AuthenticationFailureHandler 실행");
 		log.debug("[Spring Security Lgoin Check 2] 로그인 실패 : " + exception.toString());
-		
+		String employee_code = request.getParameter("employee_code");
+        String passwd = request.getParameter("passwd");
+        
+        log.debug("입력된 employee_code: {}", employee_code);
+        log.debug("입력된 passwd: {}", passwd);
 		final FlashMap flashMap = new FlashMap();
 		flashMap.put("error", "error");
 		final FlashMapManager flashMapManager = new SessionFlashMapManager();

@@ -20,8 +20,7 @@ public interface MemberMapper {
 	@Insert("INSERT INTO spmember (mem_num,id,nick_name) VALUES (#{mem_num},#{id},#{nick_name})")
 	public void insertMember(MemberVO member);
 	public void insertMemberDetail(MemberVO member);
-	public MemberVO selectIdAndNickName(Map<String, String> map);
-	public MemberVO selectCheckMember(String id);
+	public MemberVO selectCheckMember(String employee_code);
 	@Select("SELECT * FROM spmember JOIN spmember_detail USING(mem_num) WHERE mem_num=#{mem_num}")
 	public MemberVO selectMember(Long mem_num);
 	@Update("UPDATE spmember SET nick_name=#{nick_name} WHERE mem_num=#{mem_num}")

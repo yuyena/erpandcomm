@@ -24,14 +24,10 @@ public class MemberServiceImpl implements MemberService {
 		memberMapper.insertMemberDetail(member);
 	}
 
-	@Override
-	public MemberVO selectIdAndNickName(Map<String, String> map) {
-		return memberMapper.selectIdAndNickName(map);
-	}
 
 	@Override
-	public MemberVO selectCheckMember(String id) {
-		return memberMapper.selectCheckMember(id);
+	public MemberVO selectCheckMember(String employee_code) {
+		return memberMapper.selectCheckMember(employee_code);
 	}
 
 	@Override
