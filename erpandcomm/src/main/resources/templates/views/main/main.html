@@ -4,12 +4,95 @@
 	  layout:decorate="~{layouts/layout_basic}">
 <head>
 <meta charset="UTF-8">
-<title>메인</title>
+<title>Office ERP - 대시보드</title>
 <link rel="stylesheet" th:href="@{/assets/css/main.css}">
 </head>
 <body>
 <div layout:fragment="content" class="page-main">
-	<h3>메인</h3>
+	<div class="dashboard-wrapper">
+		<!-- 사이드바 -->
+		<aside class="sidebar">
+			<div class="sidebar-logo">
+				<a th:href="@{/}" class="sidebar-logo-link">Office ERP</a>
+			</div>
+			<nav class="sidebar-menu">
+				<ul>
+					<li><a th:href="@{/}" class="active">대시보드</a></li>
+					<li><a th:href="@{/erp}">ERP 관리</a></li>
+					<li><a th:href="@{/hr}">인사관리</a></li>
+					<li><a th:href="@{/community}">커뮤니티</a></li>
+					<li><a th:href="@{/mypage}">마이페이지</a></li>
+				</ul>
+			</nav>
+			<div class="sidebar-bottom">
+				<div class="worktime-box">
+					<div class="date-time" th:text="${#dates.format(#dates.createNow(), 'yyyy년 MM월 dd일  HH:mm')}">2025년 5월 9일 15:46</div>
+					<div class="worktime-row">
+						<span>출근</span>
+						<input type="time" value="08:50" readonly />
+					</div>
+					<div class="worktime-row">
+						<span>퇴근</span>
+						<input type="time" value="-" readonly />
+					</div>
+				</div>
+				<div class="profile-box">
+					<img class="profile-img" th:src="@{/assets/image_bundle/face.png}" alt="프로필" />
+					<div class="profile-info">
+						<span class="profile-name">홍길동</span>
+						<span class="profile-dept">사원(물류)</span>
+					</div>
+					<button class="profile-btn">+</button>
+				</div>
+			</div>
+		</aside>
+
+		<!-- 메인 컨텐츠 -->
+		<main class="main-content">
+			<div class="main-header">
+				<h2>대시보드</h2>
+			</div>
+			<section class="notice-section">
+				<h3>공지사항</h3>
+				<table class="notice-table">
+					<thead>
+						<tr>
+							<th>구분</th>
+							<th>제목</th>
+							<th>날짜</th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td><span class="important">중요공지</span></td>
+							<td>Office ERP 서버 점검 안내 (7/28)</td>
+							<td>2025-07-21</td>
+							<td><button class="notice-detail-btn">+</button></td>
+						</tr>
+						<tr>
+							<td><span class="important">중요공지</span></td>
+							<td>Office ERP 서버 점검 안내 (7/28)</td>
+							<td>2025-07-21</td>
+							<td><button class="notice-detail-btn">+</button></td>
+						</tr>
+						<tr>
+							<td><span class="important">중요공지</span></td>
+							<td>Office ERP 서버 점검 안내 (7/28)</td>
+							<td>2025-07-21</td>
+							<td><button class="notice-detail-btn">+</button></td>
+						</tr>
+						<tr>
+							<td><span class="important">중요공지</span></td>
+							<td>Office ERP 서버 점검 안내 (7/28)</td>
+							<td>2025-07-21</td>
+							<td><button class="notice-detail-btn">+</button></td>
+						</tr>
+					</tbody>
+				</table>
+			</section>
+		</main>
+	</div>
 </div>
 </body>
 </html>

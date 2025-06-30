@@ -15,12 +15,8 @@ import lombok.extern.slf4j.Slf4j;
 public class MainController {
 	
 	@GetMapping("/")
-	public String init(@AuthenticationPrincipal PrincipalDetails principal) {
-		if (principal!=null && principal.getMemberVO().getAuth().equals(UserRole.ADMIN.getValue())) {
-			return "redirect:/main/admin";
-		} // if
-		
-		return "redirect:/main/main";
+	public String dashboard() {
+		return "views/main/main";
 	}
 	
 	@PreAuthorize("isAuthenticated()")
