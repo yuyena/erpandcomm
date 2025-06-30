@@ -94,3 +94,17 @@ CREATE TABLE notice (
     noti_content  VARCHAR2(2000)  NOT NULL,
     noti_date     DATE            NOT NULL
 );
+
+
+-- 💬 채팅 관련
+CREATE SEQUENCE chat_room_seq;
+CREATE SEQUENCE chat_message_seq;
+CREATE SEQUENCE chat_member_seq;
+
+-- 📅 일정/캘린더
+CREATE SEQUENCE calendar_seq;
+CREATE SEQUENCE event_seq;
+CREATE SEQUENCE event_attendee_seq;
+
+-- 📢 공지사항
+CREATE SEQUENCE notice_seq;

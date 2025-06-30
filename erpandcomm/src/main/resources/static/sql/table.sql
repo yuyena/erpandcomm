@@ -293,15 +293,7 @@ CREATE SEQUENCE work_schedule_seq;
 CREATE SEQUENCE overtime_request_seq;
 CREATE SEQUENCE attendance_summary_seq;
 
--- 💬 채팅 관련
-CREATE SEQUENCE chat_room_seq;
-CREATE SEQUENCE chat_message_seq;
-CREATE SEQUENCE chat_member_seq;
 
--- 📅 일정/캘린더
-CREATE SEQUENCE calendar_seq;
-CREATE SEQUENCE event_seq;
-CREATE SEQUENCE event_attendee_seq;
 
 
 -- 🛒 상품/재고
@@ -318,7 +310,6 @@ CREATE SEQUENCE sales_order_seq;
 CREATE SEQUENCE sales_order_detail_seq;
 CREATE SEQUENCE transaction_history_seq;
 
--- 📢 공지사항
-CREATE SEQUENCE notice_seq;
+
 
 
