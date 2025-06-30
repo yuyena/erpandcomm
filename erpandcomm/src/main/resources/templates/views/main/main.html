@@ -17,11 +17,66 @@
 			</div>
 			<nav class="sidebar-menu">
 				<ul>
-					<li><a th:href="@{/}" class="active">대시보드</a></li>
-					<li><a th:href="@{/erp}">ERP 관리</a></li>
-					<li><a th:href="@{/hr}">인사관리</a></li>
-					<li><a th:href="@{/community}">커뮤니티</a></li>
-					<li><a th:href="@{/mypage}">마이페이지</a></li>
+					<li class="menu-item active">
+						<a th:href="@{/}">
+							<img src="/assets/images/dashboard.png" class="menu-icon" alt="대시보드">
+							<span class="menu-text">대시보드</span>
+						</a>
+					</li>
+					<li class="menu-item has-sub">
+						<a href="#" class="menu-toggle">
+							<img src="/assets/images/erp.png" class="menu-icon" alt="ERP 관리">
+							<span class="menu-text">ERP 관리</span>
+							<span class="arrow">&#9654;</span>
+						</a>
+						<ul class="submenu">
+							<li><a href="#">판매주문</a></li>
+							<li><a href="#">구매 / 발주</a></li>
+							<li><a href="#" class="active">재고관리</a></li>
+							<li><a href="#">거래처관리</a></li>
+						</ul>
+					</li>
+					<li class="menu-item has-sub">
+						<a href="#" class="menu-toggle">
+							<img src="/assets/images/insa.png" class="menu-icon" alt="인사관리">
+							<span class="menu-text">인사관리</span>
+							<span class="arrow">&#9654;</span>
+						</a>
+						<ul class="submenu">
+							<li><a href="#">부서관리 / 조직도</a></li>
+							<li><a href="#">직원관리</a></li>
+							<li><a href="#">근태관리</a></li>
+							<li><a href="#">휴가관리</a></li>
+							<li><a href="#">급여관리</a></li>
+							<li><a href="#">평가관리</a></li>
+							<li><a href="#">인사통계</a></li>
+						</ul>
+					</li>
+					<li class="menu-item has-sub">
+						<a href="#" class="menu-toggle">
+							<img src="/assets/images/community.png" class="menu-icon" alt="커뮤니티">
+							<span class="menu-text">커뮤니티</span>
+							<span class="arrow">&#9654;</span>
+						</a>
+						<ul class="submenu">
+							<li><a href="#">공지사항</a></li>
+							<li><a href="#">자유게시판</a></li>
+							<li><a href="#">자료실</a></li>
+						</ul>
+					</li>
+					<li class="menu-item has-sub open">
+						<a href="#" class="menu-toggle">
+							<img src="/assets/images/insa.png" class="menu-icon" alt="마이페이지">
+							<span class="menu-text">마이페이지</span>
+							<span class="arrow">&#9660;</span>
+						</a>
+						<ul class="submenu open">
+							<li><a href="#">사원정보</a></li>
+							<li><a href="#">개인근태정보</a></li>
+							<li><a href="#" class="active">개인휴가정보</a></li>
+							<li><a href="#">급여정보</a></li>
+						</ul>
+					</li>
 				</ul>
 			</nav>
 			<div class="sidebar-bottom">
@@ -94,5 +149,36 @@
 		</main>
 	</div>
 </div>
+
+<!-- sidebar 메뉴 토글용 JS (한 번에 하나만 펼침/접힘) -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.menu-toggle').forEach(function(toggle) {
+      toggle.addEventListener('click', function(e) {
+        e.preventDefault();
+        var parent = this.parentElement;
+        var submenu = parent.querySelector('.submenu');
+        // 모든 메뉴 닫기
+        document.querySelectorAll('.menu-item.has-sub').forEach(function(item) {
+          if (item !== parent) {
+            item.classList.remove('open');
+            var sub = item.querySelector('.submenu');
+            if (sub) sub.classList.remove('open');
+            var arrow = item.querySelector('.arrow');
+            if (arrow) arrow.innerHTML = '&#9654;';
+          }
+        });
+        // 현재 메뉴 토글
+        var isOpen = submenu.classList.contains('open');
+        submenu.classList.toggle('open', !isOpen);
+        parent.classList.toggle('open', !isOpen);
+        var arrow = this.querySelector('.arrow');
+        if (arrow) {
+          arrow.innerHTML = !isOpen ? '&#9660;' : '&#9654;';
+        }
+      });
+    });
+  });
+</script>
 </body>
 </html>
