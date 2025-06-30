@@ -27,7 +27,7 @@ CREATE TABLE grade (
 CREATE TABLE euser_detail (
     user_num          NUMBER           PRIMARY KEY,
     user_name         VARCHAR2(10)     NOT NULL,
-    passwd            VARCHAR2(12)     NOT NULL,
+    passwd            VARCHAR2(60)     NOT NULL,
     phone             VARCHAR2(15)     NOT NULL,
     email             VARCHAR2(50)     NOT NULL,
     photo             VARCHAR2(400),
