@@ -1,7 +1,7 @@
 CREATE TABLE euser (
     user_num       NUMBER          PRIMARY KEY,
     employee_code  VARCHAR2(12)    NOT NULL UNIQUE,
-    auth           NUMBER(1)       NOT NULL
+    authority      VARCHAR2(30)       NOT NULL
 );
 
 CREATE TABLE department (
