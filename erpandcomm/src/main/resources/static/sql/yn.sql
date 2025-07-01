@@ -7,7 +7,7 @@ INSERT INTO position (position_num, position_name, position_code)
 VALUES (position_seq.NEXTVAL, '개발자', 'P02');
 
 -- 사용자 기본 정보
-INSERT INTO euser (user_num, employee_code, auth)
+INSERT INTO euser (user_num, employee_code, authority)
 VALUES (euser_seq.NEXTVAL, 'EMP20240001', 1);
 
 -- 부서 정보 (방금 생성한 사용자를 매니저로 설정)
