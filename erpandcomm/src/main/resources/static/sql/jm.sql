@@ -92,7 +92,7 @@ CREATE TABLE notice (
     noti_num      NUMBER          PRIMARY KEY,
     noti_title    VARCHAR2(100)   NOT NULL,
     noti_content  VARCHAR2(2000)  NOT NULL,
-    noti_date     DATE            NOT NULL
+    noti_date     DATE            DEFAULT SYSDATE NOT NULL
 );
 
 

@@ -71,7 +71,7 @@ public class SecurityConfig {
 					// 폼 기반 로그인 설정
 					.formLogin(form -> form
 							// 커서텀 로그인 페이지
-							.loginPage("/") // 임시로 대시보드로 변경
+							.loginPage("/member/login") // 임시로 대시보드로 변경
 							// 사용자명의 name 속성 지정
 							.usernameParameter("employee_code")
 							// 비밀번호의 name 속성 지정
