@@ -177,6 +177,7 @@ CREATE TABLE product (
     status         NUMBER          NOT NULL,
     unit_pricce    NUMBER(10,2)    NOT NULL,
     unit           VARCHAR2(10)    NOT NULL,
+    product_date   DATE 		  default SYSDATE NOT NULL,
     CONSTRAINT fk_product_category FOREIGN KEY (category_num) REFERENCES product_category(category_num)
 );
 
@@ -185,6 +186,20 @@ CREATE TABLE product_category (
     category_name  VARCHAR2(50)    NOT NULL
 );
 
+CREATE TABLE current_stock (
+    product_num NUMBER PRIMARY KEY,
+    current_quantity NUMBER DEFAULT 0 NOT NULL,
+    min_stock NUMBER,
+    max_stock NUMBER,
+    last_in_date DATE,
+    last_out_date DATE,
+last_movement_num NUMBER ,
+    version_num NUMBER DEFAULT 1 NOT NULL,
+     updated_date DATE DEFAULT SYSDATE,
+    
+    CONSTRAINT fk_current_stockp FOREIGN KEY (product_num) REFERENCES product(product_num),
+    CONSTRAINT fk_current_stock_movement FOREIGN KEY (last_movement_num) REFERENCES stock_movements(movement_num)
+);
 
 CREATE TABLE stock_movements (
     movement_num   NUMBER          PRIMARY KEY,
