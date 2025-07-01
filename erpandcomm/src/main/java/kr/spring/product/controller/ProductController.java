@@ -1,4 +1,4 @@
-package kr.spring.member.controller;
+package kr.spring.product.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,8 +16,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import kr.spring.member.security.CustomAccessDeniedHandler;
 import kr.spring.member.service.MemberService;
+import kr.spring.member.vo.MemberVO;
 import kr.spring.member.vo.PrincipalDetails;
-import kr.spring.product.vo.ProductVO;
 import kr.spring.util.FileUtil;
 import kr.spring.util.ValidationUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -25,8 +25,8 @@ import oracle.jdbc.proxy.annotation.Post;
 
 @Controller
 @Slf4j
-@RequestMapping("/erp")
-public class MemberUserController {
+@RequestMapping("/member")
+public class ProductController {
 
 	
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
@@ -37,14 +37,14 @@ public class MemberUserController {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
-    MemberUserController(CustomAccessDeniedHandler customAccessDeniedHandler) {
+    ProductController(CustomAccessDeniedHandler customAccessDeniedHandler) {
         this.customAccessDeniedHandler = customAccessDeniedHandler;
     }
 	
 	// 자바빈(VO) 초기화
 	@ModelAttribute
-	public ProductVO initCommand() {
-		return new ProductVO();
+	public MemberVO initCommand() {
+		return new MemberVO();
 	}
 	
 //	// 회원가입 폼 호출
