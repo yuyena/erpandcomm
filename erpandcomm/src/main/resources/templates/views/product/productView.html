@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout_basic}">
+<head>
+    <meta charset="UTF-8">
+    <title>상품 목록</title>
+    <link rel="stylesheet" th:href="@{/assets/css/product.css}">
+    <script type="text/javascript" th:src="@{/assets/js/jquery-3.7.1.min.js}"></script>
+    <script type="text/javascript" th:src="@{/assets/js/product.js}"></script>
+    <style>
+       
+    </style>
+</head>
+<body>
+<div layout:fragment="content" class="page-main">
+    <!-- 페이지 헤더 -->
+    <div class="page-header">
+        <h2 class="page-title">상품 관리</h2>
+        <div>
+            <span class="total-count">총 <strong th:text="${count}">0</strong>개 상품</span>
+        </div>
+    </div>
+    
+    <!-- 카테고리 네비게이션 -->
+    <div class="category-nav">
+        <a href="list" th:classappend="${category_num == null} ? 'active' : ''">전체</a>
+        <th:block th:each="category : ${categoryList}">
+            <a th:href="@{list(category_num=${category.category_num})}" 
+               th:classappend="${category_num == category.category_num} ? 'active' : ''"
+               th:text="${category.category_name}">카테고리명</a>
+        </th:block>
+    </div>
+    
+    <!-- 검색 섹션 -->
+    <div class="search-section">
+        <form action="list" id="search_form" method="get" class="search-form">
+            <div class="search-group">
+                <label for="keyfield">검색 유형:</label>
+                <select name="keyfield" id="keyfield">
+                    <option value="1" th:selected="${keyfield=='1'}">상품명</option>
+                    <option value="2" th:selected="${keyfield=='2'}">상품번호</option>
+                    <option value="3" th:selected="${keyfield=='3'}">카테고리</option>
+                </select>
+            </div>
+            
+            <div class="search-group">
+                <input type="search" name="keyword" id="keyword" th:value="${keyword}" placeholder="검색어를 입력하세요">
+            </div>
+            
+            <div class="search-group">
+                <label for="status">판매상태:</label>
+                <select name="status" id="status">
+                    <option value="">전체</option>
+                    <option value="1" th:selected="${status=='1'}">판매중</option>
+                    <option value="0" th:selected="${status=='0'}">판매중지</option>
+                </select>
+            </div>
+            
+            <div class="search-group">
+                <input type="submit" value="검색" class="btn btn-primary">
+                <input type="button" value="초기화" onclick="location.href='list'" class="btn">
+            </div>
+        </form>
+    </div>
+    
+    <!-- 컨트롤 섹션 -->
+    <div class="controls-section">
+        <div class="search-group">
+            <label for="order">정렬:</label>
+            <select name="order" id="order" th:value="${order}">
+                <option value="1" th:selected="${order==1}">상품번호순</option>
+                <option value="2" th:selected="${order==2}">상품명순</option>
+                <option value="3" th:selected="${order==3}">가격낮은순</option>
+                <option value="4" th:selected="${order==4}">가격높은순</option>
+                <option value="5" th:selected="${order==5}">카테고리순</option>
+            </select>
+        </div>
+        
+        <div>
+            <input sec:authorize="hasRole('ADMIN')" type="button" value="상품 추가" 
+                   onclick="location.href='write'" class="btn btn-success">
+            <input sec:authorize="hasRole('ADMIN')" type="button" value="Excel 다운로드" 
+                   onclick="downloadExcel()" class="btn">
+        </div>
+    </div>
+    
+    <!-- 결과 표시 -->
+    <div class="no-results" th:if="${count == 0}">
+        검색 조건에 맞는 상품이 없습니다.
+    </div>
+    
+    <!-- 상품 테이블 -->
+    <th:block th:if="${count > 0}">
+        <div class="table-container">
+            <table class="product-table">
+                <thead>
+                    <tr>
+                        <th width="100">상품번호</th>
+                        <th width="300">상품명</th>
+                        <th width="120">카테고리</th>
+                        <th width="120">단가</th>
+                        <th width="80">단위</th>
+                        <th width="100">상태</th>
+                        <th width="100">관리</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="product : ${list}">
+                        <td class="align-center" th:text="${product.product_num}">1</td>
+                        <td class="align-left">
+                            <a th:href="@{/product/detail(product_num=${product.product_num})}" 
+                               class="product-name" th:text="${product.product_name}">상품명</a>
+                        </td>
+                        <td class="align-center" th:text="${product.categoryVO.category_name}">카테고리</td>
+                        <td class="align-right">
+                            <span class="price" th:text="${#numbers.formatDecimal(product.unit_pricce, 0, 'COMMA', 2, 'POINT')} + '원'">10,000.00원</span>
+                        </td>
+                        <td class="align-center" th:text="${product.unit}">개</td>
+                        <td class="align-center">
+                            <span th:class="'status-badge ' + (${product.status == 1} ? 'status-active' : 'status-inactive')"
+                                  th:text="${product.status == 1} ? '판매중' : '판매중지'">판매중</span>
+                        </td>
+                        <td class="align-center">
+                            <a th:href="@{/product/edit(product_num=${product.product_num})}" 
+                               class="btn" style="font-size: 12px; padding: 4px 8px;"
+                               sec:authorize="hasRole('ADMIN')">수정</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- 페이지네이션 -->
+        <div class="pagination" th:utext="${page}">
+            <!-- 페이지네이션이 여기에 렌더링됩니다 -->
+        </div>
+    </th:block>
+</div>
+
+<script type="text/javascript">
+$(function(){
+    // 정렬 변경 시 자동 검색
+    $('#order').change(function(){
+        var category_num = '[[${category_num}]]' || '';
+        var keyfield = $('#keyfield').val();
+        var keyword = $('#keyword').val();
+        var status = $('#status').val();
+        var order = $('#order').val();
+        
+        var url = 'list?';
+        if(category_num) url += 'category_num=' + category_num + '&';
+        if(keyfield) url += 'keyfield=' + keyfield + '&';
+        if(keyword) url += 'keyword=' + encodeURIComponent(keyword) + '&';
+        if(status) url += 'status=' + status + '&';
+        url += 'order=' + order;
+        
+        location.href = url;
+    });
+    
+    // 상태 변경 시 자동 검색
+    $('#status').change(function(){
+        $('#search_form').submit();
+    });
+});
+
+// Excel 다운로드 함수
+function downloadExcel() {
+    var category_num = '[[${category_num}]]' || '';
+    var keyfield = $('#keyfield').val();
+    var keyword = $('#keyword').val();
+    var status = $('#status').val();
+    var order = $('#order').val();
+    
+    var url = 'excel?';
+    if(category_num) url += 'category_num=' + category_num + '&';
+    if(keyfield) url += 'keyfield=' + keyfield + '&';
+    if(keyword) url += 'keyword=' + encodeURIComponent(keyword) + '&';
+    if(status) url += 'status=' + status + '&';
+    url += 'order=' + order;
+    
+    window.open(url, '_blank');
+}
+</script>
+</body>
+</html>

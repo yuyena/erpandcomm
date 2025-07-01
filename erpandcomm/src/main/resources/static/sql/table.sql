@@ -175,7 +175,7 @@ CREATE TABLE product (
     category_num   NUMBER          NOT NULL,
     product_name   VARCHAR2(100)   NOT NULL,
     status         NUMBER          NOT NULL,
-    unit_pricce    NUMBER(10,2)    NOT NULL,
+    unit_price    NUMBER(10,2)    NOT NULL,
     unit           VARCHAR2(10)    NOT NULL,
     product_date   DATE 		  default SYSDATE NOT NULL,
     CONSTRAINT fk_product_category FOREIGN KEY (category_num) REFERENCES product_category(category_num)
