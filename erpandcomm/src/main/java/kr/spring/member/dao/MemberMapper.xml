@@ -44,7 +44,7 @@
 		SELECT
 		  user_num,
 		  employee_code,
-		  auth,
+		  authority,
 		  passwd,
 		  email
 		FROM euser JOIN euser_detail
