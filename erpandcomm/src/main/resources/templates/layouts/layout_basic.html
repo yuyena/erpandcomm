@@ -8,10 +8,11 @@
 <title layout:title-pattern="$LAYOUT_TITLE > $CONTENT_TITLE">SpringPage</title>
 <link rel="stylesheet" th:href="@{/assets/css/common.css}" type="text/css">
 </head>
-<body>
-<div id="main">
-	<div id="main_body" layout:fragment="content"></div>
+<body style="width:100vw; min-width:0; margin:0; padding:0; overflow-x:hidden;">
+<div id="main" style="width:100vw; min-width:0; margin:0; padding:0; overflow-x:hidden;">
+	<div id="main_body" layout:fragment="content" style="width:100vw; min-width:0; margin:0; padding:0; overflow-x:hidden;"></div>
 </div>
+<div layout:fragment="pageScript"></div>
 </body>
 </html>
 
