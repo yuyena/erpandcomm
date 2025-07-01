@@ -40,7 +40,7 @@ public class PrincipalDetails implements UserDetails {
 			@Override
 			public String getAuthority() {
 				log.debug("memberVO : " + memberVO);
-				return memberVO.getAuth();
+				return memberVO.getAuthority();
 			}
 		});
 		return collect;

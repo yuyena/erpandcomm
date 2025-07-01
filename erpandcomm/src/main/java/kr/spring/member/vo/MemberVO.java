@@ -21,7 +21,7 @@ public class MemberVO {
 	private long user_num;
 	@Pattern(regexp="^[A-Za-z0-9]{10,11}$")
 	private String employee_code;
-	private String auth;
+	private String authority;
 	@NotBlank
 	private String user_name;
 	@Pattern(regexp="^[A-Za-z0-9]{4,12}$")
@@ -56,15 +56,15 @@ public class MemberVO {
 	
 	public int getAuthorityOrdinal() {
 		
-		if (auth == null) return -1;
+		if (authority == null) return -1;
 		
-		if (auth.equals(UserRole.INACTIVE.getValue())) {
+		if (authority.equals(UserRole.INACTIVE.getValue())) {
 			return UserRole.INACTIVE.ordinal(); // 0
-		} else if (auth.equals(UserRole.SUSPENDED.getValue())) {
+		} else if (authority.equals(UserRole.SUSPENDED.getValue())) {
 			return UserRole.SUSPENDED.ordinal(); // 1
-		} else if (auth.equals(UserRole.USER.getValue())) {
+		} else if (authority.equals(UserRole.USER.getValue())) {
 			return UserRole.USER.ordinal(); // 2
-		} else if (auth.equals(UserRole.ADMIN.getValue())) {
+		} else if (authority.equals(UserRole.ADMIN.getValue())) {
 			return UserRole.ADMIN.ordinal(); // 3
 		} else {
 			return -1;
