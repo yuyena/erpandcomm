@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout_basic}">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" th:href="@{/assets/css/product.css}">
+<script type="text/javascript" th:src="@{/assets/js/jquery-3.7.1.min.js}"></script>
+<script type="text/javascript" th:src="@{/assets/js/product.js}"></script>
+</head>
+<body>
+<div class="page-main">
+	<jsp:include page="/WEB-INF/views/common/header.jsp"/>
+	<div class="content-main">
+		<c:if test="${user_num == boardChatRoomVO.reader_num}">
+			<h2>[${boardChatRoomVO.title}]의 
+			등록자 <small>${boardChatRoomVO.writer_id}</small>님과 채팅
+			</h2>
+		</c:if>
+		<c:if test="${user_num == boardChatRoomVO.writer_num}">
+			<h2>[${boardChatRoomVO.title}]에 관심이 있는
+			사용자 <small>${boardChatRoomVO.reader_id}</small>님과 채팅			
+			</h2>
+		</c:if>
+		<div id="chatting_message"></div>
+		<form id="chatting_form">
+			<input type="hidden" name="chatroom_num"
+			     value="${boardChatRoomVO.chatroom_num}"
+			                         id="chatroom_num">
+			<ul>
+				<li>
+					<label for="message">내용</label>
+					<textarea rows="5" cols="40"
+					 name="message" id="message"></textarea>
+					<input type="submit" value="전송">
+				</li>
+			</ul>                         
+		</form>
+	</div>
+</div>
+</body>
+</html>
