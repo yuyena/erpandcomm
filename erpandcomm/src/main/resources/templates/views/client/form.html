@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layouts/layout_basic}">
+<head>
+    <meta charset="UTF-8">
+    <title>거래처 등록/수정</title>
+    <link rel="stylesheet" th:href="@{/assets/css/main.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/sh.css}">
+</head>
+<body>
+<div layout:fragment="content" class="page-main">
+    <div class="dashboard-wrapper">
+        <th:block th:replace="fragments/nav_sidebar :: sidebar"></th:block>
+        <main class="main-content">
+            <div class="main-header">
+                <h2>거래처 등록/수정</h2>
+            </div>
+            <div class="sh-box">
+                <form class="sh-box-form" th:action="@{/client/save}" method="post">
+                    <input type="hidden" name="client_num" th:value="${clientVO.client_num}">
+                    <div class="sh-box-row">
+                        <label>이름</label>
+                        <input type="text" name="client_name" th:value="${clientVO.client_name}" required>
+                    </div>
+                    <div class="sh-box-row">
+                        <label>구분</label>
+                        <select name="client_type" required>
+                            <option value="0" th:selected="${clientVO.client_type == 0}">공급업체</option>
+                            <option value="1" th:selected="${clientVO.client_type == 1}">고객</option>
+                        </select>
+                    </div>
+                    <div class="sh-box-row">
+                        <label>담당자</label>
+                        <input type="text" name="contact_person" th:value="${clientVO.contact_person}">
+                    </div>
+                    <div class="sh-box-row">
+                        <label>연락처</label>
+                        <input type="text" name="phone" th:value="${clientVO.phone}">
+                    </div>
+                    <div class="sh-box-row">
+                        <label>이메일</label>
+                        <input type="email" name="email" th:value="${clientVO.email}">
+                    </div>
+                    <div class="sh-box-row">
+                        <label>주소</label>
+                        <input type="text" name="address1" th:value="${clientVO.address1}">
+                    </div>
+                    <div class="sh-box-row">
+                        <label>상세주소</label>
+                        <input type="text" name="address2" th:value="${clientVO.address2}">
+                    </div>
+                    <div class="sh-box-actions">
+                        <button type="submit" class="btn btn-success">저장</button>
+                        <a th:href="@{/client/list}" class="btn">목록</a>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+</div>
+</body>
+</html> 

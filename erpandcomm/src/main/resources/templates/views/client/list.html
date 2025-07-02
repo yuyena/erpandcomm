@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layouts/layout_basic}">
+<head>
+    <meta charset="UTF-8">
+    <title>거래처 목록</title>
+    <link rel="stylesheet" th:href="@{/assets/css/main.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/sh.css}">
+</head>
+<body>
+<div layout:fragment="content" class="page-main">
+    <div class="dashboard-wrapper">
+        <th:block th:replace="fragments/nav_sidebar :: sidebar"></th:block>
+        <main class="main-content">
+            <div class="main-header">
+                <h2>거래처 목록</h2>
+            </div>
+            <div class="sh-box">
+                <div style="display:flex; justify-content: flex-end; margin-bottom: 12px;">
+                    <a th:href="@{/client/form}" class="btn btn-success">+ 거래처 등록</a>
+                </div>
+                <table class="product-table">
+                    <thead>
+                        <tr>
+                            <th>번호</th>
+                            <th>이름</th>
+                            <th>구분</th>
+                            <th>담당자</th>
+                            <th>연락처</th>
+                            <th>관리</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="client : ${list}">
+                            <td th:text="${client.client_num}"></td>
+                            <td th:text="${client.client_name}"></td>
+                            <td th:text="${client.client_type == 0 ? '공급업체' : '고객'}"></td>
+                            <td th:text="${client.contact_person}"></td>
+                            <td th:text="${client.phone}"></td>
+                            <td>
+                                <a th:href="@{/client/form(client_num=${client.client_num})}" class="btn btn-primary btn-sm">수정</a>
+                                <a th:href="@{/client/delete(client_num=${client.client_num})}" class="btn btn-danger btn-sm" onclick="return confirm('정말 삭제하시겠습니까?');">삭제</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+</div>
+</body>
+</html> 
