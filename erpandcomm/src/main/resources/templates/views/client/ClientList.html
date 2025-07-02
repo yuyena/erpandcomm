@@ -16,7 +16,7 @@
             </div>
             <div class="sh-box">
                 <div style="display:flex; justify-content: flex-end; margin-bottom: 12px;">
-                    <a th:href="@{/client/form}" class="btn btn-success">+ 거래처 등록</a>
+                    <a th:href="@{/client/ClientForm}" class="btn btn-success">+ 거래처 등록</a>
                 </div>
                 <table class="product-table">
                     <thead>
@@ -37,7 +37,7 @@
                             <td th:text="${client.contact_person}"></td>
                             <td th:text="${client.phone}"></td>
                             <td>
-                                <a th:href="@{/client/form(client_num=${client.client_num})}" class="btn btn-primary btn-sm">수정</a>
+                                <a th:href="@{/client/ClientForm(client_num=${client.client_num})}" class="btn btn-primary btn-sm">수정</a>
                                 <a th:href="@{/client/delete(client_num=${client.client_num})}" class="btn btn-danger btn-sm" onclick="return confirm('정말 삭제하시겠습니까?');">삭제</a>
                             </td>
                         </tr>
@@ -46,6 +46,35 @@
             </div>
         </main>
     </div>
+</div>
+<div layout:fragment="pageScript">
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.menu-toggle').forEach(function(toggle) {
+      toggle.addEventListener('click', function(e) {
+        e.preventDefault();
+        var parent = this.parentElement;
+        var submenu = parent.querySelector('.submenu');
+        document.querySelectorAll('.menu-item.has-sub').forEach(function(item) {
+          if (item !== parent) {
+            item.classList.remove('open');
+            var sub = item.querySelector('.submenu');
+            if (sub) sub.classList.remove('open');
+            var arrow = item.querySelector('.arrow');
+            if (arrow) arrow.innerHTML = '&#9654;';
+          }
+        });
+        var isOpen = submenu.classList.contains('open');
+        submenu.classList.toggle('open', !isOpen);
+        parent.classList.toggle('open', !isOpen);
+        var arrow = this.querySelector('.arrow');
+        if (arrow) {
+          arrow.innerHTML = !isOpen ? '&#9660;' : '&#9654;';
+        }
+      });
+    });
+  });
+</script>
 </div>
 </body>
 </html> 

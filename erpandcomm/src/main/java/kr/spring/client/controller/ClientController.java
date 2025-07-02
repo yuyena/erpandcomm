@@ -15,14 +15,14 @@ public class ClientController {
     public String list(Model model) {
         // List<ClientVO> list = clientService.getClientList();
         // model.addAttribute("list", list);
-        return "views/client/list";
+        return "views/client/ClientList";
     }
 
     @GetMapping("/form")
     public String form(@RequestParam(required = false) Long client_num, Model model) {
         // ClientVO vo = (client_num != null) ? clientService.getClient(client_num) : new ClientVO();
         // model.addAttribute("clientVO", vo);
-        return "views/client/form";
+        return "views/client/ClientForm";
     }
 
     @PostMapping("/save")
