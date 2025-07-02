@@ -21,8 +21,6 @@ import kr.spring.product.vo.ProductVO;
 import kr.spring.util.FileUtil;
 import kr.spring.util.ValidationUtil;
 import lombok.extern.slf4j.Slf4j;
-import oracle.jdbc.proxy.annotation.Post;
-
 @Controller
 @Slf4j
 @RequestMapping("/erp")
