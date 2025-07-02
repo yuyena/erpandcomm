@@ -9,32 +9,96 @@
 </head>
 <body>
 <div layout:fragment="content" class="page-main">
-    <div class="page-header">
-        <h2 class="page-title">구매주문 등록/수정</h2>
+    <div class="dashboard-wrapper">
+        <th:block th:replace="fragments/nav_sidebar :: sidebar"></th:block>
+        <main class="main-content">
+            <div class="main-header">
+                <h2>ERP 관리</h2>
+            </div>
+            <section class="card-section">
+                <div class="section-header" style="margin-bottom: 18px;">
+                    <h3 style="margin: 0;">구매주문 입력</h3>
+                </div>
+                <form class="form-card" th:action="@{${purchaseOrderVO.purchase_order_num} != null ? '/purchase/orderUpdate' : '/purchase/orderInsert'}" method="post">
+                    <input type="hidden" th:if="${purchaseOrderVO.purchase_order_num} != null" name="purchase_order_num" th:value="${purchaseOrderVO.purchase_order_num}" />
+                    <div class="form-row">
+                        <label>공급처번호</label>
+                        <input type="number" name="supplier_num" th:value="${purchaseOrderVO.supplier_num}" required />
+                    </div>
+                    <div class="form-row">
+                        <label>주문일</label>
+                        <input type="date" name="order_date" th:value="${#dates.format(purchaseOrderVO.order_date, 'yyyy-MM-dd')}" required />
+                    </div>
+                    <div class="form-row">
+                        <label>총금액</label>
+                        <input type="number" step="0.01" name="total_price" th:value="${purchaseOrderVO.total_price}" required />
+                    </div>
+                    <div class="form-row">
+                        <label>담당자(사원번호)</label>
+                        <input type="number" name="emp_num" th:value="${purchaseOrderVO.emp_num}" required />
+                    </div>
+                    <div class="form-row">
+                        <label>상세내역</label>
+                        <div class="details-table" style="width:100%;">
+                            <table class="product-table">
+                                <thead>
+                                    <tr>
+                                        <th>상품번호</th>
+                                        <th>수량</th>
+                                        <th>단가</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="detail, idx : ${purchaseOrderVO.details}">
+                                        <td><input type="number" name="details[__${idx.index}__].product_num" th:value="${detail.product_num}" required /></td>
+                                        <td><input type="number" name="details[__${idx.index}__].quantity" th:value="${detail.quantity}" required /></td>
+                                        <td><input type="number" step="0.01" name="details[__${idx.index}__].unit_price" th:value="${detail.unit_price}" required /></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="form-actions" style="margin-top: 18px; display: flex; gap: 12px;">
+                        <button type="submit" class="btn btn-success">저장</button>
+                        <a th:href="@{/purchase/orderList}" class="btn">목록</a>
+                    </div>
+                </form>
+            </section>
+        </main>
     </div>
-    <form th:action="@{${purchaseOrderVO.purchase_order_num} != null ? '/purchase/orderUpdate' : '/purchase/orderInsert'}" method="post">
-        <input type="hidden" th:if="${purchaseOrderVO.purchase_order_num} != null" name="purchase_order_num" th:value="${purchaseOrderVO.purchase_order_num}" />
-        <div class="form-group">
-            <label>공급처번호</label>
-            <input type="number" name="supplier_num" th:value="${purchaseOrderVO.supplier_num}" required />
-        </div>
-        <div class="form-group">
-            <label>주문일</label>
-            <input type="date" name="order_date" th:value="${#dates.format(purchaseOrderVO.order_date, 'yyyy-MM-dd')}" required />
-        </div>
-        <div class="form-group">
-            <label>총금액</label>
-            <input type="number" step="0.01" name="total_price" th:value="${purchaseOrderVO.total_price}" required />
-        </div>
-        <div class="form-group">
-            <label>담당자(사원번호)</label>
-            <input type="number" name="emp_num" th:value="${purchaseOrderVO.emp_num}" required />
-        </div>
-        <div class="form-group">
-            <button type="submit" class="btn btn-success">저장</button>
-            <a th:href="@{/purchase/orderList}" class="btn">목록</a>
-        </div>
-    </form>
+</div>
+<div layout:fragment="pageScript">
+<script>
+  console.log('js loaded');
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.menu-toggle').forEach(function(toggle) {
+      toggle.addEventListener('click', function(e) {
+        console.log('clicked');
+        e.preventDefault();
+        var parent = this.parentElement;
+        var submenu = parent.querySelector('.submenu');
+        // 모든 메뉴 닫기
+        document.querySelectorAll('.menu-item.has-sub').forEach(function(item) {
+          if (item !== parent) {
+            item.classList.remove('open');
+            var sub = item.querySelector('.submenu');
+            if (sub) sub.classList.remove('open');
+            var arrow = item.querySelector('.arrow');
+            if (arrow) arrow.innerHTML = '&#9654;';
+          }
+        });
+        // 현재 메뉴 토글
+        var isOpen = submenu.classList.contains('open');
+        submenu.classList.toggle('open', !isOpen);
+        parent.classList.toggle('open', !isOpen);
+        var arrow = this.querySelector('.arrow');
+        if (arrow) {
+          arrow.innerHTML = !isOpen ? '&#9660;' : '&#9654;';
+        }
+      });
+    });
+  });
+</script>
 </div>
 </body>
 </html> 

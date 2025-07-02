@@ -9,40 +9,109 @@
 </head>
 <body>
 <div layout:fragment="content" class="page-main">
-    <div class="page-header">
-        <h2 class="page-title">구매주문 관리</h2>
-        <div>
-            <a th:href="@{/purchase/orderForm}" class="btn btn-success">구매주문 등록</a>
-        </div>
+    <div class="dashboard-wrapper">
+        <th:block th:replace="fragments/nav_sidebar :: sidebar"></th:block>
+        <main class="main-content">
+            <div class="main-header">
+                <h2>ERP관리 - 구매주문 목록</h2>
+            </div>
+            <!-- 조회 조건 modern 박스 -->
+            <section class="card-section">
+                <div class="sh-box">
+                    <form class="sh-box-form">
+                        <div class="sh-box-row">
+                            <label>주문일</label>
+                            <input type="date" name="startDate">
+                            <span>~</span>
+                            <input type="date" name="endDate">
+                        </div>
+                        <div class="sh-box-row">
+                            <label>공급처</label>
+                            <input type="text" name="supplier" placeholder="공급처명">
+                        </div>
+                        <div class="sh-box-row">
+                            <label>담당 직원</label>
+                            <input type="text" name="emp" placeholder="직원명">
+                        </div>
+                        <div class="sh-box-row">
+                            <label>창고</label>
+                            <input type="text" name="warehouse" placeholder="창고명">
+                        </div>
+                        <div class="sh-box-actions">
+                            <button type="submit" class="btn btn-primary">전체 검색</button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+            <section class="card-section">
+                <div class="section-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px;">
+                    <h3 style="margin: 0;">구매주문 관리</h3>
+                    <a th:href="@{/purchase/orderForm}" class="btn btn-success">+ 구매주문 등록</a>
+                </div>
+                <div class="table-container">
+                    <table class="product-table">
+                        <thead>
+                            <tr>
+                                <th>주문번호</th>
+                                <th>공급처번호</th>
+                                <th>주문일</th>
+                                <th>총금액</th>
+                                <th>담당자</th>
+                                <th>관리</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="order : ${list}">
+                                <td th:text="${order.purchase_order_num}"></td>
+                                <td th:text="${order.supplier_num}"></td>
+                                <td th:text="${#dates.format(order.order_date, 'yyyy-MM-dd')}"></td>
+                                <td th:text="${#numbers.formatDecimal(order.total_price, 0, 'COMMA', 2, 'POINT')} + '원'"></td>
+                                <td th:text="${order.emp_num}"></td>
+                                <td>
+                                    <a th:href="@{/purchase/orderDetail(purchase_order_num=${order.purchase_order_num})}" class="btn">상세</a>
+                                    <a th:href="@{/purchase/orderEdit(purchase_order_num=${order.purchase_order_num})}" class="btn">수정</a>
+                                    <a th:href="@{/purchase/orderDelete(purchase_order_num=${order.purchase_order_num})}" class="btn btn-danger" onclick="return confirm('정말 삭제하시겠습니까?');">삭제</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
     </div>
-    <div class="table-container">
-        <table class="product-table">
-            <thead>
-                <tr>
-                    <th>주문번호</th>
-                    <th>공급처번호</th>
-                    <th>주문일</th>
-                    <th>총금액</th>
-                    <th>담당자</th>
-                    <th>관리</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="order : ${list}">
-                    <td th:text="${order.purchase_order_num}"></td>
-                    <td th:text="${order.supplier_num}"></td>
-                    <td th:text="${#dates.format(order.order_date, 'yyyy-MM-dd')}"></td>
-                    <td th:text="${#numbers.formatDecimal(order.total_price, 0, 'COMMA', 2, 'POINT')} + '원'"></td>
-                    <td th:text="${order.emp_num}"></td>
-                    <td>
-                        <a th:href="@{/purchase/orderDetail(purchase_order_num=${order.purchase_order_num})}" class="btn">상세</a>
-                        <a th:href="@{/purchase/orderEdit(purchase_order_num=${order.purchase_order_num})}" class="btn">수정</a>
-                        <a th:href="@{/purchase/orderDelete(purchase_order_num=${order.purchase_order_num})}" class="btn btn-danger" onclick="return confirm('정말 삭제하시겠습니까?');">삭제</a>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+</div>
+<div layout:fragment="pageScript">
+<script>
+  console.log('js loaded');
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.menu-toggle').forEach(function(toggle) {
+      toggle.addEventListener('click', function(e) {
+        console.log('clicked');
+        e.preventDefault();
+        var parent = this.parentElement;
+        var submenu = parent.querySelector('.submenu');
+        // 모든 메뉴 닫기
+        document.querySelectorAll('.menu-item.has-sub').forEach(function(item) {
+          if (item !== parent) {
+            item.classList.remove('open');
+            var sub = item.querySelector('.submenu');
+            if (sub) sub.classList.remove('open');
+            var arrow = item.querySelector('.arrow');
+            if (arrow) arrow.innerHTML = '&#9654;';
+          }
+        });
+        // 현재 메뉴 토글
+        var isOpen = submenu.classList.contains('open');
+        submenu.classList.toggle('open', !isOpen);
+        parent.classList.toggle('open', !isOpen);
+        var arrow = this.querySelector('.arrow');
+        if (arrow) {
+          arrow.innerHTML = !isOpen ? '&#9660;' : '&#9654;';
+        }
+      });
+    });
+  });
+</script>
 </div>
 </body>
 </html> 

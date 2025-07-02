@@ -21,8 +21,8 @@
                             <span class="arrow">&#9654;</span>
                         </a>
                         <ul class="submenu">
-                            <li><a href="#">판매주문</a></li>
-                            <li><a href="#">구매 / 발주</a></li>
+                            <li><a th:href="@{/sales/orderList}">판매주문</a></li>
+                            <li><a th:href="@{/purchase/orderList}">구매 / 발주</a></li>
                             <li><a href="#" class="active">재고관리</a></li>
                             <li><a href="#">거래처관리</a></li>
                         </ul>
@@ -93,4 +93,36 @@
             </div>
         </div>
     </aside>
-</div> 
+</div>
+
+<script>
+  console.log('js loaded');
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.menu-toggle').forEach(function(toggle) {
+      toggle.addEventListener('click', function(e) {
+        console.log('clicked');
+        e.preventDefault();
+        var parent = this.parentElement;
+        var submenu = parent.querySelector('.submenu');
+        // 모든 메뉴 닫기
+        document.querySelectorAll('.menu-item.has-sub').forEach(function(item) {
+          if (item !== parent) {
+            item.classList.remove('open');
+            var sub = item.querySelector('.submenu');
+            if (sub) sub.classList.remove('open');
+            var arrow = item.querySelector('.arrow');
+            if (arrow) arrow.innerHTML = '&#9654;';
+          }
+        });
+        // 현재 메뉴 토글
+        var isOpen = submenu.classList.contains('open');
+        submenu.classList.toggle('open', !isOpen);
+        parent.classList.toggle('open', !isOpen);
+        var arrow = this.querySelector('.arrow');
+        if (arrow) {
+          arrow.innerHTML = !isOpen ? '&#9660;' : '&#9654;';
+        }
+      });
+    });
+  });
+</script> 

@@ -9,32 +9,102 @@
 </head>
 <body>
 <div layout:fragment="content" class="page-main">
-    <div class="page-header">
-        <h2 class="page-title">판매주문 등록/수정</h2>
+    <div class="dashboard-wrapper">
+        <th:block th:replace="fragments/nav_sidebar :: sidebar"></th:block>
+        <main class="main-content">
+            <div class="main-header">
+                <h2>ERP 관리</h2>
+            </div>
+            <section class="card-section">
+                <div class="card" style="border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); padding: 24px;">
+                    <div class="card-header" style="font-weight: bold; font-size: 1.1rem; margin-bottom: 18px;">판매 입력</div>
+                    <form class="form-card">
+                        <div class="table-container" style="margin-bottom: 24px;">
+                            <table class="product-table">
+                                <thead>
+                                    <tr>
+                                        <th><input type="checkbox"></th>
+                                        <th>상품번호</th>
+                                        <th>제품명</th>
+                                        <th>단가</th>
+                                        <th>단위</th>
+                                        <th>창고구분</th>
+                                        <th>주문 금액</th>
+                                        <th>담당 직원</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><input type="checkbox"></td>
+                                        <td><input type="text" name="product_num" style="width: 80px;"></td>
+                                        <td><input type="text" name="product_name" style="width: 120px;"></td>
+                                        <td><input type="number" name="unit_price" style="width: 80px;"></td>
+                                        <td><input type="text" name="unit" style="width: 60px;"></td>
+                                        <td><input type="text" name="warehouse" style="width: 80px;"></td>
+                                        <td><input type="number" name="order_price" style="width: 100px;"></td>
+                                        <td><input type="text" name="emp_name" style="width: 100px;"></td>
+                                    </tr>
+                                    <tr>
+                                        <td><input type="checkbox"></td>
+                                        <td><input type="text" name="product_num" style="width: 80px;"></td>
+                                        <td><input type="text" name="product_name" style="width: 120px;"></td>
+                                        <td><input type="number" name="unit_price" style="width: 80px;"></td>
+                                        <td><input type="text" name="unit" style="width: 60px;"></td>
+                                        <td><input type="text" name="warehouse" style="width: 80px;"></td>
+                                        <td><input type="number" name="order_price" style="width: 100px;"></td>
+                                        <td><input type="text" name="emp_name" style="width: 100px;"></td>
+                                    </tr>
+                                    <tr>
+                                        <td><input type="checkbox"></td>
+                                        <td><input type="text" name="product_num" style="width: 80px;"></td>
+                                        <td><input type="text" name="product_name" style="width: 120px;"></td>
+                                        <td><input type="number" name="unit_price" style="width: 80px;"></td>
+                                        <td><input type="text" name="unit" style="width: 60px;"></td>
+                                        <td><input type="text" name="warehouse" style="width: 80px;"></td>
+                                        <td><input type="number" name="order_price" style="width: 100px;"></td>
+                                        <td><input type="text" name="emp_name" style="width: 100px;"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="form-actions" style="display: flex; gap: 12px; justify-content: flex-end;">
+                            <button type="submit" class="btn btn-success">저장</button>
+                            <a th:href="@{/sales/orderList}" class="btn">목록</a>
+                        </div>
+                    </form>
+                </div>
+            </section>
+        </main>
     </div>
-    <form th:action="@{${salesOrderVO.sales_order_num} != null ? '/sales/orderUpdate' : '/sales/orderInsert'}" method="post">
-        <input type="hidden" th:if="${salesOrderVO.sales_order_num} != null" name="sales_order_num" th:value="${salesOrderVO.sales_order_num}" />
-        <div class="form-group">
-            <label>거래처번호</label>
-            <input type="number" name="customer_num" th:value="${salesOrderVO.customer_num}" required />
-        </div>
-        <div class="form-group">
-            <label>주문일</label>
-            <input type="date" name="order_date" th:value="${#dates.format(salesOrderVO.order_date, 'yyyy-MM-dd')}" required />
-        </div>
-        <div class="form-group">
-            <label>총금액</label>
-            <input type="number" step="0.01" name="total_price" th:value="${salesOrderVO.total_price}" required />
-        </div>
-        <div class="form-group">
-            <label>담당자(사원번호)</label>
-            <input type="number" name="emp_num" th:value="${salesOrderVO.emp_num}" required />
-        </div>
-        <div class="form-group">
-            <button type="submit" class="btn btn-success">저장</button>
-            <a th:href="@{/sales/orderList}" class="btn">목록</a>
-        </div>
-    </form>
+</div>
+<div layout:fragment="pageScript">
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.menu-toggle').forEach(function(toggle) {
+      toggle.addEventListener('click', function(e) {
+        e.preventDefault();
+        var parent = this.parentElement;
+        var submenu = parent.querySelector('.submenu');
+        document.querySelectorAll('.menu-item.has-sub').forEach(function(item) {
+          if (item !== parent) {
+            item.classList.remove('open');
+            var sub = item.querySelector('.submenu');
+            if (sub) sub.classList.remove('open');
+            var arrow = item.querySelector('.arrow');
+            if (arrow) arrow.innerHTML = '&#9654;';
+          }
+        });
+        var isOpen = submenu.classList.contains('open');
+        submenu.classList.toggle('open', !isOpen);
+        parent.classList.toggle('open', !isOpen);
+        var arrow = this.querySelector('.arrow');
+        if (arrow) {
+          arrow.innerHTML = !isOpen ? '&#9660;' : '&#9654;';
+        }
+      });
+    });
+  });
+</script>
 </div>
 </body>
 </html> 
