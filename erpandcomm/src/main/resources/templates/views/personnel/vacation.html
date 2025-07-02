@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout_basic}">
+<head>
+    <meta charset="UTF-8">
+    <title>Office ERP - 휴가관리</title>
+    <link rel="stylesheet" th:href="@{/assets/css/main.css}">
+</head>
+<body>
+<div layout:fragment="content" class="page-main">
+    <div class="dashboard-wrapper">
+        <!-- 사이드바 -->
+        <th:block th:replace="fragments/nav_sidebar :: sidebar"></th:block>
+
+        <!-- 메인 컨텐츠 -->
+        <main class="main-content">
+            <div class="page-title">
+                <h1 style="color: #1976D2; font-weight: bold; font-size: 1.5rem; margin-bottom: 24px; text-align: left;">인사관리 - 휴가관리</h1>
+            </div>
+            <!-- 조회 조건 카드 -->
+            <section class="card-section" style="margin-bottom: 24px;">
+                <div class="card" style="border-radius: 12px; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.06); padding: 24px;">
+                    <div class="card-header" style="font-weight: bold; font-size: 1.1rem; margin-bottom: 18px;">조회 조건</div>
+                    <form class="search-form" style="display: flex; flex-direction: column; gap: 10px; background: none;">
+                        <div class="search-row" style="display: flex; align-items: center; gap: 16px; background: none;">
+                            <label style="width: 80px; color: #222; font-weight: 600;">기간</label>
+                            <input type="date" name="startDate" style="width: 140px; background: #f1f3f6; border: none; border-radius: 6px; padding: 7px 12px;">
+                            <span style="margin: 0 4px; color: #888;">~</span>
+                            <input type="date" name="endDate" style="width: 140px; background: #f1f3f6; border: none; border-radius: 6px; padding: 7px 12px;">
+                            <button type="button" class="btn" style="background: #444; color: #fff; border: none; border-radius: 6px; margin-left: 8px; min-width: 56px;">검색</button>
+                        </div>
+                        <div class="search-row" style="display: flex; align-items: center; gap: 16px; background: none;">
+                            <label style="width: 80px; color: #222; font-weight: 600;">직원</label>
+                            <input type="text" name="employee" placeholder="직원명" style="width: 180px; background: #f1f3f6; border: none; border-radius: 6px; padding: 7px 12px;">
+                            <button type="button" class="btn" style="background: #444; color: #fff; border: none; border-radius: 6px; margin-left: 8px; min-width: 56px;">검색</button>
+                        </div>
+                        <div style="display: flex; justify-content: flex-end; margin-top: 6px; background: none;">
+                            <button type="submit" class="btn btn-primary" style="min-width: 90px; border: none;">전체 검색</button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+            <!-- 휴가 관리 카드 -->
+            <section class="card-section">
+                <div class="card" style="border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); padding: 24px;">
+                    <div class="card-header" style="font-weight: bold; font-size: 1.1rem; margin-bottom: 18px; display: flex; justify-content: space-between; align-items: center;">
+                        <span>휴가 관리</span>
+                        <div style="display: flex; gap: 8px;">
+                            <button class="btn btn-primary">휴가 신청</button>
+                            <button class="btn-secondary">휴가 취소</button>
+                        </div>
+                    </div>
+                    <div class="table-container">
+                        <table class="vacation-table">
+                            <thead>
+                                <tr>
+                                    <th><input type="checkbox"></th>
+                                    <th>신청일</th>
+                                    <th>휴가종류</th>
+                                    <th>시작일</th>
+                                    <th>종료일</th>
+                                    <th>휴가일수</th>
+                                    <th>상태</th>
+                                    <th>관리</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- 데이터가 동적으로 로드될 예정 -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+            <!-- 잔여 휴가 카드 -->
+            <section class="card-section">
+                <div class="card" style="border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); padding: 24px;">
+                    <div class="card-header" style="font-weight: bold; font-size: 1.1rem; margin-bottom: 18px;">잔여 휴가</div>
+                    <div class="remaining-info" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+                        <div class="info-item" style="background: #f8f9fa; padding: 16px; border-radius: 6px;">
+                            <span style="display: block; margin-bottom: 8px; font-weight: 600; color: #222;">연차휴가</span>
+                            <span class="remaining-days" style="font-size: 1.2rem; font-weight: bold; color: #444;">0일</span>
+                        </div>
+                        <div class="info-item" style="background: #f8f9fa; padding: 16px; border-radius: 6px;">
+                            <span style="display: block; margin-bottom: 8px; font-weight: 600; color: #222;">반차휴가</span>
+                            <span class="remaining-days" style="font-size: 1.2rem; font-weight: bold; color: #444;">0일</span>
+                        </div>
+                        <div class="info-item" style="background: #f8f9fa; padding: 16px; border-radius: 6px;">
+                            <span style="display: block; margin-bottom: 8px; font-weight: 600; color: #222;">공가</span>
+                            <span class="remaining-days" style="font-size: 1.2rem; font-weight: bold; color: #444;">0일</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            </div>
+        </main>
+    </div>
+</div>
+
+<div layout:fragment="pageScript">
+<script>
+    // 사이드바 메뉴 토글
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.menu-toggle').forEach(function(toggle) {
+            toggle.addEventListener('click', function(e) {
+                e.preventDefault();
+                var parent = this.parentElement;
+                var submenu = parent.querySelector('.submenu');
+                // 모든 메뉴 닫기
+                document.querySelectorAll('.menu-item.has-sub').forEach(function(item) {
+                    if (item !== parent) {
+                        item.classList.remove('open');
+                        var sub = item.querySelector('.submenu');
+                        if (sub) sub.classList.remove('open');
+                        var arrow = item.querySelector('.arrow');
+                        if (arrow) arrow.innerHTML = '&#9654;';
+                    }
+                });
+                // 현재 메뉴 토글
+                var isOpen = submenu.classList.contains('open');
+                submenu.classList.toggle('open', !isOpen);
+                parent.classList.toggle('open', !isOpen);
+                var arrow = this.querySelector('.arrow');
+                if (arrow) {
+                    arrow.innerHTML = !isOpen ? '&#9660;' : '&#9654;';
+                }
+            });
+        });
+    });
+</script>
+</div>
+</body>
+</html>

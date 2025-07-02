@@ -22,7 +22,7 @@ public class AppConfig implements WebMvcConfigurer, WebSocketConfigurer{
 	private String google_mail_url;
 	
 	@Value("${dataconfig.google-mail-password}")
-	private String goole_mail_password;
+	private String google_mail_password;
 	
 	/*
 	 * 1. 구글 이메일 접속
@@ -49,7 +49,7 @@ public class AppConfig implements WebMvcConfigurer, WebSocketConfigurer{
 		javaMail.setPort(587);
 		javaMail.setDefaultEncoding("utf-8");
 		javaMail.setUsername(google_mail_url);
-		javaMail.setPassword(goole_mail_password);
+		javaMail.setPassword(google_mail_password);
 		javaMail.setJavaMailProperties(prop);
 		return javaMail;
 	}

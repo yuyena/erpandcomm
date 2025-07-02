@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layouts/layout_basic}">
+<head>
+    <meta charset="UTF-8">
+    <title>재고 입출고 등록/수정</title>
+    <link rel="stylesheet" th:href="@{/assets/css/main.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/sh.css}">
+</head>
+<body>
+<div layout:fragment="content" class="page-main">
+    <div class="dashboard-wrapper">
+        <th:block th:replace="fragments/nav_sidebar :: sidebar"></th:block>
+        <main class="main-content">
+            <div class="main-header">
+                <h2>재고 입출고 등록/수정</h2>
+            </div>
+            <div class="sh-box">
+                <form class="sh-box-form" th:action="@{/stock/saveMovement}" method="post">
+                    <input type="hidden" name="movement_num" th:value="${stockMovementVO.movement_num}">
+                    <div class="sh-box-row">
+                        <label>상품번호</label>
+                        <input type="text" name="product_num" th:value="${stockMovementVO.product_num}" required>
+                    </div>
+                    <div class="sh-box-row">
+                        <label>담당직원</label>
+                        <input type="text" name="emp_num" th:value="${stockMovementVO.emp_num}" required>
+                    </div>
+                    <div class="sh-box-row">
+                        <label>이동유형</label>
+                        <select name="movement_type" required>
+                            <option value="0" th:selected="${stockMovementVO.movement_type == 0}">입고</option>
+                            <option value="1" th:selected="${stockMovementVO.movement_type == 1}">출고</option>
+                        </select>
+                    </div>
+                    <div class="sh-box-row">
+                        <label>수량</label>
+                        <input type="number" name="quantity" th:value="${stockMovementVO.quantity}" required>
+                    </div>
+                    <div class="sh-box-row">
+                        <label>이동날짜</label>
+                        <input type="date" name="movement_date" th:value="${#dates.format(stockMovementVO.movement_date, 'yyyy-MM-dd')}">
+                    </div>
+                    <div class="sh-box-row">
+                        <label>비고</label>
+                        <input type="text" name="note" th:value="${stockMovementVO.note}">
+                    </div>
+                    <div class="sh-box-actions">
+                        <button type="submit" class="btn btn-success">저장</button>
+                        <a th:href="@{/stock/current}" class="btn">목록</a>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+</div>
+</body>
+</html> 

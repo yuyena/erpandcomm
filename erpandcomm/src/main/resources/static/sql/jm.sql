@@ -41,14 +41,23 @@ CREATE TABLE chat_message (
 );
 
 CREATE TABLE chat_member (
-    member_id   NUMBER          PRIMARY KEY,
-    room_id     NUMBER          NOT NULL,
-    user_id     NUMBER          NOT NULL,
+    member_num  NUMBER          PRIMARY KEY,
+    room_num    NUMBER          NOT NULL,
+    user_num    NUMBER          NOT NULL,
     role        VARCHAR2(20)    NOT NULL,     -- 예: '방장', '멤버'
     joined_at   DATE            NOT NULL,
     is_active   CHAR(1)         DEFAULT 'Y' NOT NULL,  -- 'Y'/'N'
-    CONSTRAINT fk_chatmember_room FOREIGN KEY (room_id) REFERENCES chat_room(room_num),
-    CONSTRAINT fk_chatmember_user FOREIGN KEY (user_id) REFERENCES euser(user_num)
+    CONSTRAINT fk_chatmember_room FOREIGN KEY (room_num) REFERENCES chat_room(room_num),
+    CONSTRAINT fk_chatmember_user FOREIGN KEY (user_num) REFERENCES euser(user_num)
+);
+
+CREATE TABLE chat_message_read (
+    message_num   NUMBER      NOT NULL,  -- 읽은 메시지ID (FK)
+    user_num      NUMBER      NOT NULL,  -- 읽은 사용자ID (FK)
+    read_at       DATE        NOT NULL,  -- 읽은 시각
+    CONSTRAINT pk_message_read PRIMARY KEY (message_num, user_num),
+    CONSTRAINT fk_read_message FOREIGN KEY (message_num) REFERENCES chat_message(message_num),
+    CONSTRAINT fk_read_user FOREIGN KEY (user_num) REFERENCES euser(user_num)
 );
 
 CREATE TABLE calendar (

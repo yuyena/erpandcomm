@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.spring.stock.dao.StockMapper">
+    <!-- 현재 재고 목록 -->
+    <select id="selectCurrentStockList" resultType="kr.spring.stock.vo.CurrentStockVO">
+        SELECT * FROM current_stock ORDER BY product_num
+    </select>
+    <!-- 재고 이동 상세 -->
+    <select id="selectStockMovement" parameterType="long" resultType="kr.spring.stock.vo.StockMovementVO">
+        SELECT * FROM stock_movement WHERE movement_num = #{movement_num}
+    </select>
+    <!-- 재고 이동 등록 -->
+    <insert id="insertStockMovement" parameterType="kr.spring.stock.vo.StockMovementVO">
+        INSERT INTO stock_movement (movement_num, product_num, emp_num, movement_type, quantity, movement_date, note)
+        VALUES (#{movement_num}, #{product_num}, #{emp_num}, #{movement_type}, #{quantity}, #{movement_date}, #{note})
+    </insert>
+    <!-- 재고 이동 수정 -->
+    <update id="updateStockMovement" parameterType="kr.spring.stock.vo.StockMovementVO">
+        UPDATE stock_movement SET product_num=#{product_num}, emp_num=#{emp_num}, movement_type=#{movement_type}, quantity=#{quantity}, movement_date=#{movement_date}, note=#{note}
+        WHERE movement_num=#{movement_num}
+    </update>
+    <!-- 재고 이동 삭제 -->
+    <delete id="deleteStockMovement" parameterType="long">
+        DELETE FROM stock_movement WHERE movement_num=#{movement_num}
+    </delete>
+</mapper> 

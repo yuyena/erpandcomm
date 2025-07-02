@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.spring.client.dao.ClientMapper">
+    <select id="selectClientList" resultType="kr.spring.client.vo.ClientVO">
+        SELECT * FROM client ORDER BY client_num DESC
+    </select>
+    <select id="selectClient" parameterType="long" resultType="kr.spring.client.vo.ClientVO">
+        SELECT * FROM client WHERE client_num = #{client_num}
+    </select>
+    <insert id="insertClient" parameterType="kr.spring.client.vo.ClientVO">
+        INSERT INTO client (client_num, client_name, client_type, contact_person, phone, email, address1, address2)
+        VALUES (#{client_num}, #{client_name}, #{client_type}, #{contact_person}, #{phone}, #{email}, #{address1}, #{address2})
+    </insert>
+    <update id="updateClient" parameterType="kr.spring.client.vo.ClientVO">
+        UPDATE client SET client_name=#{client_name}, client_type=#{client_type}, contact_person=#{contact_person}, phone=#{phone}, email=#{email}, address1=#{address1}, address2=#{address2}
+        WHERE client_num=#{client_num}
+    </update>
+    <delete id="deleteClient" parameterType="long">
+        DELETE FROM client WHERE client_num=#{client_num}
+    </delete>
+</mapper> 

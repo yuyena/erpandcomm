@@ -9,39 +9,82 @@
 </head>
 <body>
 <div layout:fragment="content" class="page-main">
-    <div class="page-header">
-        <h2 class="page-title">판매주문 상세</h2>
-        <a th:href="@{/sales/orderList}" class="btn">목록</a>
+    <div class="dashboard-wrapper">
+        <th:block th:replace="fragments/nav_sidebar :: sidebar"></th:block>
+        <main class="main-content">
+            <div class="main-header">
+                <h2>ERP 관리</h2>
+            </div>
+            <section class="card-section">
+                <div class="section-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px;">
+                    <h3 style="margin: 0;">판매주문 상세</h3>
+                    <a th:href="@{/sales/orderList}" class="btn">목록</a>
+                </div>
+                <div class="order-info" style="margin-bottom: 24px;">
+                    <h4>주문 정보</h4>
+                    <ul>
+                        <li>주문번호: <span th:text="${order.sales_order_num}"></span></li>
+                        <li>거래처번호: <span th:text="${order.customer_num}"></span></li>
+                        <li>주문일: <span th:text="${#dates.format(order.order_date, 'yyyy-MM-dd')}"></span></li>
+                        <li>총금액: <span th:text="${#numbers.formatDecimal(order.total_price, 0, 'COMMA', 2, 'POINT')} + '원'"></span></li>
+                        <li>담당자: <span th:text="${order.emp_num}"></span></li>
+                    </ul>
+                </div>
+                <div class="table-container">
+                    <h4>주문 상세 내역</h4>
+                    <table class="product-table">
+                        <thead>
+                            <tr>
+                                <th>상품번호</th>
+                                <th>수량</th>
+                                <th>단가</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="detail : ${details}">
+                                <td th:text="${detail.product_num}"></td>
+                                <td th:text="${detail.quantity}"></td>
+                                <td th:text="${#numbers.formatDecimal(detail.unit_price, 0, 'COMMA', 2, 'POINT')} + '원'"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
     </div>
-    <div class="order-info">
-        <h3>주문 정보</h3>
-        <ul>
-            <li>주문번호: <span th:text="${order.sales_order_num}"></span></li>
-            <li>거래처번호: <span th:text="${order.customer_num}"></span></li>
-            <li>주문일: <span th:text="${#dates.format(order.order_date, 'yyyy-MM-dd')}"></span></li>
-            <li>총금액: <span th:text="${#numbers.formatDecimal(order.total_price, 0, 'COMMA', 2, 'POINT')} + '원'"></span></li>
-            <li>담당자: <span th:text="${order.emp_num}"></span></li>
-        </ul>
-    </div>
-    <div class="table-container">
-        <h3>주문 상세 내역</h3>
-        <table class="product-table">
-            <thead>
-                <tr>
-                    <th>상품번호</th>
-                    <th>수량</th>
-                    <th>단가</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="detail : ${details}">
-                    <td th:text="${detail.product_num}"></td>
-                    <td th:text="${detail.quantity}"></td>
-                    <td th:text="${#numbers.formatDecimal(detail.unit_price, 0, 'COMMA', 2, 'POINT')} + '원'"></td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+</div>
+<div layout:fragment="pageScript">
+<script>
+  console.log('js loaded');
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.menu-toggle').forEach(function(toggle) {
+      toggle.addEventListener('click', function(e) {
+        console.log('clicked');
+        e.preventDefault();
+        var parent = this.parentElement;
+        var submenu = parent.querySelector('.submenu');
+        // 모든 메뉴 닫기
+        document.querySelectorAll('.menu-item.has-sub').forEach(function(item) {
+          if (item !== parent) {
+            item.classList.remove('open');
+            var sub = item.querySelector('.submenu');
+            if (sub) sub.classList.remove('open');
+            var arrow = item.querySelector('.arrow');
+            if (arrow) arrow.innerHTML = '&#9654;';
+          }
+        });
+        // 현재 메뉴 토글
+        var isOpen = submenu.classList.contains('open');
+        submenu.classList.toggle('open', !isOpen);
+        parent.classList.toggle('open', !isOpen);
+        var arrow = this.querySelector('.arrow');
+        if (arrow) {
+          arrow.innerHTML = !isOpen ? '&#9660;' : '&#9654;';
+        }
+      });
+    });
+  });
+</script>
 </div>
 </body>
 </html> 

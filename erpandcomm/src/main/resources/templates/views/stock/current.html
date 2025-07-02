@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layouts/layout_basic}">
+<head>
+    <meta charset="UTF-8">
+    <title>재고 현황</title>
+    <link rel="stylesheet" th:href="@{/assets/css/main.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/sh.css}">
+</head>
+<body>
+<div layout:fragment="content" class="page-main">
+    <div class="dashboard-wrapper">
+        <th:block th:replace="fragments/nav_sidebar :: sidebar"></th:block>
+        <main class="main-content">
+            <div class="main-header">
+                <h2>재고 현황</h2>
+            </div>
+            <div class="sh-box">
+                <div style="display:flex; justify-content: flex-end; margin-bottom: 12px;">
+                    <a th:href="@{/stock/movementForm}" class="btn btn-success">+ 입출고 등록</a>
+                </div>
+                <table class="product-table">
+                    <thead>
+                        <tr>
+                            <th>상품번호</th>
+                            <th>현재재고</th>
+                            <th>최소재고</th>
+                            <th>최대재고</th>
+                            <th>마지막 입고</th>
+                            <th>마지막 출고</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="stock : ${list}">
+                            <td th:text="${stock.product_num}"></td>
+                            <td th:text="${stock.current_quantity}"></td>
+                            <td th:text="${stock.min_stock}"></td>
+                            <td th:text="${stock.max_stock}"></td>
+                            <td th:text="${#dates.format(stock.last_in_date, 'yyyy-MM-dd')}"></td>
+                            <td th:text="${#dates.format(stock.last_out_date, 'yyyy-MM-dd')}"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+</div>
+</body>
+</html> 

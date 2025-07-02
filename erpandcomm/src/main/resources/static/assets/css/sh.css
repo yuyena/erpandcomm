@@ -1,0 +1,46 @@
+/* SH 전용 스타일 - modern box, 테두리 제거 */
+
+.card-section, section, .sh-box, .card, form, fieldset, legend {
+  border: none !important;
+  box-shadow: none;
+}
+
+.sh-box {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.sh-box-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sh-box-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sh-box-row label {
+  width: 70px;
+  font-weight: 500;
+  color: #222;
+}
+
+.sh-box-row input[type="text"],
+.sh-box-row input[type="date"] {
+  width: 160px;
+  background: #f1f3f6;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 10px;
+}
+
+.sh-box-form .sh-box-actions {
+  display: flex;
+  justify-content: flex-end;
+}
