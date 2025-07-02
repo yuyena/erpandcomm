@@ -6,6 +6,7 @@
     <meta charset="UTF-8">
     <title>판매주문 등록/수정</title>
     <link rel="stylesheet" th:href="@{/assets/css/main.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/sh.css}">
 </head>
 <body>
 <div layout:fragment="content" class="page-main">
@@ -16,58 +17,37 @@
                 <h2>ERP 관리</h2>
             </div>
             <section class="card-section">
-                <div class="card" style="border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); padding: 24px;">
-                    <div class="card-header" style="font-weight: bold; font-size: 1.1rem; margin-bottom: 18px;">판매 입력</div>
-                    <form class="form-card">
-                        <div class="table-container" style="margin-bottom: 24px;">
-                            <table class="product-table">
-                                <thead>
-                                    <tr>
-                                        <th><input type="checkbox"></th>
-                                        <th>상품번호</th>
-                                        <th>제품명</th>
-                                        <th>단가</th>
-                                        <th>단위</th>
-                                        <th>창고구분</th>
-                                        <th>주문 금액</th>
-                                        <th>담당 직원</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td><input type="checkbox"></td>
-                                        <td><input type="text" name="product_num" style="width: 80px;"></td>
-                                        <td><input type="text" name="product_name" style="width: 120px;"></td>
-                                        <td><input type="number" name="unit_price" style="width: 80px;"></td>
-                                        <td><input type="text" name="unit" style="width: 60px;"></td>
-                                        <td><input type="text" name="warehouse" style="width: 80px;"></td>
-                                        <td><input type="number" name="order_price" style="width: 100px;"></td>
-                                        <td><input type="text" name="emp_name" style="width: 100px;"></td>
-                                    </tr>
-                                    <tr>
-                                        <td><input type="checkbox"></td>
-                                        <td><input type="text" name="product_num" style="width: 80px;"></td>
-                                        <td><input type="text" name="product_name" style="width: 120px;"></td>
-                                        <td><input type="number" name="unit_price" style="width: 80px;"></td>
-                                        <td><input type="text" name="unit" style="width: 60px;"></td>
-                                        <td><input type="text" name="warehouse" style="width: 80px;"></td>
-                                        <td><input type="number" name="order_price" style="width: 100px;"></td>
-                                        <td><input type="text" name="emp_name" style="width: 100px;"></td>
-                                    </tr>
-                                    <tr>
-                                        <td><input type="checkbox"></td>
-                                        <td><input type="text" name="product_num" style="width: 80px;"></td>
-                                        <td><input type="text" name="product_name" style="width: 120px;"></td>
-                                        <td><input type="number" name="unit_price" style="width: 80px;"></td>
-                                        <td><input type="text" name="unit" style="width: 60px;"></td>
-                                        <td><input type="text" name="warehouse" style="width: 80px;"></td>
-                                        <td><input type="number" name="order_price" style="width: 100px;"></td>
-                                        <td><input type="text" name="emp_name" style="width: 100px;"></td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                <div class="sh-box">
+                    <form class="sh-box-form">
+                        <div class="sh-box-row">
+                            <label>상품번호</label>
+                            <input type="text" name="product_num">
                         </div>
-                        <div class="form-actions" style="display: flex; gap: 12px; justify-content: flex-end;">
+                        <div class="sh-box-row">
+                            <label>제품명</label>
+                            <input type="text" name="product_name">
+                        </div>
+                        <div class="sh-box-row">
+                            <label>단가</label>
+                            <input type="number" name="unit_price">
+                        </div>
+                        <div class="sh-box-row">
+                            <label>단위</label>
+                            <input type="text" name="unit">
+                        </div>
+                        <div class="sh-box-row">
+                            <label>창고구분</label>
+                            <input type="text" name="warehouse">
+                        </div>
+                        <div class="sh-box-row">
+                            <label>주문 금액</label>
+                            <input type="number" name="order_price">
+                        </div>
+                        <div class="sh-box-row">
+                            <label>담당 직원</label>
+                            <input type="text" name="emp_name">
+                        </div>
+                        <div class="sh-box-actions">
                             <button type="submit" class="btn btn-success">저장</button>
                             <a th:href="@{/sales/orderList}" class="btn">목록</a>
                         </div>

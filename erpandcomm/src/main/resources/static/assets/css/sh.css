@@ -1,12 +1,12 @@
 /* SH 전용 스타일 - modern box, 테두리 제거 */
 
-.card-section, section {
+.card-section, section, .sh-box, .card, form, fieldset, legend {
   border: none !important;
+  box-shadow: none;
 }
 
 .sh-box {
   background: #fff;
-  border: none;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.06);
   padding: 24px;
