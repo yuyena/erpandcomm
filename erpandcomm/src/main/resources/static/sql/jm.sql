@@ -35,7 +35,7 @@ CREATE TABLE chat_message (
     room_num      NUMBER          NOT NULL,
     sender_num    NUMBER          NOT NULL,
     content       VARCHAR2(1000),
-    created_at    DATE            NOT NULL,
+    sent_at    DATE            NOT NULL,
     CONSTRAINT fk_message_room FOREIGN KEY (room_num) REFERENCES chat_room(room_num),
     CONSTRAINT fk_message_sender FOREIGN KEY (sender_num) REFERENCES euser(user_num)
 );
