@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.spring.purchase.dao.PurchaseOrderMapper">
+
+    <!-- purchase_order CRUD -->
+    <insert id="insertPurchaseOrder" parameterType="kr.spring.purchase.vo.PurchaseOrderVO">
+        INSERT INTO purchase_order (purchase_order_num, supplier_num, order_date, total_price, emp_num)
+        VALUES (#{purchase_order_num}, #{supplier_num}, #{order_date}, #{total_price}, #{emp_num})
+    </insert>
+
+    <select id="selectPurchaseOrder" parameterType="long" resultType="kr.spring.purchase.vo.PurchaseOrderVO">
+        SELECT * FROM purchase_order WHERE purchase_order_num = #{purchase_order_num}
+    </select>
+
+    <select id="selectPurchaseOrderList" resultType="kr.spring.purchase.vo.PurchaseOrderVO">
+        SELECT * FROM purchase_order ORDER BY purchase_order_num DESC
+    </select>
+
+    <update id="updatePurchaseOrder" parameterType="kr.spring.purchase.vo.PurchaseOrderVO">
+        UPDATE purchase_order
+        SET supplier_num = #{supplier_num},
+            order_date = #{order_date},
+            total_price = #{total_price},
+            emp_num = #{emp_num}
+        WHERE purchase_order_num = #{purchase_order_num}
+    </update>
+
+    <delete id="deletePurchaseOrder" parameterType="long">
+        DELETE FROM purchase_order WHERE purchase_order_num = #{purchase_order_num}
+    </delete>
+
+    <!-- purchase_order_detail CRUD -->
+    <insert id="insertPurchaseOrderDetail" parameterType="kr.spring.purchase.vo.PurchaseOrderDetailVO">
+        INSERT INTO purchase_order_detail (purchase_order_num, product_num, quantity, unit_price)
+        VALUES (#{purchase_order_num}, #{product_num}, #{quantity}, #{unit_price})
+    </insert>
+
+    <select id="selectPurchaseOrderDetailList" parameterType="long" resultType="kr.spring.purchase.vo.PurchaseOrderDetailVO">
+        SELECT * FROM purchase_order_detail WHERE purchase_order_num = #{purchase_order_num}
+    </select>
+
+    <update id="updatePurchaseOrderDetail" parameterType="kr.spring.purchase.vo.PurchaseOrderDetailVO">
+        UPDATE purchase_order_detail
+        SET quantity = #{quantity},
+            unit_price = #{unit_price}
+        WHERE purchase_order_num = #{purchase_order_num} AND product_num = #{product_num}
+    </update>
+
+    <delete id="deletePurchaseOrderDetail" parameterType="long">
+        DELETE FROM purchase_order_detail WHERE purchase_order_num = #{purchase_order_num}
+    </delete>
+
+</mapper> 

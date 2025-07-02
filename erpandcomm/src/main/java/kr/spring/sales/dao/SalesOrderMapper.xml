@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.spring.sales.dao.SalesOrderMapper">
+
+    <!-- sales_order CRUD -->
+    <insert id="insertSalesOrder" parameterType="kr.spring.sales.vo.SalesOrderVO">
+        INSERT INTO sales_order (sales_order_num, customer_num, order_date, total_price, emp_num)
+        VALUES (#{sales_order_num}, #{customer_num}, #{order_date}, #{total_price}, #{emp_num})
+    </insert>
+
+    <select id="selectSalesOrder" parameterType="long" resultType="kr.spring.sales.vo.SalesOrderVO">
+        SELECT * FROM sales_order WHERE sales_order_num = #{sales_order_num}
+    </select>
+
+    <select id="selectSalesOrderList" resultType="kr.spring.sales.vo.SalesOrderVO">
+        SELECT * FROM sales_order ORDER BY sales_order_num DESC
+    </select>
+
+    <update id="updateSalesOrder" parameterType="kr.spring.sales.vo.SalesOrderVO">
+        UPDATE sales_order
+        SET customer_num = #{customer_num},
+            order_date = #{order_date},
+            total_price = #{total_price},
+            emp_num = #{emp_num}
+        WHERE sales_order_num = #{sales_order_num}
+    </update>
+
+    <delete id="deleteSalesOrder" parameterType="long">
+        DELETE FROM sales_order WHERE sales_order_num = #{sales_order_num}
+    </delete>
+
+    <!-- sales_order_detail CRUD -->
+    <insert id="insertSalesOrderDetail" parameterType="kr.spring.sales.vo.SalesOrderDetailVO">
+        INSERT INTO sales_order_detail (sales_order_num, product_num, quantity, unit_price)
+        VALUES (#{sales_order_num}, #{product_num}, #{quantity}, #{unit_price})
+    </insert>
+
+    <select id="selectSalesOrderDetailList" parameterType="long" resultType="kr.spring.sales.vo.SalesOrderDetailVO">
+        SELECT * FROM sales_order_detail WHERE sales_order_num = #{sales_order_num}
+    </select>
+
+    <update id="updateSalesOrderDetail" parameterType="kr.spring.sales.vo.SalesOrderDetailVO">
+        UPDATE sales_order_detail
+        SET quantity = #{quantity},
+            unit_price = #{unit_price}
+        WHERE sales_order_num = #{sales_order_num} AND product_num = #{product_num}
+    </update>
+
+    <delete id="deleteSalesOrderDetail" parameterType="long">
+        DELETE FROM sales_order_detail WHERE sales_order_num = #{sales_order_num}
+    </delete>
+
+</mapper> 

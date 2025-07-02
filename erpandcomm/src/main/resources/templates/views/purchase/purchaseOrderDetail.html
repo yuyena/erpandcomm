@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout_basic}">
+<head>
+    <meta charset="UTF-8">
+    <title>구매주문 상세</title>
+    <link rel="stylesheet" th:href="@{/assets/css/main.css}">
+</head>
+<body>
+<div layout:fragment="content" class="page-main">
+    <div class="page-header">
+        <h2 class="page-title">구매주문 상세</h2>
+        <a th:href="@{/purchase/orderList}" class="btn">목록</a>
+    </div>
+    <div class="order-info">
+        <h3>주문 정보</h3>
+        <ul>
+            <li>주문번호: <span th:text="${order.purchase_order_num}"></span></li>
+            <li>공급처번호: <span th:text="${order.supplier_num}"></span></li>
+            <li>주문일: <span th:text="${#dates.format(order.order_date, 'yyyy-MM-dd')}"></span></li>
+            <li>총금액: <span th:text="${#numbers.formatDecimal(order.total_price, 0, 'COMMA', 2, 'POINT')} + '원'"></span></li>
+            <li>담당자: <span th:text="${order.emp_num}"></span></li>
+        </ul>
+    </div>
+    <div class="table-container">
+        <h3>주문 상세 내역</h3>
+        <table class="product-table">
+            <thead>
+                <tr>
+                    <th>상품번호</th>
+                    <th>수량</th>
+                    <th>단가</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="detail : ${details}">
+                    <td th:text="${detail.product_num}"></td>
+                    <td th:text="${detail.quantity}"></td>
+                    <td th:text="${#numbers.formatDecimal(detail.unit_price, 0, 'COMMA', 2, 'POINT')} + '원'"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html> 

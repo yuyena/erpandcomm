@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout_basic}">
+<head>
+    <meta charset="UTF-8">
+    <title>구매주문 등록/수정</title>
+    <link rel="stylesheet" th:href="@{/assets/css/main.css}">
+</head>
+<body>
+<div layout:fragment="content" class="page-main">
+    <div class="page-header">
+        <h2 class="page-title">구매주문 등록/수정</h2>
+    </div>
+    <form th:action="@{${purchaseOrderVO.purchase_order_num} != null ? '/purchase/orderUpdate' : '/purchase/orderInsert'}" method="post">
+        <input type="hidden" th:if="${purchaseOrderVO.purchase_order_num} != null" name="purchase_order_num" th:value="${purchaseOrderVO.purchase_order_num}" />
+        <div class="form-group">
+            <label>공급처번호</label>
+            <input type="number" name="supplier_num" th:value="${purchaseOrderVO.supplier_num}" required />
+        </div>
+        <div class="form-group">
+            <label>주문일</label>
+            <input type="date" name="order_date" th:value="${#dates.format(purchaseOrderVO.order_date, 'yyyy-MM-dd')}" required />
+        </div>
+        <div class="form-group">
+            <label>총금액</label>
+            <input type="number" step="0.01" name="total_price" th:value="${purchaseOrderVO.total_price}" required />
+        </div>
+        <div class="form-group">
+            <label>담당자(사원번호)</label>
+            <input type="number" name="emp_num" th:value="${purchaseOrderVO.emp_num}" required />
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-success">저장</button>
+            <a th:href="@{/purchase/orderList}" class="btn">목록</a>
+        </div>
+    </form>
+</div>
+</body>
+</html> 
