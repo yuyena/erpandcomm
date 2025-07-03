@@ -9,6 +9,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import kr.spring.member.dao.MemberMapper;
 import kr.spring.member.vo.MemberVO;
+import kr.spring.product.vo.ProductVO;
+import kr.spring.product.dao.ProductMapper;
 
 @Service
 @Transactional
@@ -16,6 +18,9 @@ public class ProductServiceImpl implements ProductService {
 
 	@Autowired
 	private MemberMapper memberMapper;
+	
+	@Autowired
+	private ProductMapper productMapper;
 	
 	@Override
 	public void insertMember(MemberVO member) {
@@ -77,6 +82,11 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	public void updateByAdmin(MemberVO memberVO) {
 		memberMapper.updateByAdmin(memberVO);
+	}
+
+	@Override
+	public List<ProductVO> selectProductList() {
+		return productMapper.selectProductList();
 	}
 
 }

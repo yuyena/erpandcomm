@@ -4,8 +4,10 @@
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
 <mapper namespace="kr.spring.product.dao.ProductMapper">
 	<!-- 회원 가입 -->
-
-	
+	<select id="selectProductList" resultType="kr.spring.product.vo.ProductVO">
+		SELECT product_num, category_num, NULL as category_name, status, unit_price, unit
+		FROM product
+	</select>
 </mapper>
 
 

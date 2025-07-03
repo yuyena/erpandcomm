@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import kr.spring.member.vo.MemberVO;
+import kr.spring.product.vo.ProductVO;
 
 public interface ProductService {
 	
@@ -25,5 +26,8 @@ public interface ProductService {
 	public Integer selectRowCount(Map<String, Object> map);
 	public List<MemberVO> selectList(Map<String, Object> map);
 	public void updateByAdmin(MemberVO memberVO);
+
+	// 상품 전체 목록 조회
+	List<ProductVO> selectProductList();
 
 }

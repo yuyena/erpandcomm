@@ -10,6 +10,7 @@ import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 import kr.spring.member.vo.MemberVO;
+import kr.spring.product.vo.ProductVO;
 
 @Mapper
 public interface ProductMapper {
@@ -48,6 +49,9 @@ public interface ProductMapper {
 	public List<MemberVO> selectList(Map<String, Object> map);
 	@Update("UPDATE spmember SET authority=#{authority} WHERE mem_num=#{mem_num}")
 	public void updateByAdmin(MemberVO memberVO);
+
+	// 상품 전체 목록 조회
+	List<ProductVO> selectProductList();
 
 }
 

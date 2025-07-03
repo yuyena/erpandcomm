@@ -2,7 +2,9 @@ package kr.spring.client.dao;
 
 import kr.spring.client.vo.ClientVO;
 import java.util.List;
+import org.apache.ibatis.annotations.Mapper;
 
+@Mapper
 public interface ClientMapper {
     List<ClientVO> selectClientList();
     ClientVO selectClient(Long client_num);
