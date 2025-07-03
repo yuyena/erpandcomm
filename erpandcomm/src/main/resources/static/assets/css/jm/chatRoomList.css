@@ -1,0 +1,124 @@
+/* chatRoomList.css: 채팅방 목록 화면 스타일 (프로젝트 컬러/스타일 통일) */
+
+.dashboard-wrapper {
+    display: flex;
+    gap: 32px;
+    min-height: 600px;
+    background: #eaf1ff;
+}
+
+/* 사이드바 영역은 기존 스타일 사용 */
+
+.chat-room-list-container {
+    flex: 1;
+    max-width: 1100px;
+    margin: 40px auto 40px 0;
+    padding: 32px 28px 36px 28px;
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-room-list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+}
+
+.chat-room-list-header h2 {
+    font-size: 2rem;
+    color: #388bfa;
+    font-weight: 700;
+    margin: 0;
+}
+
+.create-btn {
+    display: inline-block;
+    padding: 8px 22px;
+    background: #388bfa;
+    color: #fff;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1.08rem;
+    box-shadow: 0 1px 4px rgba(56,139,250,0.08);
+    transition: background 0.18s;
+}
+.create-btn:hover {
+    background: #2176e8;
+}
+
+.chat-room-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 10px;
+    font-size: 1rem;
+    background: #fff;
+}
+
+.chat-room-table th, .chat-room-table td {
+    border: 1px solid #f0f0f0;
+    padding: 12px 8px;
+    text-align: center;
+}
+
+.chat-room-table th {
+    background: #eaf1ff;
+    color: #388bfa;
+    font-weight: 700;
+    font-size: 1.05rem;
+}
+
+.chat-room-table tbody tr:hover {
+    background: #f5faff;
+}
+
+.enter-btn {
+    display: inline-block;
+    padding: 6px 18px;
+    background: #1976d2;
+    color: #fff;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 1rem;
+    transition: background 0.18s;
+    box-shadow: 0 1px 4px rgba(25,118,210,0.08);
+}
+.enter-btn:hover {
+    background: #125ea2;
+}
+
+.no-chat-room {
+    text-align: center;
+    color: #888;
+    font-size: 1.1rem;
+    background: #fafafa;
+}
+
+@media (max-width: 1100px) {
+    .dashboard-wrapper {
+        flex-direction: column;
+        gap: 0;
+    }
+    .chat-room-list-container {
+        margin: 24px 0 0 0;
+        max-width: 100%;
+        padding: 18px 2vw 18px 2vw;
+    }
+    .chat-room-list-header h2 {
+        font-size: 1.3rem;
+    }
+    .create-btn {
+        font-size: 0.98rem;
+        padding: 7px 12px;
+    }
+    .chat-room-table th, .chat-room-table td {
+        padding: 7px 2px;
+        font-size: 0.95rem;
+    }
+}
+

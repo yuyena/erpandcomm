@@ -14,5 +14,9 @@ public interface ChatMemberMapper {
 	public void insertMember(ChatMemberVO chatMember);
 	public void updateMember(ChatMemberVO chatMember);
 	public void deleteMember(ChatMemberVO chatMember);
+	
+	// 퇴사 시 삭제
+	public void deleteMemberByUserNum(Long user_num);
+	public void deleteMemberByRoomNum(Long room_num);
 
 }
