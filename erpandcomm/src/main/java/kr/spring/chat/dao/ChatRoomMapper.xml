@@ -4,6 +4,23 @@
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
 <mapper namespace="kr.spring.chat.dao.ChatRoomMapper">
 	
+		<!-- 채팅 방 생성 -->
+	<insert id="insertChatRoom" parameterType="chatRoomVO">
+		INSERT INTO chat_room (
+			room_num,
+			room_name,
+			room_type,
+			description,
+			created_by,
+			max_members)
+		VALUES (
+			chat_room_seq.nextval,
+			#{room_name},
+			#{room_type},
+			#{description},
+			#{created_by},
+			#{max_members})
+	</insert>
 </mapper>
 
 
