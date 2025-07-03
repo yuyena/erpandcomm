@@ -8,24 +8,10 @@ import kr.spring.product.vo.ProductVO;
 
 public interface ProductService {
 	
-	// 회원관리 - 일반회원
-	public void insertMember(MemberVO member);
-	public MemberVO selectCheckMember(String employee_code);
-	public MemberVO selectMember(Long mem_num);
-	public void updateMember(MemberVO member);
-	public void updatePassword(MemberVO member);
-	public void deleteMember(Long mem_num);
-	
-	// 비밀번호 찾기
-	public void updateRandomPassword(MemberVO member);
-	
-	// 프로필 이미지 업데이트
-	public void updateProfile(MemberVO member);
-	
-	// 회원관리 - 관리자
+	public List<ProductVO> selectList(Map<String, Object> map);
 	public Integer selectRowCount(Map<String, Object> map);
-	public List<MemberVO> selectList(Map<String, Object> map);
-	public void updateByAdmin(MemberVO memberVO);
+	public ProductVO selectProduct(Long product_num);
+	public List<Map<String, Object>> selectCategoryList();
 
 	// 상품 전체 목록 조회
 	List<ProductVO> selectProductList();

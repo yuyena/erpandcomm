@@ -1,5 +1,10 @@
 package kr.spring.product.controller;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -11,6 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -18,252 +24,112 @@ import kr.spring.member.security.CustomAccessDeniedHandler;
 import kr.spring.member.service.MemberService;
 import kr.spring.member.vo.MemberVO;
 import kr.spring.member.vo.PrincipalDetails;
+import kr.spring.product.service.ProductService;
+import kr.spring.product.vo.ProductVO;
 import kr.spring.util.FileUtil;
+import kr.spring.util.PagingUtil;
 import kr.spring.util.ValidationUtil;
 import lombok.extern.slf4j.Slf4j;
 
 @Controller
 @Slf4j
-@RequestMapping("/member")
+@RequestMapping("/product")
 public class ProductController {
-
-	
-    private final CustomAccessDeniedHandler customAccessDeniedHandler;
 	
 	@Autowired
-	private MemberService memberService;
-	
-	@Autowired
-	private PasswordEncoder passwordEncoder;
-
-    ProductController(CustomAccessDeniedHandler customAccessDeniedHandler) {
-        this.customAccessDeniedHandler = customAccessDeniedHandler;
-    }
+	private ProductService productService;
 	
 	// 자바빈(VO) 초기화
 	@ModelAttribute
-	public MemberVO initCommand() {
-		return new MemberVO();
+	public ProductVO initCommand() {
+		return new ProductVO();
 	}
 	
-//	// 회원가입 폼 호출
-//	@GetMapping("/registerUser")
-//	public String form() {
-//		return "views/member/memberRegister";
-//	}
-//	
-//	// 회원가입 처리
-//	@PostMapping("/registerUser")
-//	public String submit(@Valid MemberVO memberVO, BindingResult result, Model model, HttpServletRequest request) {
-//		
-//		log.debug("<<회원가입>> : " + memberVO);
-//		
-//		// 유효성 체크 결과 오류가 있으면 폼 호출
-//		if (result.hasErrors()) {
-//			// 유효성 체크 결과 오류 필드 출력
-//			ValidationUtil.printErrorFields(result);
-//			return form();
-//		} // if
-//		
-//		// Spring Security 암호화
-//		memberVO.setPasswd(passwordEncoder.encode(memberVO.getPasswd()));
-//		
-//		// 회원가입
-//		memberService.insertMember(memberVO);
-//		
-//		// 결과 메시지 처리
-//		model.addAttribute("accessTitle", "회원가입");
-//		model.addAttribute("accessMsg", "회원가입이 완료되었습니다.");
-//		model.addAttribute("accessBtn", "홈으로");
-//		model.addAttribute("accessUrl", request.getContextPath()+"/main/main");
-//		
-//		return "views/common/resultView";
-//	}
-//	
-	// 로그인 폼 호출
-	@GetMapping("/login")
-	public String formLogin() {
-		return "views/member/memberLogin";
+	@GetMapping("/productViews")
+	public String getProductList(Model model) {
+	    log.debug("=== 제품 목록 조회 시작 ===");
+	    
+	    try {
+	        // 카테고리 목록 조회만 테스트
+	        List<Map<String, Object>> categoryList = productService.selectCategoryList();
+	        log.debug("카테고리 목록 크기: {}", categoryList != null ? categoryList.size() : "null");
+	        
+	        model.addAttribute("count", 0);
+	        model.addAttribute("list", new ArrayList<>());
+	        model.addAttribute("categoryList", categoryList);
+	        model.addAttribute("page", "");
+	        model.addAttribute("order", 1);
+	        model.addAttribute("keyfield", "");
+	        model.addAttribute("keyword", "");
+	        model.addAttribute("category_num", "");
+	        model.addAttribute("min_price", "");
+	        model.addAttribute("max_price", "");
+	        
+	        log.debug("=== 제품 목록 조회 완료 ===");
+	        return "views/product/productView";
+	        
+	    } catch (Exception e) {
+	        log.error("에러 발생: ", e);
+	        throw e;
+	    }
 	}
-//	
-//	/*
-//	 * @PreAuthorize
-//	 * 메서드 호출 이전에 접근 권한을 검사.
-//	 * 메서드 실행 전에 주어진 SpEL(Spring Expression Language) 조건을 평가하여 접근을  허용할지 결정
-//	 */
-//	// MY페이지 호출
-//	@PreAuthorize("isAuthenticated()") // 로그인 되어있을 때만 접근
-//	@GetMapping("/myPage")
-//	public String getMyPage(@AuthenticationPrincipal PrincipalDetails principal, // 로그인 되어있을 때만 정보를 불러옴
-//													 Model model) {
-//		
-//		// 회원 정보
-//		MemberVO member = memberService.selectMember(principal.getMemberVO().getMem_num());
-//		
-//		model.addAttribute("member", member);
-//		
-//		return "views/member/memberView";
-//	}
-//	
-//	// 회원정보수정 폼 호출
-//	@PreAuthorize("isAuthenticated")
-//	@GetMapping("/updateUser")
-//	public String formUpdate(@AuthenticationPrincipal PrincipalDetails principal, Model model) {
-//		
-//		// 회원정보
-//		MemberVO memberVO = memberService.selectMember(principal.getMemberVO().getMem_num());
-//		model.addAttribute("memberVO", memberVO);
-//		
-//		return "views/member/memberModify";
-//	}
-//	
-//	// 회원정보수정 처리
-//	@PreAuthorize("isAuthenticated()")
-//	@PostMapping("/updateUser")
-//	public String submitUpdate(@Valid MemberVO memberVO, BindingResult result, @AuthenticationPrincipal PrincipalDetails principal) {
-//		
-//		log.debug("<<회원정보수정>> : {}",memberVO);
-//		
-//		// 유효성 체크 결과 오류가 있으면 폼 호출
-//		if (result.hasErrors()) {
-//			ValidationUtil.printErrorFields(result);
-//			return "views/member/memberModify";
-//		} // if
-//		
-//		memberVO.setMem_num(principal.getMemberVO().getMem_num());
-//		// 회원 정보 수정
-//		memberService.updateMember(memberVO);
-//		
-//		//PrincipalDetails에 저장된 자바빈의 nick_name, email 정보 갱신
-//		principal.getMemberVO().setNick_name(memberVO.getNick_name());
-//		principal.getMemberVO().setEmail(memberVO.getEmail());
-//		
-//		return "redirect:/member/myPage";
-//	}
-//	
-//	// 프로필 사진 출력(로그인 전용)
-//	@PreAuthorize("isAuthenticated")
-//	@GetMapping("/photoView")
-//	public String getProfile(@AuthenticationPrincipal PrincipalDetails principal, HttpServletRequest request, Model model) {
-//		
-//		try {
-//			MemberVO user = principal.getMemberVO();
-//			log.debug("<<photoView>> : {}", user);
-//			MemberVO memberVO = memberService.selectMember(user.getMem_num());
-//			viewProfile(memberVO, request, model);
-//		} catch(Exception e) {
-//			getBasicProfileImage(request, model);
-//		}
-//		
-//		return "imageView";
-//	}
-//	
-//	// 프로필 사진 출력(회원번호 지정)
-//	@GetMapping("/viewProfile")
-//	public String getProfileByMem_num(long mem_num, HttpServletRequest request, Model model) {
-//		
-//		MemberVO memberVO = memberService.selectMember(mem_num);
-//		viewProfile(memberVO, request, model);
-//		
-//		return "imageView";
-//		
-//	}
-//	
-//	// 프로필 사진 처리를 위한 공통 코드
-//	public void viewProfile(MemberVO memberVO, HttpServletRequest request, Model model) {
-//		
-//		if (memberVO == null || memberVO.getPhoto_name() == null) {
-//			// DB에 저장된 프로필 이미지가 없기 대문에 기본 이미지 호출
-//			getBasicProfileImage(request, model);
-//		} else {
-//			model.addAttribute("imageFile", memberVO.getPhoto());
-//			model.addAttribute("filename", memberVO.getPhoto_name());
-//		} // if
-//		
-//	}
-//	
-//	// 기본 이미지 읽기
-//	public void getBasicProfileImage(HttpServletRequest request, Model model) {
-//		
-//		byte[] readbyte = FileUtil.getBytes(request.getServletContext().getRealPath("/assets/image_bundle/face.png"));
-//		model.addAttribute("imageFile", readbyte);
-//		model.addAttribute("filename", "face.png");
-//		
-//	}
-//	
-//	// 비밀번호 찾기
-//	@GetMapping("/sendPassword")
-//	public String sendPasswrodForm() {
-//		return "views/member/memberFindPassword";
-//	}
-//	
-//	// 비밀번호 변경 폼
-//	@PreAuthorize("isAuthenticated()")
-//	@GetMapping("/changePassword")
-//	public String formChangePassword() {
-//		return "views/member/memberChangePassword";
-//	}
-//	
-//	// 비밀번호 변경
-//	@PreAuthorize("isAuthenticated()")
-//	@PostMapping("/changePassword")
-//	public String submitChangePassword(@Valid MemberVO memberVO, BindingResult result, 
-//									   HttpServletRequest request, @AuthenticationPrincipal PrincipalDetails principal) {
-//		
-//		log.debug("<<비밀번호 변경>> : {}", memberVO);
-//		
-//		if (result.hasFieldErrors("now_passwd") || result.hasFieldErrors("passwd")) {
-//			ValidationUtil.printErrorFields(result);
-//			return formChangePassword();
-//		}
-//		
-//		// 회원번호 저장
-//		memberVO.setMem_num(principal.getMemberVO().getMem_num());
-//		
-//		
-//		return "views/common/resultAlert";
-//	}
+	
+	@GetMapping("/productView")
+	public String getProductList(@RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
+	                           @RequestParam(value = "order", defaultValue = "1") int order,
+	                           @RequestParam(value = "category_num", defaultValue = "") String category_num,
+	                           @RequestParam(value = "keyfield", required = false) String keyfield,
+	                           @RequestParam(value = "keyword", required = false) String keyword,
+	                           @RequestParam(value = "min_price", required = false) String min_price,
+	                           @RequestParam(value = "max_price", required = false) String max_price,
+	                           Model model) {
 
+	    
+	    log.debug("파라미터 - pageNum:{}, order:{}, category_num:{}", pageNum, order, category_num);
+	    log.debug("검색조건 - keyfield:{}, keyword:{}, min_price:{}, max_price:{}", keyfield, keyword, min_price, max_price);
+
+	    // 나머지 코드는 그대로...
+	    Map<String, Object> map = new HashMap<String, Object>();
+	    map.put("category_num", category_num);
+	    map.put("keyfield", keyfield);
+	    map.put("keyword", keyword);
+	    map.put("min_price", min_price);
+	    map.put("max_price", max_price);
+
+	    // 전체, 검색 레코드수
+	    int count = productService.selectRowCount(map);
+	    log.debug("조회된 레코드 수: {}", count);
+
+	    // 페이지 처리
+	    PagingUtil page = new PagingUtil(keyfield, keyword, pageNum, count, 20, 10, "productView",
+	            "&category_num=" + category_num + "&order=" + order);
+
+	    List<ProductVO> list = null;
+	    if(count > 0) {
+	        map.put("order", order);
+	        map.put("start", page.getStartRow());
+	        map.put("end", page.getEndRow());
+
+	        list = productService.selectList(map);
+	        log.debug("조회된 리스트 크기: {}", list != null ? list.size() : "null");
+	    }
+
+	    // 카테고리 목록 조회
+	    List<Map<String, Object>> categoryList = productService.selectCategoryList();
+	    log.debug("카테고리 목록 크기: {}", categoryList != null ? categoryList.size() : "null");
+
+	    model.addAttribute("count", count);
+	    model.addAttribute("list", list);
+	    model.addAttribute("page", page.getPage());
+	    model.addAttribute("order", order);
+	    model.addAttribute("keyfield", keyfield);
+	    model.addAttribute("keyword", keyword);
+	    model.addAttribute("category_num", category_num);
+	    model.addAttribute("categoryList", categoryList);
+	    model.addAttribute("min_price", min_price);
+	    model.addAttribute("max_price", max_price);
+
+	    log.debug("=== 제품 목록 조회 완료 ===");
+	    return "views/product/productView";  
+	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
