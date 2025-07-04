@@ -12,37 +12,47 @@
         <th:block th:replace="fragments/nav_sidebar :: sidebar"></th:block>
         <main class="main-content">
             <div class="main-header">
-                <h2>거래처 목록</h2>
+                <h2>ERP 관리 - 거래처 관리</h2>
             </div>
             <div class="sh-box">
-                <div style="display:flex; justify-content: flex-end; margin-bottom: 12px;">
-                    <a th:href="@{/client/form}" class="btn btn-success">+ 거래처 등록</a>
+
+                <div class="list-header">
+                    <span class="list-title">거래처 목록</span>
+                    <a th:href="@{/client/form}" class="btn-write">거래처 등록</a>
                 </div>
-                <table class="product-table">
-                    <thead>
-                        <tr>
-                            <th>번호</th>
-                            <th>이름</th>
-                            <th>구분</th>
-                            <th>담당자</th>
-                            <th>연락처</th>
-                            <th>관리</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr th:each="client : ${list}">
-                            <td th:text="${client.client_num}"></td>
-                            <td th:text="${client.client_name}"></td>
-                            <td th:text="${client.client_type == 0 ? '공급업체' : '고객'}"></td>
-                            <td th:text="${client.contact_person}"></td>
-                            <td th:text="${client.phone}"></td>
-                            <td>
-                                <a th:href="@{/client/ClientForm(client_num=${client.client_num})}" class="btn btn-primary btn-sm">수정</a>
-                                <a th:href="@{/client/delete(client_num=${client.client_num})}" class="btn btn-danger btn-sm" onclick="return confirm('정말 삭제하시겠습니까?');">삭제</a>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="table-container">
+                    <table class="custom-table">
+                        <thead>
+                            <tr>
+                                <th><input type="checkbox" /></th>
+                                <th>번호</th>
+                                <th>이름</th>
+                                <th>구분</th>
+                                <th>담당자</th>
+                                <th>연락처</th>
+                                <th>이메일</th>
+                                <th>주소</th>
+                                <th>관리</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="client : ${list}">
+                                <td><input type="checkbox" th:value="${client.client_num}" /></td>
+                                <td th:text="${client.client_num}"></td>
+                                <td th:text="${client.client_name}"></td>
+                                <td th:text="${client.client_type == 0 ? '공급업체' : '고객'}"></td>
+                                <td th:text="${client.contact_person}"></td>
+                                <td th:text="${client.phone}"></td>
+                                <td th:text="${client.email}"></td>
+                                <td th:text="${client.address1} + ' ' + ${client.address2}"></td>
+                                <td>
+                                    <a th:href="@{/client/form(client_num=${client.client_num})}" class="btn-detail" style="background:#2ecc71;">수정</a>
+                                    <a th:href="@{/client/delete(client_num=${client.client_num})}" class="btn-detail" style="background:#e74c3c;" onclick="return confirm('정말 삭제하시겠습니까?');">삭제</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </main>
     </div>
@@ -77,4 +87,49 @@
 </script>
 </div>
 </body>
-</html> 
+</html>
+<style>
+.list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+.list-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+.btn-write {
+    background: #528eff;
+    color: #fff !important;
+    padding: 8px 20px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+}
+.custom-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    font-size: 1rem;
+}
+.custom-table th, .custom-table td {
+    border-bottom: 1px solid #eee;
+    padding: 12px 8px;
+    text-align: center;
+}
+.custom-table th {
+    background: #fafafa;
+    font-weight: 600;
+}
+.btn-detail {
+    background: #528eff;
+    color: #fff !important;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 16px;
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+</style> 

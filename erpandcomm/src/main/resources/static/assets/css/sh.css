@@ -44,3 +44,29 @@
   display: flex;
   justify-content: flex-end;
 }
+
+/* 조회조건 카드(검색 영역) 테두리/그림자 제거 */
+.search-card {
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    padding: 0 !important;
+}
+
+/* 공통 메인 버튼 스타일 */
+.btn-main {
+    background: #528EFF !important;
+    color: #fff !important;
+    padding: 8px 20px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 1rem;
+    border: none;
+    display: inline-block;
+    transition: background 0.2s;
+}
+.btn-main:hover, .btn-main:focus {
+    background: #3976d2 !important;
+    color: #fff !important;
+}
