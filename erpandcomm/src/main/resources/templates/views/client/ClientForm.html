@@ -16,6 +16,7 @@
             </div>
             <div class="sh-box">
                 <form class="sh-box-form" th:action="@{/client/save}" method="post">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                     <input type="hidden" name="client_num" th:value="${clientVO.client_num}">
                     <div class="sh-box-row">
                         <label>이름</label>
