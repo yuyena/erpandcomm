@@ -28,10 +28,10 @@ public class ChatServiceImpl implements ChatService {
 	private ChatMessageMapper chatMessageMapper;
 	@Autowired
 	private ChatMessageReadMapper chatMessageReadMapper;
-
+	
 	@Override
-	public List<ChatRoomVO> selectListChatRoom(Long user_num) {
-		return chatRoomMapper.selectListChatRoom(user_num);
+	public List<ChatRoomVO> selectListChatRoom(Map<String, Object> map) {
+		return chatRoomMapper.selectListChatRoom(map);
 	}
 
 	@Override

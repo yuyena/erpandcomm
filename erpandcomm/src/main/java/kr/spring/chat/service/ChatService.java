@@ -11,7 +11,7 @@ import kr.spring.chat.vo.ChatRoomVO;
 public interface ChatService {
 	
 	// ChatRoom
-	public List<ChatRoomVO> selectListChatRoom(Long user_num);
+	public List<ChatRoomVO> selectListChatRoom(Map<String, Object> map);
 	public Integer selectRowCount(Map<String, Object> map);
 	public void insertRoom(ChatRoomVO chatRoom);
 	public void updateRoom(ChatRoomVO chatRoom);

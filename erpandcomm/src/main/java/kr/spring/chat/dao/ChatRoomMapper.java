@@ -12,7 +12,7 @@ import kr.spring.chat.vo.ChatRoomVO;
 public interface ChatRoomMapper {
 	
 	@Select("SELECT * FROM chat_room JOIN chat_member USING (room_num) WHERE member_num = #{member_num} ORDER BY created_at DESC")
-	public List<ChatRoomVO> selectListChatRoom(Long user_num);
+	public List<ChatRoomVO> selectListChatRoom(Map<String, Object> map);
 	public Integer selectRowCount(Map<String, Object> map);
 	public void insertRoom(ChatRoomVO chatRoom);
 	public void updateRoom(ChatRoomVO chatRoom);

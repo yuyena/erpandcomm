@@ -130,7 +130,8 @@
    	   	  d.department_num,
       	  d.position_num,
    	      d.grade_num
-    	FROM euser u JOIN euser_detail d
+    	FROM euser u 
+    	LEFT JOIN euser_detail d
     	ON u.user_num = d.user_num
 	</select>
 	
