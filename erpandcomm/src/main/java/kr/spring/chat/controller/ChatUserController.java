@@ -42,6 +42,17 @@ public class ChatUserController {
 		return new ChatMessageReadVO();
 	}
 	
+	// 채팅방 생성 폼
+//	@PreAuthorize("isAuthenticated()")
+	@GetMapping("/createRoom")
+	public String form() {
+		return "views/chat/createRoom";
+	}
+	
+	// 채팅방 생성
+	
+	
+	// 채팅방 목록
 //	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/roomList")
 	public String getRoomList(Model model) {
