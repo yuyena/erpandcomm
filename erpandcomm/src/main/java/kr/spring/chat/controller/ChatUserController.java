@@ -79,7 +79,7 @@ public class ChatUserController {
 	    model.addAttribute("userList", userList);
 	    model.addAttribute("chatRoomList", chatRoomList);
 	    
-	    log.debug("<<회원 목록>> : " + map);
+	    log.debug("<<회원 목록>> : " + userList);
 		
 		return "views/chat/chatRoomList";
 	}

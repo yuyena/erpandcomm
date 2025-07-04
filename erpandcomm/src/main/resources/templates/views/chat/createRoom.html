@@ -5,6 +5,7 @@
     <title>채팅방 생성</title>
     <link rel="stylesheet" th:href="@{/assets/css/main.css}">
     <link rel="stylesheet" th:href="@{/assets/css/jm/chatRoomList.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/jm/chatCreateRoom.css}">
 </head>
 <body>
 <div layout:fragment="content" class="page-main">
@@ -18,34 +19,33 @@
                 <a th:href="@{'/chat/roomList'}" class="create-btn">← 목록으로</a>
             </div>
             <form th:action="@{/chat/createRoom}" method="post">
-                <div class="chatroom-create-container" style="display:flex;justify-content:center;align-items:flex-start;margin:40px 0;">
+                <div class="chatroom-create-container">
                     <!-- 멤버 선택 리스트 -->
-                    <div class="member-list" style="width:260px;min-height:400px;background:#fff;margin:0 20px;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,0.04);padding:30px 20px;">
+                    <div class="member-list">
                         <th:block th:each="member : ${userList}">
                             <label>
                                 <input type="checkbox" name="memberNums" th:value="${member.user_num}">
                                 <span th:text="${member.name}">이름</span>
-                            </label><br>
+                            </label>
                         </th:block>
                     </div>
                     <!-- 추가/제거 버튼 -->
-                    <div class="button-group" style="display:flex;flex-direction:column;justify-content:center;margin-top:120px;">
-                        <button type="button" id="addBtn" class="create-btn" style="margin-bottom:10px;">추가 &gt;&gt;</button>
+                    <div class="button-group">
+                        <button type="button" id="addBtn" class="create-btn">추가 &gt;&gt;</button>
                         <button type="button" id="removeBtn" class="create-btn">&lt;&lt; 제거</button>
                     </div>
                     <!-- 선택된 멤버 리스트 -->
-                    <div class="selected-list" id="selectedList" style="width:260px;min-height:400px;background:#fff;margin:0 20px;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,0.04);padding:30px 20px;">
+                    <div class="selected-list" id="selectedList">
                         <!-- JS로 동적으로 표시 -->
                     </div>
                 </div>
-                <div style="text-align:right; margin-top:30px;">
-                    <button class="save-btn" type="submit" style="padding:10px 30px;background:#4a90e2;color:#fff;border:none;border-radius:8px;font-size:16px;box-shadow:0 2px 8px rgba(0,0,0,0.04);">저장</button>
+                <div class="save-btn-wrap">
+                    <button class="save-btn" type="submit">저장</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
-<!--  -->
 <script>
 	document.addEventListener('DOMContentLoaded', function() {
 	    const addBtn = document.getElementById('addBtn');
