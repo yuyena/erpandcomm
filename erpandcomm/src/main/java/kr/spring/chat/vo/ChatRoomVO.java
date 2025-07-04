@@ -1,5 +1,6 @@
 package kr.spring.chat.vo;
 
+import kr.spring.member.vo.MemberVO;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -19,5 +20,7 @@ public class ChatRoomVO {
 	private String is_active;
 	private DATE created_at;
 	private DATE updated_at;
+	
+	private MemberVO memberVO;
 
 }

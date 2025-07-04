@@ -31,6 +31,9 @@ public interface MemberMapper {
 	public void deleteMember(Long mem_num);
 	public void deleteMemberDetail(Long mem_num);
 	
+	// 채팅방 멤버 추가용 회원 목록 조회
+	public List<MemberVO> selectMemberList(Map<String, Object> map);
+	
 	// 자동 로그인 해제
 	@Delete("DELETE FROM persistent_logins WHERE username=#{id}")
 	public void deleteRememberMe(MemberVO member);
