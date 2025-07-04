@@ -18,7 +18,7 @@ public class AttendenceServiceImpl implements AttendenceService {
 	@Override
 	public void insertAttendence(AttendenceVO attendence) {
 		// TODO Auto-generated method stub
-		
+		attendenceMapper.insertAttendence(attendence);
 	}
 
 	@Override

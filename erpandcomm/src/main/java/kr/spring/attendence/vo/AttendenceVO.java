@@ -30,6 +30,9 @@ public class AttendenceVO {
 	private Date checkIntime; // 출근시간
 	@NotNull
 	private Date checkOuttime; // 퇴근시간
+	private Date createdAt;
+	private Date updatedAt;
+	
 	
 	// 숫자 형태의 workType 값을 문자열로 변환
 	public String getworkTypeName() {

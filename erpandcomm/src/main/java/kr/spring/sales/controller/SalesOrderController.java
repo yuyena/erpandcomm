@@ -14,12 +14,17 @@ import java.util.List;
 import kr.spring.sales.service.SalesOrderService;
 import kr.spring.sales.vo.SalesOrderVO;
 import kr.spring.sales.vo.SalesOrderDetailVO;
+import kr.spring.product.service.ProductService;
+import kr.spring.product.vo.ProductVO;
 
 @Controller
 @RequestMapping("/sales")
 public class SalesOrderController {
     @Autowired
     private SalesOrderService salesOrderService;
+
+    @Autowired
+    private ProductService productService;
 
     // 판매주문 목록
     @GetMapping("/orderList")
@@ -33,13 +38,23 @@ public class SalesOrderController {
     @GetMapping("/orderForm")
     public String orderForm(Model model) {
         model.addAttribute("salesOrderVO", new SalesOrderVO());
+        List<ProductVO> productList = productService.selectProductList();
+        model.addAttribute("productList", productList);
         return "views/sales/salesOrderForm";
     }
 
     // 판매주문 등록 처리
     @PostMapping("/orderInsert")
     public String orderInsert(@ModelAttribute SalesOrderVO salesOrderVO) {
+        // 1. 주문 마스터 저장
         salesOrderService.insertSalesOrder(salesOrderVO);
+        // 2. 주문 상세(여러 상품) 저장
+        if (salesOrderVO.getDetails() != null) {
+            for (SalesOrderDetailVO detail : salesOrderVO.getDetails()) {
+                detail.setSales_order_num(salesOrderVO.getSales_order_num());
+                salesOrderService.insertSalesOrderDetail(detail);
+            }
+        }
         return "redirect:/sales/orderList";
     }
 

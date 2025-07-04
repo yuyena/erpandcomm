@@ -18,34 +18,41 @@
             </div>
             <section class="card-section">
                 <div class="sh-box">
-                    <form class="sh-box-form">
-                        <div class="sh-box-row">
-                            <label>상품번호</label>
-                            <input type="text" name="product_num">
-                        </div>
-                        <div class="sh-box-row">
-                            <label>제품명</label>
-                            <input type="text" name="product_name">
-                        </div>
-                        <div class="sh-box-row">
-                            <label>단가</label>
-                            <input type="number" name="unit_price">
-                        </div>
-                        <div class="sh-box-row">
-                            <label>단위</label>
-                            <input type="text" name="unit">
-                        </div>
-                        <div class="sh-box-row">
-                            <label>창고구분</label>
-                            <input type="text" name="warehouse">
-                        </div>
-                        <div class="sh-box-row">
-                            <label>주문 금액</label>
-                            <input type="number" name="order_price">
-                        </div>
+                    <form class="sh-box-form" th:action="@{/sales/orderInsert}" method="post">
                         <div class="sh-box-row">
                             <label>담당 직원</label>
-                            <input type="text" name="emp_name">
+                            <input type="text" name="emp_name" required>
+                        </div>
+                        <div class="sh-box-row">
+                            <label>주문일</label>
+                            <input type="date" name="order_date" th:value="${#dates.format(salesOrderVO.order_date, 'yyyy-MM-dd')}" required />
+                        </div>
+                        <div class="sh-box-row">
+                            <label>상품 선택</label>
+                            <select id="productSelect">
+                                <option th:each="product : ${productList}"
+                                        th:value="${product.product_num}"
+                                        th:text="${product.product_num + ' - ' + product.unit + ' - ' + product.unit_price}"></option>
+                            </select>
+                            <input type="number" id="quantityInput" placeholder="수량" min="1">
+                            <input type="number" id="unitPriceInput" placeholder="단가" min="0">
+                            <button type="button" id="addProductBtn">추가</button>
+                        </div>
+                        <div class="sh-box-row">
+                            <label>주문 상세</label>
+                            <table id="orderDetailsTable" class="product-table">
+                                <thead>
+                                    <tr>
+                                        <th>상품번호</th>
+                                        <th>수량</th>
+                                        <th>단가</th>
+                                        <th>삭제</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- JS로 동적 추가 -->
+                                </tbody>
+                            </table>
                         </div>
                         <div class="sh-box-actions">
                             <button type="submit" class="btn btn-success">저장</button>
@@ -84,6 +91,49 @@
       });
     });
   });
+</script>
+<script>
+// 장바구니(주문 상세) 동적 추가/삭제
+let orderDetails = [];
+// 서버에서 기존 주문 상세가 있으면 초기화
+/*<![CDATA[*/
+    /* th:if="${salesOrderVO.details != null}" */
+    /* th:each="detail, idx : ${salesOrderVO.details}" */
+    /* JS 배열로 변환 */
+    /* 실제로는 Thymeleaf에서 아래처럼 렌더링 */
+    /*
+    orderDetails = [
+        [[${#lists.map(salesOrderVO.details, d -> {productNum: d.product_num, quantity: d.quantity, unitPrice: d.unit_price})}]]
+    ];
+    */
+/*]]>*/
+const tableBody = document.querySelector('#orderDetailsTable tbody');
+const addBtn = document.getElementById('addProductBtn');
+addBtn.addEventListener('click', function() {
+    const productNum = document.getElementById('productSelect').value;
+    const quantity = document.getElementById('quantityInput').value;
+    const unitPrice = document.getElementById('unitPriceInput').value;
+    if (!productNum || !quantity || !unitPrice) return;
+    orderDetails.push({productNum, quantity, unitPrice});
+    renderTable();
+});
+function renderTable() {
+    tableBody.innerHTML = '';
+    orderDetails.forEach((item, idx) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `<td><input type='hidden' name='details[${idx}].product_num' value='${item.productNum}'/>${item.productNum}</td>
+            <td><input type='hidden' name='details[${idx}].quantity' value='${item.quantity}'/>${item.quantity}</td>
+            <td><input type='hidden' name='details[${idx}].unit_price' value='${item.unitPrice}'/>${item.unitPrice}</td>
+            <td><button type='button' onclick='removeDetail(${idx})'>삭제</button></td>`;
+        tableBody.appendChild(row);
+    });
+}
+window.removeDetail = function(idx) {
+    orderDetails.splice(idx, 1);
+    renderTable();
+}
+// 폼 진입 시 기존 상세 내역이 있으면 테이블 렌더링
+if (orderDetails.length > 0) renderTable();
 </script>
 </div>
 </body>

@@ -3,41 +3,139 @@
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
 <mapper namespace="kr.spring.product.dao.ProductMapper">
-	<!-- 회원 가입 -->
-
+	<!-- 상품목록 처리 -->
 	
+	<!-- 제품 검색 조건 -->
+	<sql id="productSearch">
+	    <where>
+	        <if test="category_num != null and category_num != ''">
+	            p.category_num = #{category_num}
+	        </if>
+	        <if test="keyword != null and keyword != ''">
+	            <if test="category_num != null and category_num != ''">
+	                AND
+	            </if>
+	            <if test="keyfield == 1">
+	                p.product_name LIKE '%' || #{keyword} || '%'
+	            </if>
+	            <if test="keyfield == 2">
+	                pc.category_name LIKE '%' || #{keyword} || '%'
+	            </if>
+	            <if test="keyfield == 3">
+	                p.unit LIKE '%' || #{keyword} || '%'
+	            </if>
+	            <if test="keyfield == 4">
+	                (p.product_name LIKE '%' || #{keyword} || '%' OR
+	                pc.category_name LIKE '%' || #{keyword} || '%')
+	            </if>
+	        </if>
+	        <if test="status != null and status != ''">
+	            <if test="(category_num != null and category_num != '') or (keyword != null and keyword != '')">
+	                AND
+	            </if>
+	            p.status = #{status}
+	        </if>
+	        <if test="min_price != null and min_price != ''">
+	            <if test="(category_num != null and category_num != '') or (keyword != null and keyword != '') or (status != null and status != '')">
+	                AND
+	            </if>
+	            p.unit_price >= #{min_price}
+	        </if>
+	        <if test="max_price != null and max_price != ''">
+	            <if test="(category_num != null and category_num != '') or (keyword != null and keyword != '') or (status != null and status != '') or (min_price != null and min_price != '')">
+	                AND
+	            </if>
+	            p.unit_price <![CDATA[<=]]> #{max_price}
+	        </if>
+	    </where>
+	</sql>
+	
+	<!-- 제품 정렬 -->
+	<sql id="productOrder">
+	    <if test="order == 1">
+	        ORDER BY p.product_num DESC
+	    </if>
+	    <if test="order == 2">
+	        ORDER BY p.product_name ASC
+	    </if>
+	    <if test="order == 3">
+	        ORDER BY p.unit_price DESC
+	    </if>
+	    <if test="order == 4">
+	        ORDER BY p.unit_price ASC
+	    </if>
+	    <if test="order == 5">
+	        ORDER BY p.product_date DESC
+	    </if>
+	    <if test="order == 6">
+	        ORDER BY cs.current_quantity DESC NULLS LAST
+	    </if>
+	    <if test="order == 7">
+	        ORDER BY pc.category_name ASC
+	    </if>
+	</sql>
+	
+	<!-- 제품 전체/검색 레코드 수 -->
+	<select id="selectRowCount" parameterType="map" resultType="integer">
+	    SELECT COUNT(*) 
+	    FROM product p
+	    JOIN product_category pc ON p.category_num = pc.category_num
+	    LEFT JOIN current_stock cs ON p.product_num = cs.product_num
+	    <include refid="productSearch"/>
+	</select>
+	
+	<!-- 제품 전체/검색 목록 -->
+	<select id="selectList" parameterType="map" resultType="kr.spring.product.vo.ProductVO">
+	    SELECT *
+	    FROM (SELECT a.*, rownum rnum
+	          FROM (SELECT 
+	                    p.product_num,
+	                    p.category_num,
+	                    pc.category_name,
+	                    p.product_name,
+	                    p.status,
+	                    p.unit_price,
+	                    p.unit,
+	                    p.product_date,
+	                    cs.current_quantity
+	                FROM product p
+	                JOIN product_category pc ON p.category_num = pc.category_num
+	                LEFT JOIN current_stock cs ON p.product_num = cs.product_num
+	                <include refid="productSearch"/>
+	                <include refid="productOrder"/>
+	                ) a)
+	    <![CDATA[
+	    WHERE rnum >= #{start} AND rnum <= #{end}
+	    ]]>
+	</select>
+	
+	
+	
+	<!-- 카테고리 목록 -->
+	<select id="selectCategoryList" resultType="map">
+	    SELECT category_num, category_name
+	    FROM product_category
+	    ORDER BY category_name ASC
+	</select>
+	
+	
+	
+	
+	<!-- 제품 상세 정보 -->
+	<select id="selectProduct" parameterType="integer" resultType="kr.spring.product.vo.ProductVO">
+	    SELECT 
+	        p.product_num,
+	        p.category_num,
+	        pc.category_name,
+	        p.product_name,
+	        p.status,
+	        p.unit_price,
+	        p.unit,
+	        p.product_date,
+	        cs.current_quantity
+	    FROM product p
+	    JOIN product_category pc ON p.category_num = pc.category_num
+	    LEFT JOIN current_stock cs ON p.product_num = cs.product_num
+	    WHERE p.product_num = #{product_num}
+	</select>
 </mapper>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

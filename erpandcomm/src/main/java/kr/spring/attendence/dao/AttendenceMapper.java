@@ -3,6 +3,7 @@ package kr.spring.attendence.dao;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 
 import kr.spring.attendence.vo.AttendenceVO;
@@ -10,6 +11,7 @@ import kr.spring.attendence.vo.AttendenceVO;
 @Mapper
 public interface AttendenceMapper {
 	// 개별 작성
+	@Insert("INSERT INTO attendance(DATE, EMP_ID, USER_NAME, WORK_TYPE, CHECK_IN_TIME,CHECK_OUT_TIME,CREATED_AT,UPDATED_AT) VALUES (#{workDate},#{empId},#{empName},#{workType},#{checkIntime},#{checkOuttime}, NOW(), NOW()")
 	public void insertAttendence(AttendenceVO attendence);
 	// 출근 개별 조회
 	public AttendenceVO selectAttendence(Long empId);

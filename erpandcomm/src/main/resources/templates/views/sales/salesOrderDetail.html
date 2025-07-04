@@ -36,15 +36,19 @@
                         <thead>
                             <tr>
                                 <th>상품번호</th>
+                                <th>상품명</th>
                                 <th>수량</th>
                                 <th>단가</th>
+                                <th>합계</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr th:each="detail : ${details}">
                                 <td th:text="${detail.product_num}"></td>
+                                <td th:text="${detail.product_name}"></td>
                                 <td th:text="${detail.quantity}"></td>
                                 <td th:text="${#numbers.formatDecimal(detail.unit_price, 0, 'COMMA', 2, 'POINT')} + '원'"></td>
+                                <td th:text="${#numbers.formatDecimal(detail.unit_price * detail.quantity, 0, 'COMMA', 2, 'POINT')} + '원'"></td>
                             </tr>
                         </tbody>
                     </table>

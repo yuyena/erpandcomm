@@ -1,0 +1,55 @@
+<!-- chatRoomList.html: 채팅방 목록 화면 -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>채팅방 목록</title>
+    <link rel="stylesheet" th:href="@{/assets/css/main.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/jm/chatRoomList.css}">
+</head>
+<body>
+<div layout:fragment="content" class="page-main">
+	<div class="dashboard-wrapper">
+    <th:block th:replace="fragments/nav_sidebar :: sidebar" />
+
+    <div class="chat-room-list-container">
+        <div class="chat-room-list-header">
+            <h2>채팅방 목록</h2>
+            <a th:href="@{'/chat/room/create'}" class="create-btn">+ 채팅방 만들기</a>
+        </div>
+        <table class="chat-room-table">
+            <thead>
+                <tr>
+                    <th>방 번호</th>
+                    <th>방 이름</th>
+                    <th>타입</th>
+                    <th>설명</th>
+                    <th>생성자</th>
+                    <th>최대 인원</th>
+                    <th>생성일</th>
+                    <th>입장</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="room : ${chatRoomList}">
+                    <td th:text="${room.room_num}"></td>
+                    <td th:text="${room.room_name}"></td>
+                    <td th:text="${room.room_type}"></td>
+                    <td th:text="${room.description}"></td>
+                    <td th:text="${room.created_by}"></td>
+                    <td th:text="${room.max_members}"></td>
+                    <td th:text="${room.created_at}"></td>
+                    <td>
+                        <a th:href="@{'/chat/room/' + ${room.room_num}}" class="enter-btn">입장</a>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(chatRoomList)}">
+                    <td colspan="9" class="no-chat-room">참여중인 채팅이 없습니다.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+	</div>
+</div>
+</body>
+</html>

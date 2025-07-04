@@ -9,75 +9,50 @@ import org.springframework.transaction.annotation.Transactional;
 
 import kr.spring.member.dao.MemberMapper;
 import kr.spring.member.vo.MemberVO;
+import kr.spring.product.vo.ProductVO;
+import kr.spring.product.dao.ProductMapper;
 
 @Service
 @Transactional
 public class ProductServiceImpl implements ProductService {
 
+
 	@Autowired
-	private MemberMapper memberMapper;
+	private ProductMapper productMapper;
+	
 	
 	@Override
-	public void insertMember(MemberVO member) {
-		//member.setMem_num(memberMapper.selectMemNum());
-		memberMapper.insertMember(member);
-		memberMapper.insertMemberDetail(member);
-	}
-
-
-	@Override
-	public MemberVO selectCheckMember(String employee_code) {
-		return memberMapper.selectCheckMember(employee_code);
-	}
-
-	@Override
-	public MemberVO selectMember(Long mem_num) {
-		return memberMapper.selectMember(mem_num);
-	}
-
-	@Override
-	public void updateMember(MemberVO member) {
-		memberMapper.updateMember(member);
-		memberMapper.updateMemberDetail(member);
-	}
-
-	@Override
-	public void updatePassword(MemberVO member) {
-		memberMapper.updatePassword(member);
-		// 설정되어 있는 자동 로그인 해제(모든 브라우저에 설정된 자동로그인 해제)
-		memberMapper.deleteRememberMe(member);
-	}
-
-	@Override
-	public void deleteMember(Long mem_num) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void updateRandomPassword(MemberVO member) {
-		memberMapper.updateRandomPassword(member);
-	}
-
-	@Override
-	public void updateProfile(MemberVO member) {
-		memberMapper.updateProfile(member);
+	public List<ProductVO> selectList(Map<String, Object> map) {
+		return productMapper.selectList(map);
 	}
 
 	@Override
 	public Integer selectRowCount(Map<String, Object> map) {
-		return memberMapper.selectRowCount(map);
+		return productMapper.selectRowCount(map);
 	}
 
 	@Override
-	public List<MemberVO> selectList(Map<String, Object> map) {
-		return memberMapper.selectList(map);
+	public ProductVO selectProduct(Long product_num) {
+		return productMapper.selectProduct(product_num);
 	}
 
 	@Override
-	public void updateByAdmin(MemberVO memberVO) {
-		memberMapper.updateByAdmin(memberVO);
+	public List<Map<String, Object>> selectCategoryList() {
+		return productMapper.selectCategoryList();
 	}
+
+
+	
+	
+	
+	
+	
+	@Override
+	public List<ProductVO> selectProductList() {
+		return productMapper.selectProductList();
+	}
+
+	
 
 }
 

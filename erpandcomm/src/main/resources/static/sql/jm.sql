@@ -25,7 +25,7 @@ CREATE TABLE chat_room (
     created_by    NUMBER          NOT NULL,
     max_members   NUMBER,
     is_active     CHAR(1)         DEFAULT 'Y' NOT NULL,  -- 'Y' 또는 'N'
-    created_at    DATE            NOT NULL,
+    created_at    DATE            DEFAULT SYSDATE NOT NULL,
     updated_at    DATE,
     CONSTRAINT fk_chatroom_creator FOREIGN KEY (created_by) REFERENCES euser(user_num)
 );
@@ -35,7 +35,7 @@ CREATE TABLE chat_message (
     room_num      NUMBER          NOT NULL,
     sender_num    NUMBER          NOT NULL,
     content       VARCHAR2(1000),
-    created_at    DATE            NOT NULL,
+    sent_at    DATE            NOT NULL,
     CONSTRAINT fk_message_room FOREIGN KEY (room_num) REFERENCES chat_room(room_num),
     CONSTRAINT fk_message_sender FOREIGN KEY (sender_num) REFERENCES euser(user_num)
 );
@@ -45,7 +45,7 @@ CREATE TABLE chat_member (
     room_num    NUMBER          NOT NULL,
     user_num    NUMBER          NOT NULL,
     role        VARCHAR2(20)    NOT NULL,     -- 예: '방장', '멤버'
-    joined_at   DATE            NOT NULL,
+    joined_at   DATE            DEFAULT SYSDATE NOT NULL,
     is_active   CHAR(1)         DEFAULT 'Y' NOT NULL,  -- 'Y'/'N'
     CONSTRAINT fk_chatmember_room FOREIGN KEY (room_num) REFERENCES chat_room(room_num),
     CONSTRAINT fk_chatmember_user FOREIGN KEY (user_num) REFERENCES euser(user_num)
