@@ -47,7 +47,7 @@
     <div class="dashboard-wrapper">
 		<!-- 사이드바 -->
 		<th:block th:replace="fragments/nav_sidebar :: sidebar"></th:block>
-
+	<main class="main-content">
     <div class="page-header">
         <h2 class="page-title">상품 관리</h2>
         <div>
@@ -172,9 +172,10 @@
         <div class="pagination" th:utext="${page}">
             <!-- 페이지네이션이 여기에 렌더링됩니다 -->
         </div>
+        </main>
     </div>
 </div>
-
+<div layout:fragment="pageScript">
 <script type="text/javascript">
 $(function(){
     // 정렬 변경 시 자동 검색
@@ -226,5 +227,6 @@ function downloadExcel() {
     window.open(url, '_blank');
 }
 </script>
+</div>
 </body>
 </html>
