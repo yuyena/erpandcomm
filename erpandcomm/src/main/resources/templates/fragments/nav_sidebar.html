@@ -23,8 +23,8 @@
                         <ul class="submenu">
                             <li><a th:href="@{/sales/orderList}">판매주문</a></li>
                             <li><a th:href="@{/purchase/orderList}">구매 / 발주</a></li>
-                            <li><a href="{/product/productList}" class="active">상품관리</a></li>
-                            <li><a href="{/product/stock}">재고관리</a></li>
+                            <li><a th:href="@{/product/productList}">상품관리</a></li>
+                            <li><a th:href="@{/product/stock}">재고관리</a></li>
                             <li><a th:href="@{/client/list}">거래처관리</a></li>
                         </ul>
                     </li>
@@ -65,7 +65,7 @@
                         <ul class="submenu">
                             <li><a href="#">사원정보</a></li>
                             <li><a href="#">개인근태정보</a></li>
-                            <li><a href="#" class="active">개인휴가정보</a></li>
+                            <li><a href="#">개인휴가정보</a></li>
                             <li><a href="#">급여정보</a></li>
                         </ul>
                     </li>
@@ -97,33 +97,56 @@
 </div>
 
 <script>
-  console.log('js loaded');
   document.addEventListener('DOMContentLoaded', function() {
+    // 이미 이벤트 리스너가 등록되었는지 확인
+    if (window.sidebarInitialized) return;
+    window.sidebarInitialized = true;
+    
     document.querySelectorAll('.menu-toggle').forEach(function(toggle) {
       toggle.addEventListener('click', function(e) {
-        console.log('clicked');
         e.preventDefault();
-        var parent = this.parentElement;
+        e.stopPropagation();
+        
+        var parent = this.closest('.menu-item');
         var submenu = parent.querySelector('.submenu');
-        // 모든 메뉴 닫기
+        var arrow = this.querySelector('.arrow');
+        
+        // 다른 모든 메뉴 닫기
         document.querySelectorAll('.menu-item.has-sub').forEach(function(item) {
           if (item !== parent) {
             item.classList.remove('open');
-            var sub = item.querySelector('.submenu');
-            if (sub) sub.classList.remove('open');
-            var arrow = item.querySelector('.arrow');
-            if (arrow) arrow.innerHTML = '&#9654;';
+            var otherSubmenu = item.querySelector('.submenu');
+            var otherArrow = item.querySelector('.arrow');
+            if (otherSubmenu) otherSubmenu.classList.remove('open');
+            if (otherArrow) otherArrow.style.transform = 'rotate(0deg)';
           }
         });
+        
         // 현재 메뉴 토글
-        var isOpen = submenu.classList.contains('open');
-        submenu.classList.toggle('open', !isOpen);
+        var isOpen = parent.classList.contains('open');
         parent.classList.toggle('open', !isOpen);
-        var arrow = this.querySelector('.arrow');
+        if (submenu) submenu.classList.toggle('open', !isOpen);
         if (arrow) {
-          arrow.innerHTML = !isOpen ? '&#9660;' : '&#9654;';
+          arrow.style.transform = !isOpen ? 'rotate(90deg)' : 'rotate(0deg)';
         }
       });
+    });
+    
+    // 현재 페이지에 해당하는 메뉴 항목 활성화
+    var currentPath = window.location.pathname;
+    document.querySelectorAll('.sidebar-menu a[th\\:href]').forEach(function(link) {
+      var href = link.getAttribute('href');
+      if (href && currentPath.includes(href.replace('@{', '').replace('}', ''))) {
+        link.classList.add('active');
+        var parentMenuItem = link.closest('.menu-item.has-sub');
+        if (parentMenuItem) {
+          parentMenuItem.classList.add('open');
+          var submenu = parentMenuItem.querySelector('.submenu');
+          var arrow = parentMenuItem.querySelector('.arrow');
+          if (submenu) submenu.classList.add('open');
+          if (arrow) arrow.style.transform = 'rotate(90deg)';
+        }
+      }
     });
   });
 </script> 
