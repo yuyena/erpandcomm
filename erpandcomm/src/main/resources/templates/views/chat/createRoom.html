@@ -23,8 +23,8 @@
                 <div class="chatroom-create-container">
                     <!-- 멤버 선택 리스트 -->
                     <div class="member-list">
-                        <th:block th:each="member, iterStat : ${userList}">
-                            <label th:attr="data-index=${iterStat.index}">
+                        <th:block th:each="member : ${userList}">
+                            <label th:attr="data-index=${member.user_num}">
                                 <input type="checkbox" name="memberNums" th:value="${member.user_num}">
                                 <span th:text="${member.user_name}">이름</span>
                             </label>
@@ -74,7 +74,7 @@
 	                }
 	            });
 	            if (!inserted) {
-	                memberList.appendChild(label);
+	            memberList.appendChild(label);
 	            }
 	            cb.checked = false;
 	        });

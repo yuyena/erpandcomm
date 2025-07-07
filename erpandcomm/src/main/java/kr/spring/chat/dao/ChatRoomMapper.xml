@@ -8,19 +8,17 @@
 	</resultMap>
 	
 	<!-- 채팅 방 생성 -->
-	<insert id="insertChatRoom" parameterType="chatRoomVO">
+	<insert id="insertRoom" parameterType="chatRoomVO">
 		INSERT INTO chat_room (
 			room_num,
 			room_name,
 			room_type,
-			description,
 			created_by,
 			max_members)
 		VALUES (
 			chat_room_seq.nextval,
 			#{room_name},
 			#{room_type},
-			#{description},
 			#{created_by},
 			#{max_members})
 	</insert>

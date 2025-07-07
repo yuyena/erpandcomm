@@ -1,5 +1,6 @@
 package kr.spring.chat.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,7 +62,18 @@ public class ChatUserController {
 		
 		Map<String, Object> map = new HashMap<String, Object>();
 		List<MemberVO> userList = memberService.selectMemberList(map);
-		model.addAttribute("userList", userList);
+		
+	    // 임시로 1번 사용자를 본인으로 간주
+	    long user_num = 1;
+
+	    List<MemberVO> filteredList = new ArrayList<>();
+	    for (MemberVO member : userList) {
+	        if (member.getUser_num() != user_num) {
+	            filteredList.add(member);
+	        }
+	    }
+		
+		model.addAttribute("userList", filteredList);
 		return "views/chat/createRoom";
 	}
 	
@@ -76,7 +88,20 @@ public class ChatUserController {
 		} // if
 		
 		chatService.insertRoom(chatRoomVO);
-		chatService.insertMember(null);
+		long roomNum = chatRoomVO.getRoom_num(); // 생성된 방 번호 (insertRoom에서 세팅되어야 함)
+
+		// 선택된 멤버 추가
+		if (memberNums != null && !memberNums.isEmpty()) {
+		    for (long userNum : memberNums) {
+		        ChatMemberVO chatMemberVO = new ChatMemberVO();
+		        chatMemberVO.setRoom_num(roomNum);
+		        chatMemberVO.setUser_num(userNum);
+		        chatService.insertMember(chatMemberVO);
+		    }
+		}
+		
+		model.addAttribute("accessMsg", "채팅방이 생성되었습니다.");
+		model.addAttribute("accessUrl", request.getContextPath()+"/chat/roomList");
 		
 		return "views/common/resultView";
 	}

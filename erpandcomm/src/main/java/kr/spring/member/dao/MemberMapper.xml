@@ -126,7 +126,7 @@
       	  d.position_num,
    	      d.grade_num
     	FROM euser u 
-    	LEFT JOIN euser_detail d
+    	JOIN euser_detail d
     	ON u.user_num = d.user_num
 	</select>
 	
