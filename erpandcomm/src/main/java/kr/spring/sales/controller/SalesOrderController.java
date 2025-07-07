@@ -55,6 +55,7 @@ public class SalesOrderController {
             .filter(c -> c.getClient_type() == 1)
             .collect(Collectors.toList());
         model.addAttribute("customerList", customerList);
+        model.addAttribute("today", new java.util.Date());
         return "views/sales/salesOrderForm";
     }
 
