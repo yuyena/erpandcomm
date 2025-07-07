@@ -1,5 +1,7 @@
 package kr.spring.product.vo;
 
+import java.util.Date;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -15,6 +17,14 @@ public class ProductVO {
     private int status;
     private double unit_price;
     private String unit;
-    private String product_date;   // 이 필드도 추가
+    private String product_date;   
+    
     private int current_quantity;
+    private long min_stock;          // 최소재고
+    private long max_stock;          // 최대재고
+    private Date last_in_date;       // 마지막 입고일
+    private Date last_out_date;      // 마지막 출고일
+    private long last_movement_num;  // 마지막 재고이동번호
+    private int version_num;        // 동시성 제어용 버전
+    private Date updated_date;       // 마지막 거래/수정일
 }

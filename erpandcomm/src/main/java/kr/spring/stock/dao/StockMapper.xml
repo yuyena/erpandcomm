@@ -3,128 +3,128 @@
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
 <mapper namespace="kr.spring.stock.dao.StockMapper">
-	<!-- 전체 상품 조회-->
-	<select id="selectProductList" resultType="kr.spring.product.vo.ProductVO">
-    SELECT 
-        p.product_num,
-        p.category_num,
-        pc.category_name,
-        p.product_name,
-        p.status,
-        p.unit_price,
-        p.unit,
-        p.product_date,
-        cs.current_quantity
-    FROM product p
-    JOIN product_category pc ON p.category_num = pc.category_num
-    LEFT JOIN current_stock cs ON p.product_num = cs.product_num
-    ORDER BY p.product_num DESC
-</select>
-	<!-- 상품목록 처리 -->
-	
-	<!-- 제품 검색 조건 -->
-	<sql id="productSearch">
-	    <where>
-	        <if test="category_num != null and category_num != ''">
-	            p.category_num = #{category_num}
-	        </if>
-	        <if test="keyword != null and keyword != ''">
-	            <if test="category_num != null and category_num != ''">
-	                AND
-	            </if>
-	            <if test="keyfield == 1">
-	                p.product_name LIKE '%' || #{keyword} || '%'
-	            </if>
-	            <if test="keyfield == 2">
-	                pc.category_name LIKE '%' || #{keyword} || '%'
-	            </if>
-	            <if test="keyfield == 3">
-	                p.unit LIKE '%' || #{keyword} || '%'
-	            </if>
-	            <if test="keyfield == 4">
-	                (p.product_name LIKE '%' || #{keyword} || '%' OR
-	                pc.category_name LIKE '%' || #{keyword} || '%')
-	            </if>
-	        </if>
-	        <if test="status != null and status != ''">
-	            <if test="(category_num != null and category_num != '') or (keyword != null and keyword != '')">
-	                AND
-	            </if>
-	            p.status = #{status}
-	        </if>
-	        <if test="min_price != null and min_price != ''">
-	            <if test="(category_num != null and category_num != '') or (keyword != null and keyword != '') or (status != null and status != '')">
-	                AND
-	            </if>
-	            p.unit_price >= #{min_price}
-	        </if>
-	        <if test="max_price != null and max_price != ''">
-	            <if test="(category_num != null and category_num != '') or (keyword != null and keyword != '') or (status != null and status != '') or (min_price != null and min_price != '')">
-	                AND
-	            </if>
-	            p.unit_price <![CDATA[<=]]> #{max_price}
-	        </if>
-	    </where>
-	</sql>
-	
-	<!-- 제품 정렬 -->
-	<sql id="productOrder">
-	    <if test="order == 1">
-	        ORDER BY p.product_num DESC
-	    </if>
-	    <if test="order == 2">
-	        ORDER BY p.product_name ASC
-	    </if>
-	    <if test="order == 3">
-	        ORDER BY p.unit_price DESC
-	    </if>
-	    <if test="order == 4">
-	        ORDER BY p.unit_price ASC
-	    </if>
-	    <if test="order == 5">
-	        ORDER BY p.product_date DESC
-	    </if>
-	    <if test="order == 6">
-	        ORDER BY cs.current_quantity DESC NULLS LAST
-	    </if>
-	    <if test="order == 7">
-	        ORDER BY pc.category_name ASC
-	    </if>
-	</sql>
-	
-	<!-- 제품 전체/검색 레코드 수 -->
-	<select id="selectRowCount" parameterType="map" resultType="integer">
-	    SELECT COUNT(*) 
-	    FROM product p
-	    JOIN product_category pc ON p.category_num = pc.category_num
-	    LEFT JOIN current_stock cs ON p.product_num = cs.product_num
-	    <include refid="productSearch"/>
-	</select>
-	
-	<!-- 제품 전체/검색 목록 -->
-	<select id="selectList" parameterType="map" resultType="kr.spring.product.vo.ProductVO">
-	    SELECT *
-	    FROM (SELECT a.*, rownum rnum
-	          FROM (SELECT 
-	                    p.product_num,
-	                    p.category_num,
-	                    pc.category_name,
-	                    p.product_name,
-	                    p.status,
-	                    p.unit_price,
-	                    p.unit,
-	                    p.product_date,
-	                    cs.current_quantity
-	                FROM product p
-	                JOIN product_category pc ON p.category_num = pc.category_num
-	                LEFT JOIN current_stock cs ON p.product_num = cs.product_num
-	                <include refid="productSearch"/>
-	                <include refid="productOrder"/>
-	                ) a)
-	    <![CDATA[
-	    WHERE rnum >= #{start} AND rnum <= #{end}
-	    ]]>
-	</select>
-	
-	
+
+    <!-- 재고 검색 조건 -->
+    <sql id="stockSearch">
+        <where>
+            <if test="keyword != null and keyword != ''">
+                p.product_name LIKE '%' || #{keyword} || '%'
+            </if>
+            <if test="stock_status != null and stock_status != ''">
+                <if test="keyword != null and keyword != ''">
+                    AND
+                </if>
+                <if test="stock_status == 'LOW'">
+                    cs.current_quantity <![CDATA[<=]]> p.min_stock
+                </if>
+                <if test="stock_status == 'NORMAL'">
+                    cs.current_quantity > p.min_stock AND cs.current_quantity <![CDATA[<]]> p.max_stock
+                </if>
+                <if test="stock_status == 'HIGH'">
+                    cs.current_quantity >= p.max_stock
+                </if>
+            </if>
+        </where>
+    </sql>
+
+    <!-- 재고 전체/검색 레코드 수 -->
+    <select id="selectRowCountStock" parameterType="map" resultType="integer">
+        SELECT COUNT(*) 
+        FROM product p
+        JOIN product_category pc ON p.category_num = pc.category_num
+        LEFT JOIN current_stock cs ON p.product_num = cs.product_num
+        <include refid="stockSearch"/>
+    </select>
+
+    <!-- 재고 전체/검색 목록 (페이징 포함) -->
+    <select id="selectStockList" parameterType="map" resultType="kr.spring.product.vo.ProductVO">
+        SELECT *
+        FROM (SELECT a.*, rownum rnum
+              FROM (SELECT 
+                        p.product_num,
+                        p.category_num,
+                        pc.category_name,
+                        p.product_name,
+                        p.status,
+                        p.unit_price,
+                        p.unit,
+                        p.product_date,
+                        p.min_stock,
+                        p.max_stock,
+                        cs.current_quantity,
+                        CASE 
+                            WHEN cs.current_quantity IS NULL THEN 'NO_STOCK'
+                          	WHEN cs.current_quantity <![CDATA[<=]]> p.min_stock
+                            WHEN cs.current_quantity >= p.max_stock THEN 'HIGH'
+                            ELSE 'NORMAL'
+                        END as stock_status
+                    FROM product p
+                    JOIN product_category pc ON p.category_num = pc.category_num
+                    LEFT JOIN current_stock cs ON p.product_num = cs.product_num
+                    <include refid="stockSearch"/>
+                    ORDER BY p.product_num DESC
+                    ) a)
+        <![CDATA[
+        WHERE rnum >= #{start} AND rnum <= #{end}
+        ]]>
+    </select>
+
+    <!-- 재고 상태별 개수 조회 (대시보드용) -->
+    <select id="selectStockStatusCount" resultType="map">
+        SELECT 
+            COUNT(*) as total_count,
+            COUNT(CASE WHEN cs.current_quantity IS NULL THEN 1 END) as no_stock_count,
+            COUNT(CASE WHEN cs.current_quantity <![CDATA[<=]]> p.min_stock THEN 1 END) as low_stock_count,
+            COUNT(CASE WHEN cs.current_quantity > p.min_stock AND cs.current_quantity <![CDATA[<]]> p.max_stock THEN 1 END) as normal_stock_count,
+            COUNT(CASE WHEN cs.current_quantity >= p.max_stock THEN 1 END) as high_stock_count
+        FROM product p
+        LEFT JOIN current_stock cs ON p.product_num = cs.product_num
+    </select>
+
+    <!-- 특정 상품의 재고 정보 조회 -->
+    <select id="selectStockDetail" parameterType="int" resultType="kr.spring.product.vo.ProductVO">
+        SELECT 
+            p.product_num,
+            p.category_num,
+            pc.category_name,
+            p.product_name,
+            p.status,
+            p.unit_price,
+            p.unit,
+            p.product_date,
+            p.min_stock,
+            p.max_stock,
+            cs.current_quantity,
+            CASE 
+                WHEN cs.current_quantity IS NULL THEN 'NO_STOCK'
+                WHEN cs.current_quantity <![CDATA[<=]]> p.min_stock THEN 'LOW'
+                WHEN cs.current_quantity >= p.max_stock THEN 'HIGH'
+                ELSE 'NORMAL'
+            END as stock_status
+        FROM product p
+        JOIN product_category pc ON p.category_num = pc.category_num
+        LEFT JOIN current_stock cs ON p.product_num = cs.product_num
+        WHERE p.product_num = #{product_num}
+    </select>
+
+    <!-- 재고 수량 업데이트 -->
+    <update id="updateStock" parameterType="map">
+        UPDATE current_stock 
+        SET current_quantity = #{current_quantity}
+        WHERE product_num = #{product_num}
+    </update>
+
+    <!-- 재고 정보 추가 (current_stock 테이블에 없는 경우) -->
+    <insert id="insertStock" parameterType="map">
+        INSERT INTO current_stock (product_num, current_quantity)
+        VALUES (#{product_num}, #{current_quantity})
+    </insert>
+
+    <!-- 상품의 최소/최대 재고 수정 -->
+    <update id="updateMinMaxStock" parameterType="map">
+        UPDATE product 
+        SET min_stock = #{min_stock}, max_stock = #{max_stock}
+        WHERE product_num = #{product_num}
+    </update>
+
 </mapper>
