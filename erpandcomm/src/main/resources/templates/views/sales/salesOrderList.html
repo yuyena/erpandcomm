@@ -51,17 +51,18 @@
             font-weight: 500;
         }
         .search-box {
-            background: #f5f5f7;
-            border-radius: 8px;
-            padding: 18px 18px 12px 18px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px 20px 16px 20px;
             margin-bottom: 24px;
             border: none;
+            box-shadow: none;
         }
         .search-form {
             display: flex;
-            flex-wrap: wrap;
-            gap: 16px 32px;
+            flex-direction: column;
             align-items: center;
+            gap: 14px 0;
             background: none;
         }
         .search-row {
@@ -70,30 +71,62 @@
             gap: 12px;
             background: none;
             margin-bottom: 0;
+            width: 100%;
+            justify-content: center;
         }
         .search-label {
             width: 70px;
             color: #222;
             font-weight: 600;
             font-size: 1rem;
+            text-align: right;
         }
         .search-input, .search-select {
-            background: #e9e9ee;
-            border: none;
-            border-radius: 4px;
-            padding: 7px 12px;
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 8px 12px;
             font-size: 1rem;
             min-width: 120px;
+            outline: none;
+            transition: border-color 0.2s ease;
+        }
+        .search-input:focus, .search-select:focus {
+            border-color: #007aff;
+            box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.08);
         }
         .search-btn {
-            background: #444;
+            background: #007aff;
             color: #fff;
             border: none;
-            border-radius: 4px;
-            padding: 7px 16px;
+            border-radius: 6px;
+            padding: 8px 16px;
             font-size: 0.95rem;
             font-weight: 500;
-            margin-left: 4px;
+            margin-left: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        .search-btn:hover {
+            background: #0056b3;
+        }
+        .search-form .search-row:last-child {
+            justify-content: flex-end;
+        }
+        .search-card {
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border-radius: 16px;
+            border: none;
+            background: #fff;
+            padding: 24px 18px 18px 18px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .card-header {
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 18px;
+            text-align: left;
         }
     </style>
 </head>
@@ -107,7 +140,7 @@
             </div>
             <!-- 조회 조건 카드 -->
             <section class="card-section" style="margin-bottom: 24px;">
-                <div class="search-card">
+                <div class="card search-card">
                     <div class="card-header" style="font-weight: bold; font-size: 1.1rem; margin-bottom: 18px;">조회 조건</div>
                     <div class="search-box">
                         <form class="search-form" th:action="@{/sales/orderList}" method="get">
