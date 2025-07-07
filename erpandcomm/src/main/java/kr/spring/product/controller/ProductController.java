@@ -56,11 +56,6 @@ public class ProductController {
 	                           @RequestParam(value = "max_price", required = false) String max_price,
 	                           Model model) {
 
-	    
-	    log.debug("파라미터 - pageNum:{}, order:{}, category_num:{}", pageNum, order, category_num);
-	    log.debug("검색조건 - keyfield:{}, keyword:{}, min_price:{}, max_price:{}", keyfield, keyword, min_price, max_price);
-
-	    // 나머지 코드는 그대로...
 	    Map<String, Object> map = new HashMap<String, Object>();
 	    map.put("category_num", category_num);
 	    map.put("keyfield", keyfield);
@@ -83,12 +78,10 @@ public class ProductController {
 	        map.put("end", page.getEndRow());
 
 	        list = productService.selectList(map);
-	        log.debug("조회된 리스트 크기: {}", list != null ? list.size() : "null");
 	    }
 
 	    // 카테고리 목록 조회
 	    List<Map<String, Object>> categoryList = productService.selectCategoryList();
-	    log.debug("카테고리 목록 크기: {}", categoryList != null ? categoryList.size() : "null");
 
 	    model.addAttribute("count", count);
 	    model.addAttribute("list", list);
