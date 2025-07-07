@@ -16,7 +16,6 @@
     <div class="dashboard-wrapper">
 		<!-- 사이드바 -->
 		<th:block th:replace="fragments/nav_sidebar :: sidebar"></th:block>
-	</div>
 	<main class="main-content">
 
     <div class="header">
@@ -79,8 +78,10 @@
         </div>
     </div>
     </main>
+    </div>
 </div>
-    <script>
+<div layout:fragment="pageScript">
+<script type="text/javascript">
         // 더미 데이터 (실제로는 서버에서 가져올 데이터)
         let inventoryData = [
             {
@@ -418,5 +419,6 @@
             }, 1000);
         }
     </script>
+    </div>
 </body>
 </html>

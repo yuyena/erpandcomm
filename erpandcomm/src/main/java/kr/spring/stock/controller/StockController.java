@@ -33,7 +33,7 @@ public class StockController {
   		return new ProductVO();
   	}
     // 재고 목록 페이지
-    @GetMapping("/stocklist")
+    @GetMapping("/stock")
     public String stockList(@RequestParam(value="pageNum", defaultValue="1") int currentPage,
                            @RequestParam(value="keyword", defaultValue="") String keyword,
                            @RequestParam(value="stock_status", defaultValue="") String stock_status,
@@ -65,7 +65,7 @@ public class StockController {
         model.addAttribute("keyword", keyword);
         model.addAttribute("stock_status", stock_status);
         
-        return "stock/stockList";
+        return "views/stock/stockList";
     }
     
     // 대시보드 페이지
