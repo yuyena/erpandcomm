@@ -7,10 +7,15 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import kr.spring.chat.service.ChatService;
 import kr.spring.chat.vo.ChatMemberVO;
 import kr.spring.chat.vo.ChatMessageReadVO;
@@ -18,6 +23,7 @@ import kr.spring.chat.vo.ChatMessageVO;
 import kr.spring.chat.vo.ChatRoomVO;
 import kr.spring.member.service.MemberService;
 import kr.spring.member.vo.MemberVO;
+import kr.spring.util.ValidationUtil;
 import lombok.extern.slf4j.Slf4j;
 
 @Controller
@@ -51,12 +57,29 @@ public class ChatUserController {
 	// 채팅방 생성 폼
 //	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/createRoom")
-	public String form() {
+	public String form(Model model) {
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		List<MemberVO> userList = memberService.selectMemberList(map);
+		model.addAttribute("userList", userList);
 		return "views/chat/createRoom";
 	}
 	
 	// 채팅방 생성
-	
+	@PostMapping("/createRoom")
+	public String submit(@Valid ChatRoomVO chatRoomVO, @RequestParam(value="memberNums", required=false) List<Long> memberNums,
+						 BindingResult result, Model model, HttpServletRequest request) {
+		
+		if (result.hasErrors()) {
+			ValidationUtil.printErrorFields(result);
+			return form(model);
+		} // if
+		
+		chatService.insertRoom(chatRoomVO);
+		chatService.insertMember(null);
+		
+		return "views/common/resultView";
+	}
 	
 	// 채팅방 목록
 //	@PreAuthorize("isAuthenticated()")

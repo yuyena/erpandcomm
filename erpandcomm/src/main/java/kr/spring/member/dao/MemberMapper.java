@@ -26,7 +26,7 @@ public interface MemberMapper {
 	@Update("UPDATE spmember SET nick_name=#{nick_name} WHERE mem_num=#{mem_num}")
 	public void updateMember(MemberVO member);
 	public void updateMemberDetail(MemberVO member);
-	@Update("UPDATE spmember SET passwd=#{passwd} WHERE mem_num=#{mem_num}")
+	@Update("UPDATE euser_detail SET passwd=#{passwd} WHERE user_num=#{user_num}")
 	public void updatePassword(MemberVO member);
 	public void deleteMember(Long mem_num);
 	public void deleteMemberDetail(Long mem_num);
