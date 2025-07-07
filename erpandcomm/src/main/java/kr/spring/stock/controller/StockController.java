@@ -30,7 +30,7 @@ public class StockController {
     //자바빈(VO) 초기화
   	@ModelAttribute
   	public ProductVO initCommand() {
-  		return new ProductVO();
+  		return  new ProductVO();
   	}
     // 재고 목록 페이지
     @GetMapping("/stock")
