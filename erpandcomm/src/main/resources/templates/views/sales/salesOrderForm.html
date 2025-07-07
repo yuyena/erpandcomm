@@ -7,6 +7,106 @@
     <title>판매주문 등록/수정</title>
     <link rel="stylesheet" th:href="@{/assets/css/main.css}">
     <link rel="stylesheet" th:href="@{/assets/css/sh.css}">
+    <style>
+        .sh-box-form {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+            padding: 32px 24px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .sh-box-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+        .sh-box-row label {
+            width: 110px;
+            font-weight: 600;
+            color: #333;
+            margin-right: 12px;
+        }
+        .sh-box-row input,
+        .sh-box-row select {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 15px;
+            margin-right: 8px;
+            background: #f9f9f9;
+            transition: border 0.2s;
+        }
+        .sh-box-row input[readonly] {
+            background: #f1f3f6;
+            color: #888;
+        }
+        .product-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 8px;
+            background: #fafbfc;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 1px 6px rgba(0,0,0,0.04);
+        }
+        .product-table th, .product-table td {
+            padding: 10px 8px;
+            text-align: center;
+            border-bottom: 1px solid #eaeaea;
+        }
+        .product-table th {
+            background: #f3f6fa;
+            font-weight: 700;
+            color: #222;
+        }
+        .product-table tr:last-child td {
+            border-bottom: none;
+        }
+        .btn {
+            border: none;
+            border-radius: 8px;
+            padding: 10px 22px;
+            font-size: 15px;
+            font-weight: 600;
+            background: #4f8cff;
+            color: #fff;
+            margin-right: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-success {
+            background: #2ecc71;
+        }
+        .btn:hover {
+            background: #357ae8;
+        }
+        .btn-success:hover {
+            background: #27ae60;
+        }
+        .total-row {
+            justify-content: flex-end;
+            margin-top: 18px;
+        }
+        .total-label {
+            font-size: 17px;
+            font-weight: 700;
+            color: #222;
+            margin-right: 10px;
+        }
+        .total-input {
+            font-size: 18px;
+            font-weight: 700;
+            color: #2ecc71;
+            background: #f1f3f6;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 16px;
+            width: 160px;
+            text-align: right;
+        }
+    </style>
 </head>
 <body>
 <div layout:fragment="content" class="page-main">
@@ -19,6 +119,10 @@
             <section class="card-section">
                 <div class="sh-box">
                     <form class="sh-box-form" th:action="@{/sales/orderInsert}" method="post">
+                        <div class="sh-box-row">
+                            <label>주문일</label>
+                            <input type="text" name="order_date" th:value="${#dates.format(today, 'yyyy-MM-dd')}" readonly />
+                        </div>
                         <div class="sh-box-row">
                             <label>거래처(고객)</label>
                             <select name="client_num" required>
@@ -61,6 +165,10 @@
                                 </tbody>
                             </table>
                         </div>
+                        <div class="sh-box-row total-row">
+                            <span class="total-label">총금액</span>
+                            <input type="text" id="totalPriceInput" class="total-input" name="total_price" value="0원" readonly />
+                        </div>
                         <div class="sh-box-actions">
                             <button type="submit" class="btn btn-success" id="submitOrderBtn">주문 생성</button>
                             <a th:href="@{/sales/orderList}" class="btn">목록</a>
@@ -80,11 +188,16 @@ document.addEventListener('DOMContentLoaded', function() {
     const quantityInput = document.getElementById('quantityInput');
     const addBtn = document.getElementById('addProductBtn');
     const tableBody = document.querySelector('#orderDetailsTable tbody');
+    const totalPriceInput = document.getElementById('totalPriceInput');
     let orderDetails = [];
 
     function addComma(num) {
         if (!num) return '';
         return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+    function formatPrice(num) {
+        return addComma(Math.round(num)) + '원';
     }
 
     productSelect.addEventListener('change', function() {
@@ -98,7 +211,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!quantityInput.value) { alert('수량을 입력해주세요.'); return; }
         if (!unitInput.value) { alert('단위가 없습니다.'); return; }
         if (!unitPriceInput.value) { alert('단가가 없습니다.'); return; }
-        // 주문 상세에 추가
         const selected = productSelect.options[productSelect.selectedIndex];
         orderDetails.push({
             productNum: productSelect.value,
@@ -108,7 +220,7 @@ document.addEventListener('DOMContentLoaded', function() {
             unitPrice: unitPriceInput.value
         });
         renderTable();
-        // 입력란 초기화
+        updateTotalPrice();
         productSelect.selectedIndex = 0;
         unitInput.value = '';
         quantityInput.value = '';
@@ -122,7 +234,7 @@ document.addEventListener('DOMContentLoaded', function() {
             row.innerHTML = `<td><input type='hidden' name='details[${idx}].product_num' value='${item.productNum}'/>${item.productName}</td>
                 <td><input type='hidden' name='details[${idx}].quantity' value='${item.quantity}'/>${item.quantity}</td>
                 <td><input type='hidden' name='details[${idx}].unit' value='${item.unit}'/>${item.unit}</td>
-                <td><input type='hidden' name='details[${idx}].unit_price' value='${item.unitPrice}'/>${addComma(item.unitPrice)}원</td>
+                <td><input type='hidden' name='details[${idx}].unit_price' value='${item.unitPrice}'/>${formatPrice(item.unitPrice)}</td>
                 <td><button type='button' onclick='removeDetail(${idx})'>삭제</button></td>`;
             tableBody.appendChild(row);
         });
@@ -130,6 +242,14 @@ document.addEventListener('DOMContentLoaded', function() {
     window.removeDetail = function(idx) {
         orderDetails.splice(idx, 1);
         renderTable();
+        updateTotalPrice();
+    }
+    function updateTotalPrice() {
+        let total = 0;
+        orderDetails.forEach(item => {
+            total += Number(item.unitPrice) * Number(item.quantity);
+        });
+        totalPriceInput.value = formatPrice(total);
     }
 });
 </script>
