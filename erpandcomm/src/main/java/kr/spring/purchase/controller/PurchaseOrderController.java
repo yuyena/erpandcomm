@@ -20,6 +20,8 @@ import kr.spring.purchase.vo.PurchaseOrderDetailVO;
 import kr.spring.member.vo.PrincipalDetails;
 import kr.spring.client.service.ClientService;
 import kr.spring.client.vo.ClientVO;
+import kr.spring.product.service.ProductService;
+import kr.spring.product.vo.ProductVO;
 
 @Controller
 @RequestMapping("/purchase")
@@ -29,6 +31,9 @@ public class PurchaseOrderController {
 
     @Autowired
     private ClientService clientService;
+
+    @Autowired
+    private ProductService productService;
 
     // 구매주문 목록
     @GetMapping("/orderList")
@@ -47,6 +52,9 @@ public class PurchaseOrderController {
             .filter(c -> c.getClient_type() == 0)
             .collect(Collectors.toList());
         model.addAttribute("supplierList", supplierList);
+        // 상품 목록도 전달
+        List<ProductVO> productList = productService.selectProductList();
+        model.addAttribute("productList", productList);
         return "views/purchase/purchaseOrderForm";
     }
 
@@ -76,6 +84,16 @@ public class PurchaseOrderController {
     public String orderEdit(@RequestParam long purchase_order_num, Model model) {
         PurchaseOrderVO order = purchaseOrderService.selectPurchaseOrder(purchase_order_num);
         model.addAttribute("purchaseOrderVO", order);
+        
+        // 공급업체만 필터링해서 전달
+        List<ClientVO> supplierList = clientService.getClientList().stream()
+            .filter(c -> c.getClient_type() == 0)
+            .collect(Collectors.toList());
+        model.addAttribute("supplierList", supplierList);
+        
+        // 상품 목록도 전달
+        List<ProductVO> productList = productService.selectProductList();
+        model.addAttribute("productList", productList);
         return "views/purchase/purchaseOrderForm";
     }
 

@@ -93,6 +93,16 @@ public class SalesOrderController {
     public String orderEdit(@RequestParam long sales_order_num, Model model) {
         SalesOrderVO order = salesOrderService.selectSalesOrder(sales_order_num);
         model.addAttribute("salesOrderVO", order);
+        
+        // 고객만 필터링해서 전달
+        List<ClientVO> customerList = clientService.getClientList().stream()
+            .filter(c -> c.getClient_type() == 1)
+            .collect(Collectors.toList());
+        model.addAttribute("customerList", customerList);
+        
+        // 상품 목록도 전달
+        List<ProductVO> productList = productService.selectProductList();
+        model.addAttribute("productList", productList);
         return "views/sales/salesOrderForm";
     }
 

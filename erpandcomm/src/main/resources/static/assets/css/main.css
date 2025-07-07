@@ -25,24 +25,27 @@ html, body {
 
 .dashboard-wrapper {
     display: flex;
+    flex-direction: row;
     width: 100vw;
     min-width: 0;
     margin: 0;
     padding: 0;
+    min-height: 100vh;
     overflow-x: hidden;
+    overflow: visible !important;
 }
 
 .sidebar {
     width: 240px;
     min-width: 220px;
     flex-shrink: 0;
-    min-height: 100vh;
     height: 100vh;
     border-radius: 18px 0 18px 0;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     background: linear-gradient(180deg, #6ea8fe 0%, #5b97f7 100%);
+    overflow: visible !important;
 }
 
 .sidebar-logo {
@@ -158,43 +161,28 @@ html, body {
     transform: rotate(90deg);
 }
 
-.submenu {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.3s ease-in-out;
-    opacity: 0;
-}
-
+.submenu { display: none; }
 .submenu.open {
-    max-height: 500px;
-    opacity: 1;
+    display: block !important;
+    position: relative !important;
+    z-index: 9999 !important;
+    background: #fffbe7 !important;
+    min-height: 40px !important;
+    visibility: visible !important;
 }
-
-.submenu li {
-    margin: 0 0 2px 0;
-}
-
 .submenu li a {
-    display: flex;
-    align-items: center;
-    padding: 12px 0 12px 36px;
-    color: #fff;
-    font-size: 1.05rem;
+    display: block;
+    color: #2176e8;
+    padding: 10px 24px;
+    border-radius: 6px;
+    font-size: 1rem;
     text-decoration: none;
-    border-radius: 8px;
-    font-weight: 500;
-    transition: background 0.15s, font-weight 0.15s, color 0.15s;
-    margin: 0 4px;
-    text-align: left;
-    letter-spacing: 0.01em;
-    white-space: nowrap;
+    margin: 2px 8px;
+    transition: background 0.15s, color 0.15s;
 }
-
-.submenu li a.active,
-.submenu li a:hover {
-    background: #fff;
-    color: #388bfa;
-    font-weight: 700;
+.submenu li a:hover, .submenu li a.active {
+    background: #2176e8;
+    color: #fff;
 }
 
 .sidebar-bottom {
@@ -293,10 +281,10 @@ html, body {
     background: #f8fbff;
     border-radius: 0 0 18px 0;
     padding: 40px 24px 0 24px;
-    height: 100%;
-    min-height: 100%;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
+    overflow-y: auto;
 }
 
 .main-header {
