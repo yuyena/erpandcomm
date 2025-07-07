@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout_basic}">
+<head>
+    <meta charset="UTF-8">
+    <title>상품 목록</title>
+    <script type="text/javascript" th:src="@{/assets/js/jquery-3.7.1.min.js}"></script>
+    <link rel="stylesheet" th:href="@{/assets/css/main.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/yn/stock.css}">
+
+</head>
+<body>
+<div layout:fragment="content" class="page-main">
+    <div class="dashboard-wrapper">
+		<!-- 사이드바 -->
+		<th:block th:replace="fragments/nav_sidebar :: sidebar"></th:block>
+	</div>
+	<main class="main-content">
+
+    <div class="header">
+        <h1>📦 재고관리 대시보드</h1>
+    </div>
+
+    <div class="dashboard-container">
+        <!-- 알림 영역 -->
+        <div id="notificationArea" class="notification-area"></div>
+
+        <!-- 검색 및 필터 -->
+        <div class="control-panel">
+            <h2>🔍 검색 및 필터</h2>
+            <div class="search-filters">
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="상품명 또는 상품번호로 검색...">
+                </div>
+                <div class="filter-buttons">
+                    <button class="filter-btn active" data-filter="all">전체</button>
+                    <button class="filter-btn" data-filter="low">재고부족</button>
+                    <button class="filter-btn" data-filter="normal">정상</button>
+                    <button class="filter-btn" data-filter="high">과다재고</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 재고 테이블 -->
+        <div class="inventory-table">
+            <div class="table-header">
+                <h2>📋 재고 현황</h2>
+            </div>
+            <div class="table-container">
+                <table id="inventoryTable">
+                    <thead>
+                        <tr>
+                            <th>상품번호</th>
+                            <th>상품명</th>
+                            <th>현재재고</th>
+                            <th>재고율</th>
+                            <th>최소재고</th>
+                            <th>최대재고</th>
+                            <th>상태</th>
+                            <th>최종입고일</th>
+                            <th>최종출고일</th>
+                            <th>작업</th>
+                        </tr>
+                    </thead>
+                    <tbody id="inventoryBody">
+                        <!-- 데이터가 여기에 동적으로 추가됩니다 -->
+                    </tbody>
+                </table>
+                <div id="loadingMessage" class="loading" style="display: none;">
+                    <div class="spinner"></div>
+                    데이터를 불러오는 중...
+                </div>
+                <div id="noDataMessage" class="no-data" style="display: none;">
+                    표시할 데이터가 없습니다.
+                </div>
+            </div>
+        </div>
+    </div>
+    </main>
+</div>
+    <script>
+        // 더미 데이터 (실제로는 서버에서 가져올 데이터)
+        let inventoryData = [
+            {
+                product_num: 1001,
+                product_name: '갤럭시 S24',
+                current_quantity: 15,
+                min_stock: 10,
+                max_stock: 100,
+                last_in_date: '2024-01-10',
+                last_out_date: '2024-01-12',
+                version_num: 1,
+                updated_date: '2024-01-12'
+            },
+            {
+                product_num: 1002,
+                product_name: '아이폰 15',
+                current_quantity: 5,
+                min_stock: 10,
+                max_stock: 80,
+                last_in_date: '2024-01-08',
+                last_out_date: '2024-01-11',
+                version_num: 1,
+                updated_date: '2024-01-11'
+            },
+            {
+                product_num: 1003,
+                product_name: '갤럭시 탭 S9',
+                current_quantity: 25,
+                min_stock: 15,
+                max_stock: 50,
+                last_in_date: '2024-01-09',
+                last_out_date: '2024-01-10',
+                version_num: 1,
+                updated_date: '2024-01-10'
+            },
+            {
+                product_num: 1004,
+                product_name: '에어팟 프로',
+                current_quantity: 55,
+                min_stock: 20,
+                max_stock: 50,
+                last_in_date: '2024-01-07',
+                last_out_date: '2024-01-09',
+                version_num: 1,
+                updated_date: '2024-01-09'
+            },
+            {
+                product_num: 1005,
+                product_name: '갤럭시 워치 6',
+                current_quantity: 30,
+                min_stock: 15,
+                max_stock: 60,
+                last_in_date: '2024-01-06',
+                last_out_date: '2024-01-08',
+                version_num: 1,
+                updated_date: '2024-01-08'
+            }
+        ];
+
+        // 필터된 데이터
+        let filteredData = [...inventoryData];
+
+        // 상태 계산 함수
+        function getStockStatus(current, min, max) {
+            if (current < min) return 'low';
+            if (current > max) return 'high';
+            return 'normal';
+        }
+
+        // 재고율 계산 함수
+        function getStockPercentage(current, min, max) {
+            return Math.round((current / max) * 100);
+        }
+
+        // 알림 관리 객체
+        const NotificationManager = {
+            notifications: [],
+            
+            show(type, title, message, duration = 5000) {
+                const notification = this.create(type, title, message);
+                this.notifications.push(notification);
+                
+                // 자동 제거
+                setTimeout(() => {
+                    this.remove(notification.id);
+                }, duration);
+                
+                // 재고 부족 알림인 경우 브라우저 알림도 표시
+                if (type === 'error' && title.includes('재고 부족')) {
+                    this.showBrowserNotification(title, message);
+                }
+            },
+            
+            create(type, title, message) {
+                const id = Date.now() + Math.random();
+                const notificationArea = document.getElementById('notificationArea');
+                
+                const notification = document.createElement('div');
+                notification.className = `notification ${type}`;
+                notification.id = `notification-${id}`;
+                
+                notification.innerHTML = `
+                    <div class="notification-header">
+                        <span class="notification-title">${title}</span>
+                        <button class="notification-close" onclick="NotificationManager.remove('${id}')">&times;</button>
+                    </div>
+                    <div class="notification-message">${message}</div>
+                    <div class="notification-time">${new Date().toLocaleTimeString()}</div>
+                `;
+                
+                notificationArea.appendChild(notification);
+                
+                return { id, element: notification };
+            },
+            
+            remove(id) {
+                const notification = document.getElementById(`notification-${id}`);
+                if (notification) {
+                    notification.classList.add('slide-out');
+                    setTimeout(() => {
+                        notification.remove();
+                        this.notifications = this.notifications.filter(n => n.id !== id);
+                    }, 300);
+                }
+            },
+            
+            showBrowserNotification(title, message) {
+                if ('Notification' in window) {
+                    if (Notification.permission === 'granted') {
+                        new Notification(title, {
+                            body: message,
+                            icon: '📦',
+                            tag: 'inventory-alert'
+                        });
+                    } else if (Notification.permission !== 'denied') {
+                        Notification.requestPermission().then(permission => {
+                            if (permission === 'granted') {
+                                new Notification(title, {
+                                    body: message,
+                                    icon: '📦',
+                                    tag: 'inventory-alert'
+                                });
+                            }
+                        });
+                    }
+                }
+            },
+            
+            clear() {
+                this.notifications.forEach(notification => {
+                    notification.element.remove();
+                });
+                this.notifications = [];
+            }
+        };
+
+        // 재고 부족 체크 및 알림 함수
+        function checkLowStock() {
+            const lowStockItems = inventoryData.filter(item => 
+                item.current_quantity < item.min_stock
+            );
+            
+            if (lowStockItems.length > 0) {
+                lowStockItems.forEach(item => {
+                    const shortage = item.min_stock - item.current_quantity;
+                    NotificationManager.show(
+                        'error',
+                        '🚨 재고 부족 알림',
+                        `${item.product_name} (${item.product_num})<br>
+                         현재: ${item.current_quantity}개 | 최소: ${item.min_stock}개<br>
+                         <strong>${shortage}개 부족</strong>`,
+                        8000
+                    );
+                });
+            }
+        }
+
+        // 재고 변동 시뮬레이션 함수 (실제로는 WebSocket으로 받을 데이터)
+        function simulateStockChange() {
+            const randomIndex = Math.floor(Math.random() * inventoryData.length);
+            const item = inventoryData[randomIndex];
+            const change = Math.floor(Math.random() * 10) - 5; // -5 ~ +4
+            
+            const oldQuantity = item.current_quantity;
+            item.current_quantity = Math.max(0, item.current_quantity + change);
+            
+            const status = getStockStatus(item.current_quantity, item.min_stock, item.max_stock);
+            const oldStatus = getStockStatus(oldQuantity, item.min_stock, item.max_stock);
+            
+            // 상태 변경 알림
+            if (status !== oldStatus) {
+                let message = '';
+                let type = 'success';
+                
+                if (status === 'low') {
+                    message = `${item.product_name}의 재고가 부족합니다! (${item.current_quantity}개)`;
+                    type = 'error';
+                } else if (status === 'normal' && oldStatus === 'low') {
+                    message = `${item.product_name}의 재고가 정상 수준으로 회복되었습니다. (${item.current_quantity}개)`;
+                    type = 'success';
+                } else if (status === 'high') {
+                    message = `${item.product_name}의 재고가 과다합니다. (${item.current_quantity}개)`;
+                    type = 'warning';
+                }
+                
+                if (message) {
+                    NotificationManager.show(type, '재고 상태 변경', message);
+                }
+            }
+            
+            // 테이블 업데이트
+            filterData();
+        }
+
+        // 테이블 렌더링 함수
+        function renderTable() {
+            const tbody = document.getElementById('inventoryBody');
+            const noDataMessage = document.getElementById('noDataMessage');
+            
+            if (filteredData.length === 0) {
+                tbody.innerHTML = '';
+                noDataMessage.style.display = 'block';
+                return;
+            }
+
+            noDataMessage.style.display = 'none';
+            
+            tbody.innerHTML = filteredData.map(item => {
+                const status = getStockStatus(item.current_quantity, item.min_stock, item.max_stock);
+                const percentage = getStockPercentage(item.current_quantity, item.min_stock, item.max_stock);
+                const isLowStock = status === 'low';
+                
+                return `
+                    <tr class="${isLowStock ? 'low-stock-row' : ''}" data-product-num="${item.product_num}">
+                        <td style="position: relative;">
+                            ${item.product_num}
+                            ${isLowStock ? '<span class="alert-indicator">!</span>' : ''}
+                        </td>
+                        <td>${item.product_name}</td>
+                        <td><strong>${item.current_quantity}</strong></td>
+                        <td>
+                            <div class="quantity-bar">
+                                <div class="quantity-fill fill-${status}" style="width: ${Math.min(percentage, 100)}%"></div>
+                            </div>
+                            ${percentage}%
+                        </td>
+                        <td>${item.min_stock}</td>
+                        <td>${item.max_stock}</td>
+                        <td>
+                            <span class="stock-status status-${status}">
+                                ${status === 'low' ? '부족' : status === 'high' ? '과다' : '정상'}
+                            </span>
+                        </td>
+                        <td>${item.last_in_date || '-'}</td>
+                        <td>${item.last_out_date || '-'}</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn btn-view" onclick="viewProduct(${item.product_num})">보기</button>
+                                <button class="btn btn-edit" onclick="editProduct(${item.product_num})">수정</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // 검색 함수
+        function filterData() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const activeFilter = document.querySelector('.filter-btn.active').dataset.filter;
+            
+            filteredData = inventoryData.filter(item => {
+                const matchesSearch = item.product_name.toLowerCase().includes(searchTerm) || 
+                                    item.product_num.toString().includes(searchTerm);
+                
+                if (activeFilter === 'all') return matchesSearch;
+                
+                const status = getStockStatus(item.current_quantity, item.min_stock, item.max_stock);
+                return matchesSearch && status === activeFilter;
+            });
+            
+            renderTable();
+        }
+
+        // 상품 보기 함수
+        function viewProduct(productNum) {
+            alert(`상품 ${productNum} 상세 보기`);
+            // 실제로는 모달이나 상세 페이지로 이동
+        }
+
+        // 상품 수정 함수
+        function editProduct(productNum) {
+            alert(`상품 ${productNum} 수정`);
+            // 실제로는 수정 폼으로 이동
+        }
+
+        // 이벤트 리스너 설정
+        document.addEventListener('DOMContentLoaded', function() {
+            // 검색 입력 이벤트
+            document.getElementById('searchInput').addEventListener('input', filterData);
+            
+            // 필터 버튼 이벤트
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    filterData();
+                });
+            });
+            
+            renderTable();
+            
+            // 페이지 로드 시 재고 부족 체크
+            checkLowStock();
+            
+            // 브라우저 알림 권한 요청
+            if ('Notification' in window && Notification.permission === 'default') {
+                Notification.requestPermission();
+            }
+            
+            // 실시간 재고 변동 시뮬레이션 (10초마다)
+            setInterval(simulateStockChange, 10000);
+        });
+
+        // 데이터 새로고침 함수 (실제로는 서버에서 데이터를 가져옴)
+        function refreshData() {
+            const loadingMessage = document.getElementById('loadingMessage');
+            loadingMessage.style.display = 'block';
+            
+            // 실제로는 fetch API를 사용하여 서버에서 데이터 가져오기
+            setTimeout(() => {
+                loadingMessage.style.display = 'none';
+                renderTable();
+                updateStats();
+            }, 1000);
+        }
+    </script>
+</body>
+</html>

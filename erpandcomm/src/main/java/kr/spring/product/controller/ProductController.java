@@ -46,7 +46,7 @@ public class ProductController {
 	}
 	
 	
-	@GetMapping("/productList")
+	@GetMapping("/productView")
 	public String getProductList(@RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
 	                           @RequestParam(value = "order", defaultValue = "1") int order,
 	                           @RequestParam(value = "category_num", defaultValue = "") String category_num,
