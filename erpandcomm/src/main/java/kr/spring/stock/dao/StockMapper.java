@@ -3,8 +3,10 @@ package kr.spring.stock.dao;
 import java.util.List;
 import java.util.Map;
 
-import kr.spring.product.vo.ProductVO;
+import org.apache.ibatis.annotations.Mapper;
 
+import kr.spring.product.vo.ProductVO;
+@Mapper
 public interface StockMapper {
 	// 재고 전체/검색 레코드 수
 	public Integer selectRowCountStock(Map<String, Object> map);

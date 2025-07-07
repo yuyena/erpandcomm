@@ -15,13 +15,13 @@
                     AND
                 </if>
                 <if test="stock_status == 'LOW'">
-                    cs.current_quantity <![CDATA[<=]]> p.min_stock
+                    cs.current_quantity <![CDATA[<=]]> cs.min_stock
                 </if>
                 <if test="stock_status == 'NORMAL'">
-                    cs.current_quantity > p.min_stock AND cs.current_quantity <![CDATA[<]]> p.max_stock
+                    cs.current_quantity > cs.min_stock AND cs.current_quantity <![CDATA[<]]> cs.max_stock
                 </if>
                 <if test="stock_status == 'HIGH'">
-                    cs.current_quantity >= p.max_stock
+                    cs.current_quantity >= cs.max_stock
                 </if>
             </if>
         </where>
@@ -49,13 +49,13 @@
                         p.unit_price,
                         p.unit,
                         p.product_date,
-                        p.min_stock,
-                        p.max_stock,
+                        cs.min_stock,
+                        cs.max_stock,
                         cs.current_quantity,
                         CASE 
                             WHEN cs.current_quantity IS NULL THEN 'NO_STOCK'
-                          	WHEN cs.current_quantity <![CDATA[<=]]> p.min_stock
-                            WHEN cs.current_quantity >= p.max_stock THEN 'HIGH'
+                          	WHEN cs.current_quantity <![CDATA[<=]]> cs.min_stock THEN 'LOW'
+                            WHEN cs.current_quantity >= cs.max_stock THEN 'HIGH'
                             ELSE 'NORMAL'
                         END as stock_status
                     FROM product p
@@ -74,9 +74,9 @@
         SELECT 
             COUNT(*) as total_count,
             COUNT(CASE WHEN cs.current_quantity IS NULL THEN 1 END) as no_stock_count,
-            COUNT(CASE WHEN cs.current_quantity <![CDATA[<=]]> p.min_stock THEN 1 END) as low_stock_count,
-            COUNT(CASE WHEN cs.current_quantity > p.min_stock AND cs.current_quantity <![CDATA[<]]> p.max_stock THEN 1 END) as normal_stock_count,
-            COUNT(CASE WHEN cs.current_quantity >= p.max_stock THEN 1 END) as high_stock_count
+            COUNT(CASE WHEN cs.current_quantity <![CDATA[<=]]> cs.min_stock THEN 1 END) as low_stock_count,
+            COUNT(CASE WHEN cs.current_quantity > cs.min_stock AND cs.current_quantity <![CDATA[<]]> cs.max_stock THEN 1 END) as normal_stock_count,
+            COUNT(CASE WHEN cs.current_quantity >= cs.max_stock THEN 1 END) as high_stock_count
         FROM product p
         LEFT JOIN current_stock cs ON p.product_num = cs.product_num
     </select>
@@ -92,13 +92,13 @@
             p.unit_price,
             p.unit,
             p.product_date,
-            p.min_stock,
-            p.max_stock,
+            cs.min_stock,
+            cs.max_stock,
             cs.current_quantity,
             CASE 
                 WHEN cs.current_quantity IS NULL THEN 'NO_STOCK'
-                WHEN cs.current_quantity <![CDATA[<=]]> p.min_stock THEN 'LOW'
-                WHEN cs.current_quantity >= p.max_stock THEN 'HIGH'
+                WHEN cs.current_quantity <![CDATA[<=]]> cs.min_stock THEN 'LOW'
+                WHEN cs.current_quantity >= cs.max_stock THEN 'HIGH'
                 ELSE 'NORMAL'
             END as stock_status
         FROM product p
