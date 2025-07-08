@@ -12,9 +12,9 @@
             background: #fff;
             border-radius: 16px;
             box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-            padding: 35px 25px 30px 25px;
-            max-width: 1094px;
-            min-width: 625px;
+            padding: 40px 40px 32px 40px;
+            max-width: 1500px;
+            min-width: 1100px;
             margin: 40px auto 0 auto;
             display: flex;
             flex-direction: column;
@@ -23,45 +23,53 @@
         .sh-box-row {
             display: flex;
             align-items: center;
-            margin-bottom: 14px;
+            margin-bottom: 18px;
             width: 100%;
+            white-space: nowrap;
         }
         .sh-box-row label {
-            width: 100px;
+            width: 140px;
             font-weight: 600;
             color: #333;
-            margin-right: 10px;
-            font-size: 14px;
+            margin-right: 18px;
+            font-size: 15px;
+            white-space: nowrap;
         }
         .sh-box-row input,
         .sh-box-row select {
             border: 1px solid #e0e0e0;
-            border-radius: 7px;
-            padding: 7px 10px;
-            font-size: 14px;
-            margin-right: 7px;
+            border-radius: 8px;
+            font-size: 15px;
+            padding: 0 18px;
+            margin-right: 10px;
             background: #f9f9f9;
             transition: border 0.2s;
+            box-sizing: border-box;
         }
         .sh-box-row input[readonly] {
             background: #f1f3f6;
             color: #888;
         }
+        #productSelect {
+            width: 260px;
+            min-width: 200px;
+            max-width: 500px;
+        }
         .product-table {
             width: 100%;
             border-collapse: separate;
             border-spacing: 0;
-            margin-top: 6px;
+            margin-top: 8px;
             background: #fafbfc;
-            border-radius: 10px;
+            border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+            box-shadow: 0 1px 6px rgba(0,0,0,0.04);
         }
         .product-table th, .product-table td {
-            padding: 8px 5px;
+            padding: 12px 8px;
             text-align: center;
             border-bottom: 1px solid #eaeaea;
-            font-size: 14px;
+            font-size: 15px;
         }
         .product-table th {
             background: #f3f6fa;
@@ -71,30 +79,9 @@
         .product-table tr:last-child td {
             border-bottom: none;
         }
-        .btn {
-            border: none;
-            border-radius: 7px;
-            padding: 8px 18px;
-            font-size: 15px;
-            font-weight: 600;
-            background: #4f8cff;
-            color: #fff;
-            margin-right: 10px;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        .btn-success {
-            background: #2ecc71;
-        }
-        .btn:hover {
-            background: #357ae8;
-        }
-        .btn-success:hover {
-            background: #27ae60;
-        }
         .total-row {
             justify-content: flex-end;
-            margin-top: 16px;
+            margin-top: 24px;
             width: 100%;
         }
         .total-label {
@@ -109,16 +96,17 @@
             color: #2ecc71;
             background: #f1f3f6;
             border: none;
-            border-radius: 7px;
-            padding: 7px 14px;
-            width: 120px;
+            border-radius: 8px;
+            padding: 0 18px;
+            width: 180px;
             text-align: right;
+            box-sizing: border-box;
         }
         .sh-box-actions {
             display: flex;
             justify-content: center;
             width: 100%;
-            margin-top: 18px;
+            margin-top: 28px;
         }
         #productSelect, #quantityInput, #unitInput, #unitPriceInput, #addProductBtn {
             min-width: 60px;
@@ -146,7 +134,7 @@
         <th:block th:replace="fragments/nav_sidebar :: sidebar"></th:block>
         <main class="main-content">
             <div class="main-header">
-                <h2>ERP 관리</h2>
+                <h2>ERP 관리 - 구매주문 작성</h2>
             </div>
             <section class="card-section">
                 <div class="sh-box">
@@ -180,8 +168,8 @@
                                 </option>
                             </select>
                             <input type="number" id="quantityInput" placeholder="수량" min="1" style="width:80px;">
-                            <input type="text" id="unitInput" placeholder="단위" readonly style="width:40px;">
-                            <input type="number" id="unitPriceInput" placeholder="단가" min="0" style="width:100px;" readonly>
+                            <input type="text" id="unitInput" placeholder="단위" readonly style="width:40px; border:none; background:transparent; padding:0; text-align:center; font-size:15px; box-shadow:none; outline:none;">
+                            <input type="text" id="unitPriceInput" placeholder="단가" style="width:115px; border:none; background:transparent; padding:0; text-align:center; font-size:15px; box-shadow:none; outline:none;" readonly>
                             <span>원</span>
                             <button type="button" id="addProductBtn">추가</button>
                         </div>
@@ -208,7 +196,7 @@
                         </div>
                         <div class="sh-box-actions">
                             <button type="submit" class="btn btn-success">주문 제출</button>
-                            <a th:href="@{/purchase/orderList}" class="btn">목록</a>
+                            <a th:href="@{/purchase/orderList}" class="btn btn-list">목록</a>
                         </div>
                     </form>
                 </div>
@@ -234,13 +222,15 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function formatPrice(num) {
-        return addComma(Math.round(num)) + '원';
+        return addComma(Math.round(num));
     }
 
     productSelect.addEventListener('change', function() {
         const selected = productSelect.options[productSelect.selectedIndex];
         unitInput.value = selected.getAttribute('data-unit') || '';
-        unitPriceInput.value = selected.getAttribute('data-unitprice') || '';
+        const price = selected.getAttribute('data-unitprice');
+        unitPriceInput.value = price ? formatPrice(price) : '';
+        unitPriceInput.setAttribute('data-raw', price || '');
     });
 
     addBtn.addEventListener('click', function() {
@@ -254,7 +244,7 @@ document.addEventListener('DOMContentLoaded', function() {
             productName: selected.getAttribute('data-name'),
             quantity: quantityInput.value,
             unit: unitInput.value,
-            unitPrice: unitPriceInput.value
+            unitPrice: unitPriceInput.getAttribute('data-raw')
         });
         renderTable();
         updateTotalPrice();
@@ -262,6 +252,7 @@ document.addEventListener('DOMContentLoaded', function() {
         unitInput.value = '';
         quantityInput.value = '';
         unitPriceInput.value = '';
+        unitPriceInput.setAttribute('data-raw', '');
     });
 
     function renderTable() {
@@ -281,7 +272,8 @@ document.addEventListener('DOMContentLoaded', function() {
         productSelect.value = item.productNum;
         quantityInput.value = item.quantity;
         unitInput.value = item.unit;
-        unitPriceInput.value = item.unitPrice;
+        unitPriceInput.value = item.unitPrice ? formatPrice(item.unitPrice) : '';
+        unitPriceInput.setAttribute('data-raw', item.unitPrice || '');
         orderDetails.splice(idx, 1);
         renderTable();
         updateTotalPrice();
