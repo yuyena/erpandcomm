@@ -17,7 +17,7 @@ public class ProductVO {
     private int status;
     private double unit_price;
     private String unit;
-    private String product_date;   
+    private Date product_date;   
     
     private int current_quantity;
     private long min_stock;          // 최소재고
@@ -27,4 +27,5 @@ public class ProductVO {
     private long last_movement_num;  // 마지막 재고이동번호
     private int version_num;        // 동시성 제어용 버전
     private Date updated_date;       // 마지막 거래/수정일
+    private String stockStatus;
 }

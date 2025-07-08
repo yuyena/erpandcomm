@@ -4,72 +4,77 @@
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
 <mapper namespace="kr.spring.stock.dao.StockMapper">
 
-    <!-- 재고 검색 조건 -->
-    <sql id="stockSearch">
-        <where>
-            <if test="keyword != null and keyword != ''">
-                p.product_name LIKE '%' || #{keyword} || '%'
-            </if>
-            <if test="stock_status != null and stock_status != ''">
-                <if test="keyword != null and keyword != ''">
-                    AND
-                </if>
-                <if test="stock_status == 'LOW'">
-                    cs.current_quantity <![CDATA[<=]]> cs.min_stock
-                </if>
-                <if test="stock_status == 'NORMAL'">
-                    cs.current_quantity > cs.min_stock AND cs.current_quantity <![CDATA[<]]> cs.max_stock
-                </if>
-                <if test="stock_status == 'HIGH'">
-                    cs.current_quantity >= cs.max_stock
-                </if>
-            </if>
-        </where>
-    </sql>
+<!-- 공통 검색 조건 -->
+<sql id="stockSearch">
+    <where>
+        <if test="keyword != null and keyword != ''">
+            AND p.product_name LIKE '%' || #{keyword} || '%'
+        </if>
+        <if test="stock_status != null and stock_status != ''">
+            <choose>
+                <when test="stock_status == 'LOW'">
+                    AND cs.current_quantity <![CDATA[<=]]> cs.min_stock
+                </when>
+                <when test="stock_status == 'NORMAL'">
+                    AND cs.current_quantity > cs.min_stock 
+                    AND cs.current_quantity <![CDATA[<]]> cs.max_stock
+                </when>
+                <when test="stock_status == 'HIGH'">
+                    AND cs.current_quantity >= cs.max_stock
+                </when>
+                <when test="stock_status == 'NO_STOCK'">
+                    AND cs.current_quantity IS NULL
+                </when>
+            </choose>
+        </if>
+    </where>
+</sql>
 
-    <!-- 재고 전체/검색 레코드 수 -->
-    <select id="selectRowCountStock" parameterType="map" resultType="integer">
-        SELECT COUNT(*) 
-        FROM product p
-        JOIN product_category pc ON p.category_num = pc.category_num
-        LEFT JOIN current_stock cs ON p.product_num = cs.product_num
-        <include refid="stockSearch"/>
-    </select>
+<!-- 총 개수 -->
+<select id="selectRowCountStock" parameterType="map" resultType="int">
+    SELECT COUNT(*) 
+    FROM product p
+    JOIN product_category pc ON p.category_num = pc.category_num
+    LEFT JOIN current_stock cs ON p.product_num = cs.product_num
+    <include refid="stockSearch"/>
+</select>
 
-    <!-- 재고 전체/검색 목록 (페이징 포함) -->
-    <select id="selectStockList" parameterType="map" resultType="kr.spring.product.vo.ProductVO">
-        SELECT *
-        FROM (SELECT a.*, rownum rnum
-              FROM (SELECT 
-                        p.product_num,
-                        p.category_num,
-                        pc.category_name,
-                        p.product_name,
-                        p.status,
-                        p.unit_price,
-                        p.unit,
-                        p.product_date,
-                        cs.min_stock,
-                        cs.max_stock,
-                        cs.current_quantity,
-                        CASE 
-                            WHEN cs.current_quantity IS NULL THEN 'NO_STOCK'
-                          	WHEN cs.current_quantity <![CDATA[<=]]> cs.min_stock THEN 'LOW'
-                            WHEN cs.current_quantity >= cs.max_stock THEN 'HIGH'
-                            ELSE 'NORMAL'
-                        END as stock_status
-                    FROM product p
-                    JOIN product_category pc ON p.category_num = pc.category_num
-                    LEFT JOIN current_stock cs ON p.product_num = cs.product_num
-                    <include refid="stockSearch"/>
-                    ORDER BY p.product_num DESC
-                    ) a)
-        <![CDATA[
-        WHERE rnum >= #{start} AND rnum <= #{end}
-        ]]>
-    </select>
+<!-- 목록 -->
+<select id="selectStockList" parameterType="map" resultType="kr.spring.product.vo.ProductVO">
+    SELECT *
+    FROM (
+        SELECT a.*, rownum rnum
+        FROM (
+            SELECT 
+                p.product_num,
+                p.category_num,
+                pc.category_name,
+                p.product_name,
+                p.status,
+                p.unit_price,
+                p.unit,
+                p.product_date,
+                cs.min_stock,
+                cs.max_stock,
+                cs.current_quantity,
+                CASE 
+                    WHEN cs.current_quantity IS NULL THEN 'NO_STOCK'
+                    WHEN cs.current_quantity <![CDATA[<=]]> cs.min_stock THEN 'LOW'
+                    WHEN cs.current_quantity >= cs.max_stock THEN 'HIGH'
+                    ELSE 'NORMAL'
+                END AS stockStatus
+            FROM product p
+            JOIN product_category pc ON p.category_num = pc.category_num
+            LEFT JOIN current_stock cs ON p.product_num = cs.product_num
+            <include refid="stockSearch"/>
+            ORDER BY p.product_num DESC
+        ) a
+    )
+    WHERE rnum >= #{start} AND rnum <![CDATA[<=]]> #{end}
+</select>
 
-    <!-- 재고 상태별 개수 조회 (대시보드용) -->
+
+    <!-- 재고 상태별 개수 조회 (대시보드용) 
     <select id="selectStockStatusCount" resultType="map">
         SELECT 
             COUNT(*) as total_count,
@@ -81,7 +86,7 @@
         LEFT JOIN current_stock cs ON p.product_num = cs.product_num
     </select>
 
-    <!-- 특정 상품의 재고 정보 조회 -->
+    특정 상품의 재고 정보 조회 
     <select id="selectStockDetail" parameterType="int" resultType="kr.spring.product.vo.ProductVO">
         SELECT 
             p.product_num,
@@ -107,24 +112,24 @@
         WHERE p.product_num = #{product_num}
     </select>
 
-    <!-- 재고 수량 업데이트 -->
+    재고 수량 업데이트 
     <update id="updateStock" parameterType="map">
         UPDATE current_stock 
         SET current_quantity = #{current_quantity}
         WHERE product_num = #{product_num}
     </update>
 
-    <!-- 재고 정보 추가 (current_stock 테이블에 없는 경우) -->
+     재고 정보 추가 (current_stock 테이블에 없는 경우)
     <insert id="insertStock" parameterType="map">
         INSERT INTO current_stock (product_num, current_quantity)
         VALUES (#{product_num}, #{current_quantity})
     </insert>
 
-    <!-- 상품의 최소/최대 재고 수정 -->
+상품의 최소/최대 재고 수정 
     <update id="updateMinMaxStock" parameterType="map">
         UPDATE product 
         SET min_stock = #{min_stock}, max_stock = #{max_stock}
         WHERE product_num = #{product_num}
     </update>
-
+-->
 </mapper>
