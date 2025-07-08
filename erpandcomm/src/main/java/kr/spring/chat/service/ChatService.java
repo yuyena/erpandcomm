@@ -17,6 +17,8 @@ public interface ChatService {
 	public long selectLastRoomNum();
 	public void updateRoom(ChatRoomVO chatRoom);
 	public void deleteRoom(Long room_num);
+	// 채팅방 비활성화
+	public void notActive(Long room_num);
 	
 	// ChatMember
 	public List<ChatMemberVO> selectMember(Map<String, Object> map);

@@ -42,6 +42,12 @@
                     <td th:text="${#dates.format(room.created_at, 'yyyy-MM-dd')}"></td>
                     <td>
                         <a th:href="@{'/chat/room/' + ${room.room_num}}" class="enter-btn">입장</a>
+                        <th:block th:if="${room.created_by == 1}">
+                        <form th:action="@{/chat/deleteRoom}" method="post" style="display:inline; margin-left:8px;">
+                            <input type="hidden" name="room_num" th:value="${room.room_num}" />
+                            <button type="submit" class="delete-btn" onclick="return confirm('정말 삭제하시겠습니까?');">삭제</button>
+                        </form>
+                        </th:block>
                     </td>
                 </tr>
                 <tr th:if="${#lists.isEmpty(chatRoomList)}">

@@ -67,6 +67,11 @@ public class ChatServiceImpl implements ChatService {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	@Override
+	public void notActive(Long room_num) {
+		chatRoomMapper.notActive(room_num);
+	}
 
 	@Override
 	public void insertMember(ChatMemberVO chatMember) {

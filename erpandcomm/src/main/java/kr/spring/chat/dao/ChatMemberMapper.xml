@@ -18,10 +18,14 @@
 			#{role})
 	</insert>
 	
-	<!-- 생성된 멤버 번호 조회 -->
-	<select id="selectLastMemberNum" resultType="long">
-		SELECT chat_member_seq.currval FROM dual
+	<!-- 채팅 멤버 조회 -->
+	<select id="selectMember" parameterType="map" resultType="ChatMemberVO">
+		SELECT *
+		FROM chat_member
+		WHERE room_num = #{room_num}
+		AND is_active = 'Y'
 	</select>
+	
 </mapper>
 
 

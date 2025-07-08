@@ -26,6 +26,9 @@ import kr.spring.member.service.MemberService;
 import kr.spring.member.vo.MemberVO;
 import kr.spring.util.ValidationUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import kr.spring.member.vo.PrincipalDetails;
 
 @Controller
 @Slf4j
@@ -182,6 +185,51 @@ public class ChatUserController {
 	    log.debug("<<회원 목록>> : " + userList);
 		
 		return "views/chat/chatRoomList";
+	}
+
+	// 채팅방 삭제(비활성화)
+	@PostMapping("/deleteRoom")
+	public String deleteRoom(@RequestParam("room_num") long room_num, HttpServletRequest request, Model model) {
+	    long myUserNum = 1; // 테스트용으로 항상 1로 고정
+
+	    // 1. 전체 멤버 조회
+	    Map<String, Object> param = new HashMap<>();
+	    param.put("room_num", room_num);
+
+	    // room_num 값과 타입 로그 출력
+	    System.out.println("room_num 값: " + room_num);
+	    System.out.println("room_num 타입: " + Long.valueOf(room_num).getClass().getName());
+
+	    List<ChatMemberVO> memberList = chatService.selectMember(param);
+
+	    // memberList size 로그 출력
+	    System.out.println("memberList size: " + (memberList != null ? memberList.size() : "null"));
+
+	    if (memberList == null) memberList = new java.util.ArrayList<>();
+
+	    // 2. 방장 찾기
+	    ChatMemberVO owner = null;
+	    for (ChatMemberVO member : memberList) {
+	        if (member.getRole().equals("방장")) {
+	            owner = member;
+	            break;
+	        }
+	    }
+	    
+	    log.debug("<<memberList>> : " + memberList);
+	    log.debug("<<owner>> : " + owner);
+	    log.debug("<<userNum>> : " + myUserNum);
+	    log.debug("<<roomNum>> : " + room_num);
+
+	    // 3. 권한 체크 및 삭제(비활성화)
+	    if (owner != null && myUserNum == owner.getUser_num()) {
+	        chatService.notActive(room_num);
+	        model.addAttribute("accessMsg", "채팅방이 삭제(비활성화)되었습니다.");
+	    } else {
+	        model.addAttribute("accessMsg", "방장만 삭제할 수 있습니다.");
+	    }
+	    model.addAttribute("accessUrl", request.getContextPath() + "/chat/roomList");
+	    return "views/common/resultView";
 	}
 
 }
