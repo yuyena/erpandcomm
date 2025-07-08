@@ -54,6 +54,40 @@
                     </table>
                 </div>
             </div>
+            <!-- 거래처 차트 박스 -->
+            <div class="card" style="padding: 24px 24px 16px 24px; margin-bottom: 24px; background: #fff; border-radius: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08);">
+              <div style="max-width:300px; min-width:300px; min-height:200px; margin:0 auto;">
+                <canvas id="clientPieChart" width="300" height="200" style="display:block;"></canvas>
+              </div>
+            </div>
+            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+            <script>
+            document.addEventListener('DOMContentLoaded', function() {
+              const ctx = document.getElementById('clientPieChart').getContext('2d');
+              const clientPieChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                  labels: ['A상사', 'B상사', 'C상사'],
+                  datasets: [{
+                    label: '거래처별 구매금액',
+                    data: [300000, 200000, 100000],
+                    backgroundColor: [
+                      'rgba(255, 99, 132, 0.5)',
+                      'rgba(54, 162, 235, 0.5)',
+                      'rgba(255, 206, 86, 0.5)'
+                    ]
+                  }]
+                },
+                options: {
+                  responsive: true,
+                  maintainAspectRatio: true,
+                  plugins: {
+                    legend: { display: true }
+                  }
+                }
+              });
+            });
+            </script>
         </main>
     </div>
 </div>
