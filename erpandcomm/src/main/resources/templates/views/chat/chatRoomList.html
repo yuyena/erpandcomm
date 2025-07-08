@@ -35,16 +35,17 @@
                     <td th:text="${room.room_num}"></td>
                     <td th:text="${room.room_name}"></td>
                     <td th:text="${room.room_type}"></td>
-                    <td th:text="${room.description}"></td>
+                    <td class="description-cell" th:text="${room.description != null ? (room.description.length() > 20 ? room.description.substring(0, 20) + '...' : room.description) : ''}" 
+                        th:title="${room.description}"></td>
                     <td th:text="${room.created_by}"></td>
                     <td th:text="${room.max_members}"></td>
-                    <td th:text="${room.created_at}"></td>
+                    <td th:text="${#dates.format(room.created_at, 'yyyy-MM-dd')}"></td>
                     <td>
                         <a th:href="@{'/chat/room/' + ${room.room_num}}" class="enter-btn">입장</a>
                     </td>
                 </tr>
                 <tr th:if="${#lists.isEmpty(chatRoomList)}">
-                    <td colspan="9" class="no-chat-room">참여중인 채팅이 없습니다.</td>
+                    <td colspan="8" class="no-chat-room">참여중인 채팅이 없습니다.</td>
                 </tr>
             </tbody>
         </table>

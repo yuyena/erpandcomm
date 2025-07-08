@@ -74,6 +74,7 @@ public class ChatUserController {
 	    }
 		
 		model.addAttribute("userList", filteredList);
+		model.addAttribute("chatRoomVO", new ChatRoomVO()); // 바인딩 객체 추가
 		return "views/chat/createRoom";
 	}
 	
@@ -87,18 +88,68 @@ public class ChatUserController {
 			return form(model);
 		} // if
 		
+		// 디버깅 로그
+		log.debug("<<채팅방 생성 요청>>");
+		log.debug("방 이름: " + chatRoomVO.getRoom_name());
+		log.debug("설명: " + chatRoomVO.getDescription());
+		log.debug("최대 인원: " + chatRoomVO.getMax_members());
+		log.debug("선택된 멤버: " + memberNums);
+		
+		// 임시로 1번 사용자를 생성자로 설정
+		long creatorUserNum = 1L;
+		chatRoomVO.setCreated_by(creatorUserNum);
+		
+		// 방 이름이 없으면 자동 생성
+		if (chatRoomVO.getRoom_name() == null || chatRoomVO.getRoom_name().trim().isEmpty()) {
+			// 생성자 정보 가져오기
+			Map<String, Object> map = new HashMap<String, Object>();
+			List<MemberVO> userList = memberService.selectMemberList(map);
+			
+			String creatorName = "사용자";
+			for (MemberVO member : userList) {
+				if (member.getUser_num() == creatorUserNum) {
+					creatorName = member.getUser_name();
+					break;
+				}
+			}
+			chatRoomVO.setRoom_name(creatorName + "의 방");
+		}
+		
+		// 본인(생성자)까지 포함해서 2명이면 1:1, 3명 이상이면 group
+		int totalMembers = (memberNums != null ? memberNums.size() : 0) + 1; // +1은 본인
+		log.debug("총 멤버 수: " + totalMembers);
+		
+		if (totalMembers == 2) {
+			chatRoomVO.setRoom_type("1:1");
+		} else {
+			chatRoomVO.setRoom_type("group");
+		}
+		
 		chatService.insertRoom(chatRoomVO);
-		long roomNum = chatRoomVO.getRoom_num(); // 생성된 방 번호 (insertRoom에서 세팅되어야 함)
+		long room_num = chatService.selectLastRoomNum(); // 생성된 방 번호 조회
+		log.debug("생성된 방 번호: " + room_num);
+
+	    // 본인(생성자)도 멤버로 추가 (방장 역할)
+	    ChatMemberVO creatorMember = new ChatMemberVO();
+	    creatorMember.setRoom_num(room_num);
+	    creatorMember.setUser_num(creatorUserNum);
+	    creatorMember.setRole("방장");
+	    chatService.insertMember(creatorMember);
+	    log.debug("방장 추가 완료: " + creatorUserNum);
 
 		// 선택된 멤버 추가
-		if (memberNums != null && !memberNums.isEmpty()) {
-		    for (long userNum : memberNums) {
-		        ChatMemberVO chatMemberVO = new ChatMemberVO();
-		        chatMemberVO.setRoom_num(roomNum);
-		        chatMemberVO.setUser_num(userNum);
-		        chatService.insertMember(chatMemberVO);
-		    }
-		}
+	    if (memberNums != null && !memberNums.isEmpty()) {
+	        for (long user_num : memberNums) {
+	            ChatMemberVO chatMemberVO = new ChatMemberVO();
+	            chatMemberVO.setRoom_num(room_num);
+	            chatMemberVO.setUser_num(user_num);
+	            chatMemberVO.setRole("멤버");
+	            chatService.insertMember(chatMemberVO);
+	            log.debug("멤버 추가 완료: " + user_num);
+	        }
+	    } else {
+	    	log.debug("선택된 멤버가 없습니다.");
+	    }
 		
 		model.addAttribute("accessMsg", "채팅방이 생성되었습니다.");
 		model.addAttribute("accessUrl", request.getContextPath()+"/chat/roomList");
@@ -125,6 +176,7 @@ public class ChatUserController {
 
 	    // 모델에 담기
 	    model.addAttribute("userList", userList);
+	    model.addAttribute("accessBtn", "목록으로");
 	    model.addAttribute("chatRoomList", chatRoomList);
 	    
 	    log.debug("<<회원 목록>> : " + userList);

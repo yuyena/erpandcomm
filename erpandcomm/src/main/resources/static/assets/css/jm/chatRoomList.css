@@ -91,6 +91,30 @@
     background: #125ea2;
 }
 
+.description-cell {
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    position: relative;
+}
+
+.description-cell:hover::after {
+    content: attr(title);
+    position: absolute;
+    left: 0;
+    top: -30px;
+    background: #333;
+    color: white;
+    padding: 5px 8px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    z-index: 1000;
+    white-space: normal;
+    max-width: 200px;
+    word-wrap: break-word;
+}
+
 .no-chat-room {
     text-align: center;
     color: #888;

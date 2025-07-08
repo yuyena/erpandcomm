@@ -12,11 +12,16 @@
 			user_num,
 			role)
 		VALUES(
-			#{member_num},
+			chat_member_seq.nextval,
 			#{room_num},
 			#{user_num},
 			#{role})
 	</insert>
+	
+	<!-- 생성된 멤버 번호 조회 -->
+	<select id="selectLastMemberNum" resultType="long">
+		SELECT chat_member_seq.currval FROM dual
+	</select>
 </mapper>
 
 

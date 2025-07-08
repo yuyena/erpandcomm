@@ -12,6 +12,7 @@ public interface ChatMemberMapper {
 	
 	public List<ChatMemberVO> selectMember(Map<String, Object> map);
 	public void insertMember(ChatMemberVO chatMember);
+	public long selectLastMemberNum();
 	public void updateMember(ChatMemberVO chatMember);
 	public void deleteMember(ChatMemberVO chatMember);
 	

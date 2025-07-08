@@ -13,15 +13,41 @@
 			room_num,
 			room_name,
 			room_type,
+			description,
 			created_by,
 			max_members)
 		VALUES (
 			chat_room_seq.nextval,
 			#{room_name},
 			#{room_type},
+			#{description,jdbcType=VARCHAR},
 			#{created_by},
-			#{max_members})
+			#{max_members,jdbcType=INTEGER})
 	</insert>
+	
+	<!-- 생성된 방 번호 조회 -->
+	<select id="selectLastRoomNum" resultType="long">
+		SELECT chat_room_seq.currval FROM dual
+	</select>
+	
+	<!-- 채팅방 목록 조회 -->
+	<select id="selectListChatRoom" parameterType="map" resultType="chatRoomVO">
+		SELECT 
+			r.room_num,
+			r.room_name,
+			r.room_type,
+			r.description,
+			r.created_by,
+			r.max_members,
+			r.is_active,
+			r.created_at,
+			r.updated_at
+		FROM chat_room r
+		JOIN chat_member m ON r.room_num = m.room_num
+		WHERE m.user_num = #{member_num}
+		AND r.is_active = 'Y'
+		ORDER BY r.created_at DESC
+	</select>
 </mapper>
 
 

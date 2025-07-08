@@ -46,6 +46,11 @@ public class ChatServiceImpl implements ChatService {
 	}
 
 	@Override
+	public long selectLastRoomNum() {
+		return chatRoomMapper.selectLastRoomNum();
+	}
+
+	@Override
 	public void updateRoom(ChatRoomVO chatRoom) {
 		// TODO Auto-generated method stub
 		
@@ -66,6 +71,11 @@ public class ChatServiceImpl implements ChatService {
 	@Override
 	public void insertMember(ChatMemberVO chatMember) {
 		chatMemberMapper.insertMember(chatMember);
+	}
+
+	@Override
+	public long selectLastMemberNum() {
+		return chatMemberMapper.selectLastMemberNum();
 	}
 
 	@Override
