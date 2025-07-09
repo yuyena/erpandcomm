@@ -1,4 +1,4 @@
-<!-- chatRoomList.html: 채팅방 목록 화면 -->
+<!-- chatRoomList.html: 채팅방 목록 + 채팅창 2분할 구조 -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -6,57 +6,84 @@
     <title>채팅방 목록</title>
     <link rel="stylesheet" th:href="@{/assets/css/main.css}">
     <link rel="stylesheet" th:href="@{/assets/css/jm/chatRoomList.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/jm/chatView.css}">
+    <script type="text/javascript" th:src="@{/assets/js/jquery-3.7.1.min.js}"></script>
 </head>
 <body>
 <div layout:fragment="content" class="page-main">
-	<div class="dashboard-wrapper">
-    <th:block th:replace="fragments/nav_sidebar :: sidebar" />
-
-    <div class="chat-room-list-container">
-        <div class="chat-room-list-header">
-            <h2>채팅방 목록</h2>
-            <a th:href="@{'/chat/createRoom'}" class="create-btn">+ 채팅방 만들기</a>
+    <div class="dashboard-wrapper">
+        <th:block th:replace="fragments/nav_sidebar :: sidebar" />
+        <!-- 2분할: 왼쪽 채팅방 목록 / 오른쪽 채팅창 -->
+        <div class="chat-split-container">
+            <!-- 왼쪽: 채팅방 목록 -->
+            <div class="chat-room-list-container">
+                <div class="chat-room-list-header">
+                    <h2>채팅방 목록</h2>
+                    <a th:href="@{'/chat/createRoom'}" class="create-btn">+ 채팅방 만들기</a>
+                </div>
+                <table class="chat-room-table">
+                    <thead>
+                        <tr>
+                            <th>방 번호</th>
+                            <th>방 이름</th>
+                            <th>타입</th>
+                            <th>설명</th>
+                            <th>생성자</th>
+                            <th>최대 인원</th>
+                            <th>생성일</th>
+                            <th>입장</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="room : ${chatRoomList}">
+                            <td th:text="${room.room_num}"></td>
+                            <td th:text="${room.room_name}"></td>
+                            <td th:text="${room.room_type}"></td>
+                            <td class="description-cell" th:text="${room.description != null ? (room.description.length() > 20 ? room.description.substring(0, 20) + '...' : room.description) : ''}" th:title="${room.description}"></td>
+                            <td th:text="${room.created_by}"></td>
+                            <td th:text="${room.max_members}"></td>
+                            <td th:text="${#dates.format(room.created_at, 'yyyy-MM-dd')}"></td>
+                            <td>
+                                <button class="enter-btn" data-room-id="[[${room.room_num}]]">입장</button>
+                                <th:block th:if="${room.created_by == 1}">
+                                <form th:action="@{/chat/deleteRoom}" method="post" style="display:inline; margin-left:8px;">
+                                    <input type="hidden" name="room_num" th:value="${room.room_num}" />
+                                    <button type="submit" class="delete-btn" onclick="return confirm('정말 삭제하시겠습니까?');">삭제</button>
+                                </form>
+                                </th:block>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(chatRoomList)}">
+                            <td colspan="8" class="no-chat-room">참여중인 채팅이 없습니다.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- 오른쪽: 채팅창 (동적 삽입) -->
+            <div class="chat-room-view-container" id="chatRoomViewContainer">
+                <!-- 입장 버튼 클릭 시 AJAX로 chatView.html 내용이 이곳에 삽입됨 -->
+                <div class="chat-room-placeholder">채팅방을 선택하세요.</div>
+            </div>
         </div>
-        <table class="chat-room-table">
-            <thead>
-                <tr>
-                    <th>방 번호</th>
-                    <th>방 이름</th>
-                    <th>타입</th>
-                    <th>설명</th>
-                    <th>생성자</th>
-                    <th>최대 인원</th>
-                    <th>생성일</th>
-                    <th>입장</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="room : ${chatRoomList}">
-                    <td th:text="${room.room_num}"></td>
-                    <td th:text="${room.room_name}"></td>
-                    <td th:text="${room.room_type}"></td>
-                    <td class="description-cell" th:text="${room.description != null ? (room.description.length() > 20 ? room.description.substring(0, 20) + '...' : room.description) : ''}" 
-                        th:title="${room.description}"></td>
-                    <td th:text="${room.created_by}"></td>
-                    <td th:text="${room.max_members}"></td>
-                    <td th:text="${#dates.format(room.created_at, 'yyyy-MM-dd')}"></td>
-                    <td>
-                        <a th:href="@{'/chat/room/' + ${room.room_num}}" class="enter-btn">입장</a>
-                        <th:block th:if="${room.created_by == 1}">
-                        <form th:action="@{/chat/deleteRoom}" method="post" style="display:inline; margin-left:8px;">
-                            <input type="hidden" name="room_num" th:value="${room.room_num}" />
-                            <button type="submit" class="delete-btn" onclick="return confirm('정말 삭제하시겠습니까?');">삭제</button>
-                        </form>
-                        </th:block>
-                    </td>
-                </tr>
-                <tr th:if="${#lists.isEmpty(chatRoomList)}">
-                    <td colspan="8" class="no-chat-room">참여중인 채팅이 없습니다.</td>
-                </tr>
-            </tbody>
-        </table>
     </div>
-	</div>
 </div>
+<script>
+// 입장 버튼 클릭 시 AJAX로 채팅방 뷰 로드
+$(document).on('click', '.enter-btn', function() {
+    var roomId = $(this).data('room-id');
+    // 임시: 실제로는 /chat/room/{roomId} 등으로 AJAX 요청
+    $.ajax({
+        url: '/chat/roomView', // 임시 URL (백엔드 완성 전)
+        type: 'GET',
+        data: { room_num: roomId },
+        success: function(html) {
+            $('#chatRoomViewContainer').html(html);
+        },
+        error: function() {
+            $('#chatRoomViewContainer').html('<div class="chat-room-error">채팅방을 불러오지 못했습니다.</div>');
+        }
+    });
+});
+</script>
 </body>
 </html>

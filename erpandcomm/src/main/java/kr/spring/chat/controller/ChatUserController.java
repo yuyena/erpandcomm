@@ -196,14 +196,7 @@ public class ChatUserController {
 	    Map<String, Object> param = new HashMap<>();
 	    param.put("room_num", room_num);
 
-	    // room_num 값과 타입 로그 출력
-	    System.out.println("room_num 값: " + room_num);
-	    System.out.println("room_num 타입: " + Long.valueOf(room_num).getClass().getName());
-
 	    List<ChatMemberVO> memberList = chatService.selectMember(param);
-
-	    // memberList size 로그 출력
-	    System.out.println("memberList size: " + (memberList != null ? memberList.size() : "null"));
 
 	    if (memberList == null) memberList = new java.util.ArrayList<>();
 
