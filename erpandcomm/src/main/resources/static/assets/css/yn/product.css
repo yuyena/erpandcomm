@@ -1,0 +1,29 @@
+.price-range {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .price-range input {
+            width: 80px;
+        }
+        .search-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .search-form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+        }
+        .search-group {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .search-group label {
+            font-weight: 500;
+            min-width: 80px;
+        }

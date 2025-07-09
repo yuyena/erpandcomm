@@ -79,6 +79,12 @@ public class MemberServiceImpl implements MemberService {
 		memberMapper.updateByAdmin(memberVO);
 	}
 
+
+	@Override
+	public List<MemberVO> selectMemberList(Map<String, Object> map) {
+		return memberMapper.selectMemberList(map);
+	}
+
 }
 
 

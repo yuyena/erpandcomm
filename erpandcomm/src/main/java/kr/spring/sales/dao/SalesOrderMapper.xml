@@ -5,7 +5,7 @@
     <!-- sales_order CRUD -->
     <insert id="insertSalesOrder" parameterType="kr.spring.sales.vo.SalesOrderVO">
         INSERT INTO sales_order (sales_order_num, customer_num, order_date, total_price, emp_num)
-        VALUES (#{sales_order_num}, #{customer_num}, #{order_date}, #{total_price}, #{emp_num})
+        VALUES (#{sales_order_num}, #{customer_num}, sysdate, #{total_price}, #{emp_num})
     </insert>
 
     <select id="selectSalesOrder" parameterType="long" resultType="kr.spring.sales.vo.SalesOrderVO">

@@ -15,6 +15,9 @@ public interface MemberService {
 	public void updatePassword(MemberVO member);
 	public void deleteMember(Long mem_num);
 	
+	// 채팅방 멤버 추가용 회원 목록 조회
+	public List<MemberVO> selectMemberList(Map<String, Object> map);
+	
 	// 비밀번호 찾기
 	public void updateRandomPassword(MemberVO member);
 	

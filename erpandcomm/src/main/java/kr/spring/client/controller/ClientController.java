@@ -22,7 +22,7 @@ public class ClientController {
     }
 
     @GetMapping("/form")
-    public String form(@RequestParam(required = false) Long client_num, Model model) {
+    public String form(@RequestParam(value = "client_num", required = false) Long client_num, Model model) {
         ClientVO vo = (client_num != null) ? clientService.getClient(client_num) : new ClientVO();
         model.addAttribute("clientVO", vo);
         return "views/client/ClientForm";

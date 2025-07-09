@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout_basic}">
+<head>
+    <meta charset="UTF-8">
+    <title>재고 관리</title>
+     <script type="text/javascript" th:src="@{/assets/js/jquery-3.7.1.min.js}"></script>
+    <link rel="stylesheet" th:href="@{/assets/css/main.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/yn/stock.css}">
+</head>
+
+<body>
+<div layout:fragment="content" class="page-main">
+    <div class="dashboard-wrapper">
+        <!-- 사이드바 -->
+        <th:block th:replace="fragments/nav_sidebar :: sidebar"></th:block>
+   <main class="main-content">
+
+         
+    <div class="stock-container">
+        <h1>재고 관리</h1>
+        
+        <!-- 검색 폼 -->
+        <form class="search-form" th:action="@{/product/stock}" method="get">
+            <div class="form-group">
+                <label for="keyword">상품명:</label>
+                <input type="text" id="keyword" name="keyword" 
+                       th:value="${param.keyword}" placeholder="상품명을 입력하세요">
+            </div>
+            <div class="form-group">
+                <label for="stock_status">재고 상태:</label>
+                <select id="stock_status" name="stockStatus">
+                    <option value="">전체</option>
+                    <option value="LOW" th:selected="${param.stockStatus  == 'LOW'}">부족</option>
+                    <option value="NORMAL" th:selected="${param.stockStatus  == 'NORMAL'}">정상</option>
+                    <option value="HIGH" th:selected="${param.stockStatus  == 'HIGH'}">과다</option>
+                    <option value="NO_STOCK" th:selected="${param.stockStatus  == 'NO_STOCK'}">재고없음</option>
+                </select>
+            </div>
+            <button type="submit">검색</button>
+            <button type="button" onclick="location.href='/product/stock'">초기화</button>
+        </form>
+        
+        <!-- 재고 상태 요약 카드 (선택사항) -->
+        <div class="stock-status-cards" th:if="${stockStatusCount != null}">
+            <div class="status-card total">
+                <h3>전체 상품</h3>
+                <div class="count" th:text="${stockStatusCount.total_count}">0</div>
+            </div>
+            <div class="status-card low">
+                <h3>부족</h3>
+                <div class="count" th:text="${stockStatusCount.low_stock_count}">0</div>
+            </div>
+            <div class="status-card normal">
+                <h3>정상</h3>
+                <div class="count" th:text="${stockStatusCount.normal_stock_count}">0</div>
+            </div>
+            <div class="status-card high">
+                <h3>과다</h3>
+                <div class="count" th:text="${stockStatusCount.high_stock_count}">0</div>
+            </div>
+            <div class="status-card no-stock">
+                <h3>재고없음</h3>
+                <div class="count" th:text="${stockStatusCount.no_stock_count}">0</div>
+            </div>
+        </div>
+        
+        <!-- 재고 목록 테이블 -->
+        <div th:if="${not #lists.isEmpty(stockList)}">
+            <table class="stock-table">
+                <thead>
+                    <tr>
+                        <th>상품번호</th>
+                        <th>카테고리</th>
+                        <th>상품명</th>
+                        <th>단위</th>
+                        <th>단가</th>
+                        <th>재고 상태</th>
+                        <th>현재 수량</th>
+                        <th>최소/최대 재고</th>
+                        <th>재고 레벨</th>
+                        <th>등록일</th>
+                        <th>관리</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="product : ${stockList}">
+                        <td th:text="${product.product_num}"></td>
+                        <td th:text="${product.category_name}"></td>
+                        <td th:text="${product.product_name}"></td>
+                        <td th:text="${product.unit}"></td>
+                        <td th:text="${#numbers.formatInteger(product.unit_price, 0, 'COMMA')}">원</td>
+                        <td>
+                            <!-- 수정된 부분: stock_status 필드 사용 -->
+                            <span th:class="'status-badge ' + ${#strings.toLowerCase(product.stockStatus)}"
+                                  th:text="${product.stockStatus  == 'LOW' ? '부족' : 
+                                           (product.stockStatus  == 'NORMAL' ? '정상' : 
+                                           (product.stockStatus  == 'HIGH' ? '과다' : 
+                                           (product.stockStatus  == 'NO_STOCK' ? '재고없음' : '알수없음')))}">
+                            </span>
+                        </td>
+                        <td>
+                            <div class="quantity-display">
+                                <span th:text="${product.current_quantity != null ? product.current_quantity : 0}">0</span>
+                                <!-- 수정된 부분: stock_status 필드 사용 -->
+                                <div th:class="'quantity-fill fill-' + ${#strings.toLowerCase(product.stockStatus)}"></div>
+                            </div>
+                        </td>
+                        <td>
+                            <span th:text="${product.min_stock != null ? product.min_stock : 0}">0</span>
+                            /
+                            <span th:text="${product.max_stock != null ? product.max_stock : 0}">0</span>
+                        </td>
+                        <td>
+                            <!-- 재고 레벨 계산 (안전한 방법) -->
+                            <span th:if="${product.current_quantity != null and product.max_stock != null and product.max_stock > 0}"
+                                  th:text="${#numbers.formatDecimal((product.current_quantity / product.max_stock * 100), 0, 0)}">%
+                            </span>
+                            <span th:unless="${product.current_quantity != null and product.max_stock != null and product.max_stock > 0}">
+                                0%
+                            </span>
+                        </td>
+                        <td th:text="${#dates.format(product.product_date, 'yyyy-MM-dd')}"></td>
+                        <td>
+                            <a th:href="@{/stock/detail/{num}(num=${product.product_num})}" 
+                               style="color: #007bff; text-decoration: none;">상세</a>
+                            |
+                            <a th:href="@{/stock/update/{num}(num=${product.product_num})}" 
+                               style="color: #28a745; text-decoration: none;">수정</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- 데이터가 없을 때 -->
+        <div class="no-data" th:if="${#lists.isEmpty(stockList)}">
+            <p>검색 결과가 없습니다.</p>
+        </div>
+        
+        <!-- 페이징 (예시) -->
+        <div class="align-center" th:utext="${page}"></div>
+    </div>
+    </main></div></div>
+</body>
+</html>

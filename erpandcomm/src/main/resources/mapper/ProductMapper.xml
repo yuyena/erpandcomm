@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.spring.product.dao.ProductMapper">
+    <select id="selectProductList" resultType="kr.spring.product.vo.ProductVO">
+        SELECT * FROM product
+        <!-- 실제 테이블/컬럼명에 맞게 수정 필요 -->
+    </select>
+</mapper> 

@@ -1,0 +1,237 @@
+/* 기본 스타일 */
+        .stock-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .search-form {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .search-form .form-group {
+            display: inline-block;
+            margin-right: 15px;
+            margin-bottom: 10px;
+        }
+        
+        .search-form input, .search-form select {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .search-form button {
+            padding: 8px 16px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .search-form button:hover {
+            background: #0056b3;
+        }
+        
+        /* 재고 상태 카드 */
+        .stock-status-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .status-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .status-card h3 {
+            margin: 0 0 10px 0;
+            font-size: 16px;
+            color: #666;
+        }
+        
+        .status-card .count {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .status-card.total .count { color: #333; }
+        .status-card.low .count { color: #dc3545; }
+        .status-card.normal .count { color: #28a745; }
+        .status-card.high .count { color: #ffc107; }
+        .status-card.no-stock .count { color: #6c757d; }
+        
+        /* 테이블 스타일 */
+        .stock-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .stock-table th {
+            background: #f8f9fa;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #333;
+            border-bottom: 2px solid #dee2e6;
+        }
+        
+        .stock-table td {
+            padding: 12px;
+            border-bottom: 1px solid #dee2e6;
+            vertical-align: middle;
+        }
+        
+        .stock-table tr:hover {
+            background: #f8f9fa;
+        }
+        
+        /* 재고 수량 표시 */
+        .quantity-display {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .quantity-fill {
+            width: 80px;
+            height: 8px;
+            border-radius: 4px;
+            position: relative;
+            background: #e9ecef;
+        }
+        
+        .quantity-fill::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+        
+        .fill-low::after {
+            background: #dc3545;
+            width: 30%;
+        }
+        
+        .fill-normal::after {
+            background: #28a745;
+            width: 70%;
+        }
+        
+        .fill-high::after {
+            background: #ffc107;
+            width: 100%;
+        }
+        
+        .fill-no_stock::after {
+            background: #6c757d;
+            width: 0%;
+        }
+        
+        /* 상태 뱃지 */
+        .status-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+        
+        .status-badge.low {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .status-badge.normal {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status-badge.high {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .status-badge.no_stock {
+            background: #e2e3e5;
+            color: #383d41;
+        }
+        
+        /* 페이징 */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            margin-top: 20px;
+        }
+        
+        .pagination a {
+            padding: 8px 12px;
+            border: 1px solid #dee2e6;
+            text-decoration: none;
+            color: #007bff;
+            border-radius: 4px;
+        }
+        
+        .pagination a:hover {
+            background: #e9ecef;
+        }
+        
+        .pagination .current {
+            background: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+        
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: #6c757d;
+        }
+        
+        /* 반응형 */
+        @media (max-width: 768px) {
+            .stock-container {
+                padding: 10px;
+            }
+            
+            .search-form .form-group {
+                display: block;
+                margin-bottom: 10px;
+            }
+            
+            .stock-table {
+                font-size: 14px;
+            }
+            
+            .stock-table th,
+            .stock-table td {
+                padding: 8px;
+            }
+            
+            .quantity-display {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+        }

@@ -6,6 +6,7 @@
     <meta charset="UTF-8">
     <title>판매주문 목록</title>
     <link rel="stylesheet" th:href="@{/assets/css/main.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/sh.css}">
 </head>
 <body>
 <div layout:fragment="content" class="page-main">
@@ -15,53 +16,54 @@
             <div class="main-header">
                 <h2>ERP관리 - 판매주문 목록</h2>
             </div>
-            <!-- 조회 조건 카드 -->
-            <section class="card-section" style="margin-bottom: 24px;">
-                <div class="card" style="border-radius: 12px; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.06); padding: 24px;">
-                    <div class="card-header" style="font-weight: bold; font-size: 1.1rem; margin-bottom: 18px;">조회 조건</div>
-                    <form class="search-form" style="display: flex; flex-direction: column; gap: 10px; background: none;">
-                        <div class="search-row" style="display: flex; align-items: center; gap: 16px; background: none;">
-                            <label style="width: 80px; color: #222; font-weight: 600;">주문일</label>
-                            <input type="date" name="startDate" style="width: 140px; background: #f1f3f6; border: none; border-radius: 6px; padding: 7px 12px;">
-                            <span style="margin: 0 4px; color: #888;">~</span>
-                            <input type="date" name="endDate" style="width: 140px; background: #f1f3f6; border: none; border-radius: 6px; padding: 7px 12px;">
-                            <button type="button" class="btn" style="background: #444; color: #fff; border: none; border-radius: 6px; margin-left: 8px; min-width: 56px;">검색</button>
+            <!-- 검색조건+차트 한 행 배치 (각각 별도 박스) -->
+            <div style="display: flex; align-items: flex-end; gap: 32px; justify-content: center; margin-bottom: 24px;">
+                <div class="card" style="padding: 24px 24px 16px 24px; background: #fff; border-radius: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); flex:0 0 420px;">
+                    <form class="search-form">
+                        <div class="search-row">
+                            <label class="search-label">주문일</label>
+                            <input type="date" name="startDate" th:value="${param.startDate}" class="search-input">
+                            <span style="color:#888;">~</span>
+                            <input type="date" name="endDate" th:value="${param.endDate}" class="search-input">
                         </div>
-                        <div class="search-row" style="display: flex; align-items: center; gap: 16px; background: none;">
-                            <label style="width: 80px; color: #222; font-weight: 600;">거래처</label>
-                            <input type="text" name="client" placeholder="거래처명" style="width: 180px; background: #f1f3f6; border: none; border-radius: 6px; padding: 7px 12px;">
-                            <button type="button" class="btn" style="background: #444; color: #fff; border: none; border-radius: 6px; margin-left: 8px; min-width: 56px;">검색</button>
+                        <div class="search-row">
+                            <label class="search-label">거래처</label>
+                            <input type="text" name="client" th:value="${param.client}" placeholder="거래처명" class="search-input">
+                            <button type="submit" class="search-btn">검색</button>
                         </div>
-                        <div class="search-row" style="display: flex; align-items: center; gap: 16px; background: none;">
-                            <label style="width: 80px; color: #222; font-weight: 600;">담당 직원</label>
-                            <input type="text" name="emp" placeholder="직원명" style="width: 180px; background: #f1f3f6; border: none; border-radius: 6px; padding: 7px 12px;">
-                            <button type="button" class="btn" style="background: #444; color: #fff; border: none; border-radius: 6px; margin-left: 8px; min-width: 56px;">검색</button>
+                        <div class="search-row">
+                            <label class="search-label">담당 직원</label>
+                            <input type="text" name="emp" th:value="${param.emp}" placeholder="직원명" class="search-input">
+                            <button type="submit" class="search-btn">검색</button>
                         </div>
-                        <div class="search-row" style="display: flex; align-items: center; gap: 16px; background: none;">
-                            <label style="width: 80px; color: #222; font-weight: 600;">창고</label>
-                            <input type="text" name="warehouse" placeholder="창고명" style="width: 180px; background: #f1f3f6; border: none; border-radius: 6px; padding: 7px 12px;">
-                            <button type="button" class="btn" style="background: #444; color: #fff; border: none; border-radius: 6px; margin-left: 8px; min-width: 56px;">검색</button>
+                        <div class="search-row">
+                            <label class="search-label">창고</label>
+                            <input type="text" name="warehouse" th:value="${param.warehouse}" placeholder="창고명" class="search-input">
+                            <button type="submit" class="search-btn">검색</button>
                         </div>
-                        <div style="display: flex; justify-content: flex-end; margin-top: 6px; background: none;">
-                            <button type="submit" class="btn btn-primary" style="min-width: 90px; border: none;">전체 검색</button>
+                        <div style="flex-basis: 100%; display: flex; justify-content: flex-end; margin-top: 8px;">
+                            <button type="submit" class="search-btn" style="background:#888;">전체 검색</button>
                         </div>
                     </form>
                 </div>
-            </section>
+                <div class="card" style="padding: 24px 24px 16px 24px; background: #fff; border-radius: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); max-width:600px; min-width:600px; min-height:300px; flex-basis:300px; align-self:stretch;">
+                    <canvas id="salesMonthlyChart" width="600" height="300" style="display:block;"></canvas>
+                </div>
+            </div>
             <!-- 주문 목록 카드 -->
             <section class="card-section">
                 <div class="card" style="border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); padding: 24px;">
-                    <div class="card-header" style="font-weight: bold; font-size: 1.1rem; margin-bottom: 18px; display: flex; justify-content: space-between; align-items: center;">
-                        <span>주문 목록</span>
-                        <a th:href="@{/sales/orderForm}" class="btn btn-success">+ 판매주문 등록</a>
+                    <div class="list-header">
+                        <span class="list-title">판매주문 목록</span>
+                        <a th:href="@{/sales/orderForm}" class="btn-write btn-main">판매주문 작성</a>
                     </div>
                     <div class="table-container">
-                        <table class="product-table">
+                        <table class="custom-table">
                             <thead>
                                 <tr>
-                                    <th><input type="checkbox"></th>
-                                    <th>주문번호</th>
-                                    <th>공급 업체 번호</th>
+                                    <th><input type="checkbox" /></th>
+                                    <th>주문 번호</th>
+                                    <th>고객 번호</th>
                                     <th>주문일</th>
                                     <th>주문 금액</th>
                                     <th>담당 직원</th>
@@ -70,52 +72,70 @@
                             </thead>
                             <tbody>
                                 <tr th:each="order : ${list}">
-                                    <td><input type="checkbox"></td>
+                                    <td><input type="checkbox" th:value="${order.sales_order_num}" /></td>
                                     <td th:text="${order.sales_order_num}"></td>
                                     <td th:text="${order.customer_num}"></td>
                                     <td th:text="${#dates.format(order.order_date, 'yyyy-MM-dd')}"></td>
                                     <td th:text="${#numbers.formatDecimal(order.total_price, 0, 'COMMA', 2, 'POINT')} + '원'"></td>
                                     <td th:text="${order.emp_num}"></td>
                                     <td>
-                                        <a th:href="@{/sales/orderDetail(sales_order_num=${order.sales_order_num})}" class="btn btn-primary">상세보기</a>
+                                        <a th:href="@{/sales/orderDetail(sales_order_num=${order.sales_order_num})}" class="btn-detail">상세 보기</a>
+                                        <a th:href="@{/sales/orderEdit(sales_order_num=${order.sales_order_num})}" class="btn-detail" style="background:#2ecc71;" th:if="${#authorization.expression('hasRole(''ADMIN'') or principal.user_num == order.emp_num')}">수정</a>
+                                        <a th:href="@{/sales/orderDelete(sales_order_num=${order.sales_order_num})}" class="btn-detail" style="background:#e74c3c;" th:if="${#authorization.expression('hasRole(''ADMIN'')')}">삭제</a>
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
+                    <div class="pagination" th:if="${page != null}">
+                        <a th:each="i : ${#numbers.sequence(1, page.totalPages)}"
+                           th:href="@{/sales/orderList(page=${i}, startDate=${param.startDate}, endDate=${param.endDate}, client=${param.client}, emp=${param.emp})}"
+                           th:text="${i}"
+                           th:classappend="${i == page.number + 1} ? 'active'">
+                        </a>
+                    </div>
                 </div>
             </section>
+            <h3>월별 판매금액 추이</h3>
+            <div style="max-width:400px; margin:0 auto;">
+                <canvas id="salesMonthlyChart" width="400" height="200"></canvas>
+            </div>
+            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+            <script>
+            document.addEventListener('DOMContentLoaded', function() {
+              const ctx = document.getElementById('salesMonthlyChart').getContext('2d');
+              const salesMonthlyChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                  labels: ['1월', '2월', '3월', '4월', '5월', '6월'],
+                  datasets: [{
+                    label: '월별 판매금액',
+                    data: [100000, 120000, 90000, 140000, 110000, 160000],
+                    backgroundColor: 'rgba(255, 159, 64, 0.5)'
+                  }]
+                },
+                options: {
+                  responsive: true,
+                  maintainAspectRatio: true,
+                  plugins: {
+                    legend: { display: true }
+                  },
+                  scales: {
+                    y: {
+                      beginAtZero: true,
+                      ticks: {
+                        callback: function(value) {
+                          return value.toLocaleString();
+                        }
+                      }
+                    }
+                  }
+                }
+              });
+            });
+            </script>
         </main>
     </div>
-</div>
-<div layout:fragment="pageScript">
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('.menu-toggle').forEach(function(toggle) {
-      toggle.addEventListener('click', function(e) {
-        e.preventDefault();
-        var parent = this.parentElement;
-        var submenu = parent.querySelector('.submenu');
-        document.querySelectorAll('.menu-item.has-sub').forEach(function(item) {
-          if (item !== parent) {
-            item.classList.remove('open');
-            var sub = item.querySelector('.submenu');
-            if (sub) sub.classList.remove('open');
-            var arrow = item.querySelector('.arrow');
-            if (arrow) arrow.innerHTML = '&#9654;';
-          }
-        });
-        var isOpen = submenu.classList.contains('open');
-        submenu.classList.toggle('open', !isOpen);
-        parent.classList.toggle('open', !isOpen);
-        var arrow = this.querySelector('.arrow');
-        if (arrow) {
-          arrow.innerHTML = !isOpen ? '&#9660;' : '&#9654;';
-        }
-      });
-    });
-  });
-</script>
 </div>
 </body>
 </html> 

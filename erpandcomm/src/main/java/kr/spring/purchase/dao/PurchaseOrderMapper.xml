@@ -5,7 +5,7 @@
     <!-- purchase_order CRUD -->
     <insert id="insertPurchaseOrder" parameterType="kr.spring.purchase.vo.PurchaseOrderVO">
         INSERT INTO purchase_order (purchase_order_num, supplier_num, order_date, total_price, emp_num)
-        VALUES (#{purchase_order_num}, #{supplier_num}, #{order_date}, #{total_price}, #{emp_num})
+        VALUES (#{purchase_order_num}, #{supplier_num}, sysdate, #{total_price}, #{emp_num})
     </insert>
 
     <select id="selectPurchaseOrder" parameterType="long" resultType="kr.spring.purchase.vo.PurchaseOrderVO">

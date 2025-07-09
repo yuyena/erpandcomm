@@ -7,6 +7,108 @@
     <title>판매주문 등록/수정</title>
     <link rel="stylesheet" th:href="@{/assets/css/main.css}">
     <link rel="stylesheet" th:href="@{/assets/css/sh.css}">
+    <style>
+        .sh-box-form {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            padding: 40px 40px 32px 40px;
+            max-width: 1500px;
+            min-width: 1100px;
+            margin: 40px auto 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .sh-box-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 18px;
+            width: 100%;
+            white-space: nowrap;
+        }
+        .sh-box-row label {
+            width: 140px;
+            font-weight: 600;
+            color: #333;
+            margin-right: 18px;
+            font-size: 15px;
+            white-space: nowrap;
+        }
+        .sh-box-row input,
+        .sh-box-row select {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 15px;
+            padding: 0 18px;
+            margin-right: 10px;
+            background: #f9f9f9;
+            transition: border 0.2s;
+            box-sizing: border-box;
+        }
+        .sh-box-row input[readonly] {
+            background: #f1f3f6;
+            color: #888;
+        }
+        #productSelect {
+            width: 260px;
+            min-width: 200px;
+            max-width: 500px;
+        }
+        .product-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 8px;
+            background: #fafbfc;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 1px 6px rgba(0,0,0,0.04);
+        }
+        .product-table th, .product-table td {
+            padding: 12px 8px;
+            text-align: center;
+            border-bottom: 1px solid #eaeaea;
+            font-size: 15px;
+        }
+        .product-table th {
+            background: #f3f6fa;
+            font-weight: 700;
+            color: #222;
+        }
+        .product-table tr:last-child td {
+            border-bottom: none;
+        }
+        .total-row {
+            justify-content: flex-end;
+            margin-top: 24px;
+            width: 100%;
+        }
+        .total-label {
+            font-size: 15px;
+            font-weight: 700;
+            color: #222;
+            margin-right: 10px;
+        }
+        .total-input {
+            font-size: 15px;
+            font-weight: 700;
+            color: #2ecc71;
+            background: #f1f3f6;
+            border: none;
+            border-radius: 8px;
+            padding: 0 18px;
+            width: 180px;
+            text-align: right;
+            box-sizing: border-box;
+        }
+        .sh-box-actions {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            margin-top: 28px;
+        }
+    </style>
 </head>
 <body>
 <div layout:fragment="content" class="page-main">
@@ -14,28 +116,38 @@
         <th:block th:replace="fragments/nav_sidebar :: sidebar"></th:block>
         <main class="main-content">
             <div class="main-header">
-                <h2>ERP 관리</h2>
+                <h2>ERP 관리 - 판매주문 작성</h2>
             </div>
             <section class="card-section">
                 <div class="sh-box">
                     <form class="sh-box-form" th:action="@{/sales/orderInsert}" method="post">
                         <div class="sh-box-row">
-                            <label>담당 직원</label>
-                            <input type="text" name="emp_name" required>
+                            <label>주문일</label>
+                            <input type="text" name="order_date" th:value="${#dates.format(today, 'yyyy-MM-dd')}" readonly />
                         </div>
                         <div class="sh-box-row">
-                            <label>주문일</label>
-                            <input type="date" name="order_date" th:value="${#dates.format(salesOrderVO.order_date, 'yyyy-MM-dd')}" required />
+                            <label>거래처(고객)</label>
+                            <select name="client_num" required>
+                                <option value="">거래처 선택</option>
+                                <option th:each="client : ${customerList}"
+                                        th:value="${client.client_num}"
+                                        th:text="${client.client_name + ' (' + client.contact_person + ')'}"></option>
+                            </select>
                         </div>
                         <div class="sh-box-row">
                             <label>상품 선택</label>
                             <select id="productSelect">
+                                <option value="">상품 선택</option>
                                 <option th:each="product : ${productList}"
                                         th:value="${product.product_num}"
-                                        th:text="${product.product_num + ' - ' + product.unit + ' - ' + product.unit_price}"></option>
+                                        th:attr="data-unit=${product.unit},data-unitprice=${product.unit_price},data-name=${product.product_name}"
+                                        th:text="${product.product_name + ' - ' + #numbers.formatInteger(product.unit_price, 0, 'COMMA') + '원'}">
+                                </option>
                             </select>
-                            <input type="number" id="quantityInput" placeholder="수량" min="1">
-                            <input type="number" id="unitPriceInput" placeholder="단가" min="0">
+                            <input type="number" id="quantityInput" placeholder="수량" min="1" style="width:80px;">
+                            <input type="text" id="unitInput" placeholder="단위" readonly style="width:40px; border:none; background:transparent; padding:0; text-align:center; font-size:15px; box-shadow:none; outline:none;">
+                            <input type="text" id="unitPriceInput" placeholder="단가" style="width:115px; border:none; background:transparent; padding:0; text-align:center; font-size:15px; box-shadow:none; outline:none;" readonly>
+                            <span>원</span>
                             <button type="button" id="addProductBtn">추가</button>
                         </div>
                         <div class="sh-box-row">
@@ -43,8 +155,9 @@
                             <table id="orderDetailsTable" class="product-table">
                                 <thead>
                                     <tr>
-                                        <th>상품번호</th>
+                                        <th>상품명</th>
                                         <th>수량</th>
+                                        <th>단위</th>
                                         <th>단가</th>
                                         <th>삭제</th>
                                     </tr>
@@ -54,9 +167,13 @@
                                 </tbody>
                             </table>
                         </div>
+                        <div class="sh-box-row total-row">
+                            <span class="total-label">총금액</span>
+                            <input type="text" id="totalPriceInput" class="total-input" name="total_price" value="0원" readonly />
+                        </div>
                         <div class="sh-box-actions">
-                            <button type="submit" class="btn btn-success">저장</button>
-                            <a th:href="@{/sales/orderList}" class="btn">목록</a>
+                            <button type="submit" class="btn btn-success">주문 생성</button>
+                            <a th:href="@{/sales/orderList}" class="btn btn-list">목록</a>
                         </div>
                     </form>
                 </div>
@@ -66,75 +183,95 @@
 </div>
 <div layout:fragment="pageScript">
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('.menu-toggle').forEach(function(toggle) {
-      toggle.addEventListener('click', function(e) {
-        e.preventDefault();
-        var parent = this.parentElement;
-        var submenu = parent.querySelector('.submenu');
-        document.querySelectorAll('.menu-item.has-sub').forEach(function(item) {
-          if (item !== parent) {
-            item.classList.remove('open');
-            var sub = item.querySelector('.submenu');
-            if (sub) sub.classList.remove('open');
-            var arrow = item.querySelector('.arrow');
-            if (arrow) arrow.innerHTML = '&#9654;';
-          }
+document.addEventListener('DOMContentLoaded', function() {
+    const productSelect = document.getElementById('productSelect');
+    const unitInput = document.getElementById('unitInput');
+    const unitPriceInput = document.getElementById('unitPriceInput');
+    const quantityInput = document.getElementById('quantityInput');
+    const addBtn = document.getElementById('addProductBtn');
+    const tableBody = document.querySelector('#orderDetailsTable tbody');
+    const totalPriceInput = document.getElementById('totalPriceInput');
+    let orderDetails = [];
+
+    function addComma(num) {
+        if (!num) return '';
+        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+    function formatPrice(num) {
+        return addComma(Math.round(num));
+    }
+
+    productSelect.addEventListener('change', function() {
+        const selected = productSelect.options[productSelect.selectedIndex];
+        unitInput.value = selected.getAttribute('data-unit') || '';
+        const price = selected.getAttribute('data-unitprice');
+        unitPriceInput.value = price ? formatPrice(price) : '';
+        unitPriceInput.setAttribute('data-raw', price || '');
+    });
+
+    addBtn.addEventListener('click', function() {
+        if (!productSelect.value) { alert('상품을 선택해주세요.'); return; }
+        if (!quantityInput.value) { alert('수량을 입력해주세요.'); return; }
+        if (!unitInput.value) { alert('단위가 없습니다.'); return; }
+        if (!unitPriceInput.value) { alert('단가가 없습니다.'); return; }
+        const selected = productSelect.options[productSelect.selectedIndex];
+        orderDetails.push({
+            productNum: productSelect.value,
+            productName: selected.getAttribute('data-name'),
+            quantity: quantityInput.value,
+            unit: unitInput.value,
+            unitPrice: unitPriceInput.getAttribute('data-raw')
         });
-        var isOpen = submenu.classList.contains('open');
-        submenu.classList.toggle('open', !isOpen);
-        parent.classList.toggle('open', !isOpen);
-        var arrow = this.querySelector('.arrow');
-        if (arrow) {
-          arrow.innerHTML = !isOpen ? '&#9660;' : '&#9654;';
-        }
-      });
+        renderTable();
+        updateTotalPrice();
+        productSelect.selectedIndex = 0;
+        unitInput.value = '';
+        quantityInput.value = '';
+        unitPriceInput.value = '';
+        unitPriceInput.setAttribute('data-raw', '');
     });
-  });
-</script>
-<script>
-// 장바구니(주문 상세) 동적 추가/삭제
-let orderDetails = [];
-// 서버에서 기존 주문 상세가 있으면 초기화
-/*<![CDATA[*/
-    /* th:if="${salesOrderVO.details != null}" */
-    /* th:each="detail, idx : ${salesOrderVO.details}" */
-    /* JS 배열로 변환 */
-    /* 실제로는 Thymeleaf에서 아래처럼 렌더링 */
-    /*
-    orderDetails = [
-        [[${#lists.map(salesOrderVO.details, d -> {productNum: d.product_num, quantity: d.quantity, unitPrice: d.unit_price})}]]
-    ];
-    */
-/*]]>*/
-const tableBody = document.querySelector('#orderDetailsTable tbody');
-const addBtn = document.getElementById('addProductBtn');
-addBtn.addEventListener('click', function() {
-    const productNum = document.getElementById('productSelect').value;
-    const quantity = document.getElementById('quantityInput').value;
-    const unitPrice = document.getElementById('unitPriceInput').value;
-    if (!productNum || !quantity || !unitPrice) return;
-    orderDetails.push({productNum, quantity, unitPrice});
-    renderTable();
+
+    function renderTable() {
+        tableBody.innerHTML = '';
+        orderDetails.forEach((item, idx) => {
+            const row = document.createElement('tr');
+            row.innerHTML = `<td><input type='hidden' name='details[${idx}].product_num' value='${item.productNum}'/>${item.productName}</td>
+                <td><input type='hidden' name='details[${idx}].quantity' value='${item.quantity}'/>${item.quantity}</td>
+                <td><input type='hidden' name='details[${idx}].unit' value='${item.unit}'/>${item.unit}</td>
+                <td><input type='hidden' name='details[${idx}].unit_price' value='${item.unitPrice}'/>${formatPrice(item.unitPrice)}</td>
+                <td><button type='button' onclick='removeDetail(${idx})'>삭제</button></td>`;
+            tableBody.appendChild(row);
+        });
+    }
+
+    function updateTotalPrice() {
+        let total = 0;
+        orderDetails.forEach(item => {
+            total += Number(item.unitPrice) * Number(item.quantity);
+        });
+        totalPriceInput.value = formatPrice(total);
+    }
+
+    function removeDetail(idx) {
+        orderDetails.splice(idx, 1);
+        renderTable();
+        updateTotalPrice();
+    }
+
+    window.editDetail = function(idx) {
+        const item = orderDetails[idx];
+        productSelect.value = item.productNum;
+        quantityInput.value = item.quantity;
+        unitInput.value = item.unit;
+        unitPriceInput.value = item.unitPrice ? formatPrice(item.unitPrice) : '';
+        unitPriceInput.setAttribute('data-raw', item.unitPrice || '');
+        orderDetails.splice(idx, 1);
+        renderTable();
+        updateTotalPrice();
+    }
 });
-function renderTable() {
-    tableBody.innerHTML = '';
-    orderDetails.forEach((item, idx) => {
-        const row = document.createElement('tr');
-        row.innerHTML = `<td><input type='hidden' name='details[${idx}].product_num' value='${item.productNum}'/>${item.productNum}</td>
-            <td><input type='hidden' name='details[${idx}].quantity' value='${item.quantity}'/>${item.quantity}</td>
-            <td><input type='hidden' name='details[${idx}].unit_price' value='${item.unitPrice}'/>${item.unitPrice}</td>
-            <td><button type='button' onclick='removeDetail(${idx})'>삭제</button></td>`;
-        tableBody.appendChild(row);
-    });
-}
-window.removeDetail = function(idx) {
-    orderDetails.splice(idx, 1);
-    renderTable();
-}
-// 폼 진입 시 기존 상세 내역이 있으면 테이블 렌더링
-if (orderDetails.length > 0) renderTable();
 </script>
 </div>
 </body>
-</html> 
+</html>

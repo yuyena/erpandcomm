@@ -12,11 +12,20 @@
 			user_num,
 			role)
 		VALUES(
-			#{member_num},
+			chat_member_seq.nextval,
 			#{room_num},
 			#{user_num},
 			#{role})
 	</insert>
+	
+	<!-- 채팅 멤버 조회 -->
+	<select id="selectMember" parameterType="map" resultType="ChatMemberVO">
+		SELECT *
+		FROM chat_member
+		WHERE room_num = #{room_num}
+		AND is_active = 'Y'
+	</select>
+	
 </mapper>
 
 

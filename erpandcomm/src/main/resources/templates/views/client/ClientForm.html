@@ -16,6 +16,7 @@
             </div>
             <div class="sh-box">
                 <form class="sh-box-form" th:action="@{/client/save}" method="post">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                     <input type="hidden" name="client_num" th:value="${clientVO.client_num}">
                     <div class="sh-box-row">
                         <label>이름</label>
@@ -56,35 +57,6 @@
             </div>
         </main>
     </div>
-</div>
-<div layout:fragment="pageScript">
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('.menu-toggle').forEach(function(toggle) {
-      toggle.addEventListener('click', function(e) {
-        e.preventDefault();
-        var parent = this.parentElement;
-        var submenu = parent.querySelector('.submenu');
-        document.querySelectorAll('.menu-item.has-sub').forEach(function(item) {
-          if (item !== parent) {
-            item.classList.remove('open');
-            var sub = item.querySelector('.submenu');
-            if (sub) sub.classList.remove('open');
-            var arrow = item.querySelector('.arrow');
-            if (arrow) arrow.innerHTML = '&#9654;';
-          }
-        });
-        var isOpen = submenu.classList.contains('open');
-        submenu.classList.toggle('open', !isOpen);
-        parent.classList.toggle('open', !isOpen);
-        var arrow = this.querySelector('.arrow');
-        if (arrow) {
-          arrow.innerHTML = !isOpen ? '&#9660;' : '&#9654;';
-        }
-      });
-    });
-  });
-</script>
 </div>
 </body>
 </html> 

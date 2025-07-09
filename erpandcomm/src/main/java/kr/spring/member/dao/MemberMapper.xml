@@ -54,16 +54,11 @@
 	
 	<!-- 회원정보수정 -->
 	<update id="updateMemberDetail" parameterType="memberVO">
-		UPDATE spmember_detail
+		UPDATE euser_detail
 		SET
-		  name=#{name},
 		  phone=#{phone},
 		  email=#{email},
-		  zipcode=#{zipcode},
-		  address1=#{address1},
-		  address2=#{address2},
-		  modify_date=SYSDATE
-		WHERE mem_num=#{mem_num}
+		WHERE user_num=#{user_num}
 	</update>
 	
 	<!-- 회원목록 처리 -->
@@ -118,7 +113,24 @@
 		WHERE rnum >= #{start} AND rnum <= #{end}
 	]]>
 	</select>
+	<!-- 채팅방 멤버 추가용 회원 목록 조회 -->
+	<select id="selectMemberList" parameterType="map" resultType="memberVO">
+		SELECT
+		  u.user_num,
+          u.employee_code,
+    	  u.authority,
+    	  d.user_name,
+    	  d.email,
+   	      d.phone,
+   	   	  d.department_num,
+      	  d.position_num,
+   	      d.grade_num
+    	FROM euser u 
+    	JOIN euser_detail d
+    	ON u.user_num = d.user_num
+	</select>
 	
+
 </mapper>
 
 

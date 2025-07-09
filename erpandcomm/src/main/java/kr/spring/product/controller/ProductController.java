@@ -45,34 +45,6 @@ public class ProductController {
 		return new ProductVO();
 	}
 	
-	@GetMapping("/productViews")
-	public String getProductList(Model model) {
-	    log.debug("=== 제품 목록 조회 시작 ===");
-	    
-	    try {
-	        // 카테고리 목록 조회만 테스트
-	        List<Map<String, Object>> categoryList = productService.selectCategoryList();
-	        log.debug("카테고리 목록 크기: {}", categoryList != null ? categoryList.size() : "null");
-	        
-	        model.addAttribute("count", 0);
-	        model.addAttribute("list", new ArrayList<>());
-	        model.addAttribute("categoryList", categoryList);
-	        model.addAttribute("page", "");
-	        model.addAttribute("order", 1);
-	        model.addAttribute("keyfield", "");
-	        model.addAttribute("keyword", "");
-	        model.addAttribute("category_num", "");
-	        model.addAttribute("min_price", "");
-	        model.addAttribute("max_price", "");
-	        
-	        log.debug("=== 제품 목록 조회 완료 ===");
-	        return "views/product/productView";
-	        
-	    } catch (Exception e) {
-	        log.error("에러 발생: ", e);
-	        throw e;
-	    }
-	}
 	
 	@GetMapping("/productView")
 	public String getProductList(@RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
@@ -84,11 +56,6 @@ public class ProductController {
 	                           @RequestParam(value = "max_price", required = false) String max_price,
 	                           Model model) {
 
-	    
-	    log.debug("파라미터 - pageNum:{}, order:{}, category_num:{}", pageNum, order, category_num);
-	    log.debug("검색조건 - keyfield:{}, keyword:{}, min_price:{}, max_price:{}", keyfield, keyword, min_price, max_price);
-
-	    // 나머지 코드는 그대로...
 	    Map<String, Object> map = new HashMap<String, Object>();
 	    map.put("category_num", category_num);
 	    map.put("keyfield", keyfield);
@@ -111,12 +78,10 @@ public class ProductController {
 	        map.put("end", page.getEndRow());
 
 	        list = productService.selectList(map);
-	        log.debug("조회된 리스트 크기: {}", list != null ? list.size() : "null");
 	    }
 
 	    // 카테고리 목록 조회
 	    List<Map<String, Object>> categoryList = productService.selectCategoryList();
-	    log.debug("카테고리 목록 크기: {}", categoryList != null ? categoryList.size() : "null");
 
 	    model.addAttribute("count", count);
 	    model.addAttribute("list", list);

@@ -3,9 +3,14 @@ package kr.spring.chat.service;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import kr.spring.chat.dao.ChatMemberMapper;
+import kr.spring.chat.dao.ChatMessageMapper;
+import kr.spring.chat.dao.ChatMessageReadMapper;
+import kr.spring.chat.dao.ChatRoomMapper;
 import kr.spring.chat.vo.ChatMemberVO;
 import kr.spring.chat.vo.ChatMessageReadVO;
 import kr.spring.chat.vo.ChatMessageVO;
@@ -14,11 +19,19 @@ import kr.spring.chat.vo.ChatRoomVO;
 @Service
 @Transactional
 public class ChatServiceImpl implements ChatService {
-
+	
+	@Autowired
+	private ChatRoomMapper chatRoomMapper;
+	@Autowired
+	private ChatMemberMapper chatMemberMapper;
+	@Autowired
+	private ChatMessageMapper chatMessageMapper;
+	@Autowired
+	private ChatMessageReadMapper chatMessageReadMapper;
+	
 	@Override
-	public List<ChatRoomVO> selectListChatRoom(Long user_num) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<ChatRoomVO> selectListChatRoom(Map<String, Object> map) {
+		return chatRoomMapper.selectListChatRoom(map);
 	}
 
 	@Override
@@ -29,8 +42,12 @@ public class ChatServiceImpl implements ChatService {
 
 	@Override
 	public void insertRoom(ChatRoomVO chatRoom) {
-		// TODO Auto-generated method stub
-		
+		chatRoomMapper.insertRoom(chatRoom);
+	}
+
+	@Override
+	public long selectLastRoomNum() {
+		return chatRoomMapper.selectLastRoomNum();
 	}
 
 	@Override
@@ -50,11 +67,20 @@ public class ChatServiceImpl implements ChatService {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	@Override
+	public void notActive(Long room_num) {
+		chatRoomMapper.notActive(room_num);
+	}
 
 	@Override
 	public void insertMember(ChatMemberVO chatMember) {
-		// TODO Auto-generated method stub
-		
+		chatMemberMapper.insertMember(chatMember);
+	}
+
+	@Override
+	public long selectLastMemberNum() {
+		return chatMemberMapper.selectLastMemberNum();
 	}
 
 	@Override

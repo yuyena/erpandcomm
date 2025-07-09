@@ -10,44 +10,14 @@
     <script type="text/javascript" th:src="@{/assets/js/jquery-3.7.1.min.js}"></script>
     <script type="text/javascript" th:src="@{/assets/js/product.js}"></script>
     <link rel="stylesheet" th:href="@{/assets/css/main.css}">
-    <style>
-        .price-range {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        .price-range input {
-            width: 80px;
-        }
-        .search-section {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-        .search-form {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            align-items: center;
-        }
-        .search-group {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        .search-group label {
-            font-weight: 500;
-            min-width: 80px;
-        }
-    </style>
+
 </head>
 <body>
 <div layout:fragment="content" class="page-main">
     <div class="dashboard-wrapper">
 		<!-- 사이드바 -->
 		<th:block th:replace="fragments/nav_sidebar :: sidebar"></th:block>
-
+	<main class="main-content">
     <div class="page-header">
         <h2 class="page-title">상품 관리</h2>
         <div>
@@ -172,9 +142,10 @@
         <div class="pagination" th:utext="${page}">
             <!-- 페이지네이션이 여기에 렌더링됩니다 -->
         </div>
+        </main>
     </div>
 </div>
-
+<div layout:fragment="pageScript">
 <script type="text/javascript">
 $(function(){
     // 정렬 변경 시 자동 검색
@@ -226,5 +197,6 @@ function downloadExcel() {
     window.open(url, '_blank');
 }
 </script>
+</div>
 </body>
 </html>

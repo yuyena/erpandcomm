@@ -151,7 +151,7 @@ div#main_menu ul li{
 form{
 	width:600px;
 	margin:0 auto;
-	border:1px solid #000;
+	/* border: 1px solid #000; */
 	padding:10px 10px 30px 10px;
 }
 form ul li label{

@@ -27,9 +27,11 @@ CREATE TABLE grade (
 CREATE TABLE euser_detail (
     user_num          NUMBER           PRIMARY KEY,
     user_name         VARCHAR2(10)     NOT NULL,
+    resident_reg_num  VARCHAR2(14)     NOT NULL,
     passwd            VARCHAR2(60)     NOT NULL,
     phone             VARCHAR2(15)     NOT NULL,
     email             VARCHAR2(50)     NOT NULL,
+    extension_num     VARCHAR2(4),
     photo             VARCHAR2(400),
     hire_date         DATE             DEFAULT SYSDATE NOT NULL,
     resignation_date  DATE,

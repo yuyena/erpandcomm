@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>채팅방 생성</title>
+    <link rel="stylesheet" th:href="@{/assets/css/main.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/jm/chatRoomList.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/jm/chatCreateRoom.css}">
+</head>
+<body>
+<div layout:fragment="content" class="page-main">
+    <div class="dashboard-wrapper">
+        <!-- 사이드바(공통) -->
+        <th:block th:replace="fragments/nav_sidebar :: sidebar" />
+
+        <div class="chat-room-list-container">
+            <div class="chat-room-list-header">
+                <h2>채팅방 생성</h2>
+                <a th:href="@{'/chat/roomList'}" class="create-btn">← 목록으로</a>
+            </div>
+            <div class="top-divider"></div>
+            <form th:action="@{/chat/createRoom}" method="post">
+                <div class="chatroom-create-container">
+                    <!-- 방 정보 입력 -->
+                    <div class="room-info">
+                        <div class="input-group">
+                            <label for="room_name">방 이름</label>
+                            <input type="text" id="room_name" name="room_name" th:value="${chatRoomVO.room_name}" 
+                                   placeholder="채팅방 이름을 입력하세요 (미입력시 자동 생성)">
+                        </div>
+                        <div class="input-group">
+                            <label for="description">설명 (선택사항)</label>
+                            <input type="text" id="description" name="description" th:value="${chatRoomVO.description}" 
+                                   placeholder="채팅방 설명을 입력하세요">
+                        </div>
+                        <div class="input-group">
+                            <label for="max_members">최대 인원 (선택사항)</label>
+                            <input type="number" id="max_members" name="max_members" th:value="${chatRoomVO.max_members}" 
+                                   placeholder="최대 인원 수" min="2" max="50">
+                        </div>
+                    </div>
+                    
+                    <!-- 멤버 선택 영역 -->
+                    <div class="member-selection-container">
+                        <!-- 멤버 선택 리스트 -->
+                        <div class="member-list">
+                            <th:block th:each="member : ${userList}">
+                                <label th:attr="data-index=${member.user_num}">
+                                    <input type="checkbox" name="memberNums" th:value="${member.user_num}">
+                                    <span th:text="${member.user_name}">이름</span>
+                                </label>
+                            </th:block>
+                        </div>
+                        <!-- 추가/제거 버튼 -->
+                        <div class="button-group">
+                            <button type="button" id="addBtn" class="create-btn">추가 &gt;&gt;</button>
+                            <button type="button" id="removeBtn" class="create-btn">&lt;&lt; 제거</button>
+                        </div>
+                        <!-- 선택된 멤버 리스트 -->
+                        <div class="selected-list" id="selectedList">
+                            <!-- JS로 동적으로 표시 -->
+                        </div>
+                    </div>
+                </div>
+                <div class="save-btn-wrap">
+                    <button class="save-btn" type="submit">저장</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+	document.addEventListener('DOMContentLoaded', function() {
+	    const addBtn = document.getElementById('addBtn');
+	    const removeBtn = document.getElementById('removeBtn');
+	    const memberList = document.querySelector('.member-list');
+	    const selectedList = document.getElementById('selectedList');
+	    const form = document.querySelector('form');
+	
+	    // 선택된 멤버들을 저장할 배열
+	    let selectedMembers = [];
+	
+	    addBtn.onclick = function() {
+	        memberList.querySelectorAll('input[type=checkbox]:checked').forEach(cb => {
+	            const label = cb.parentElement;
+	            const memberNum = cb.value;
+	            const memberName = label.querySelector('span').textContent;
+	            
+	            // 선택된 멤버 배열에 추가
+	            if (!selectedMembers.includes(memberNum)) {
+	                selectedMembers.push(memberNum);
+	            }
+	            
+	            // 선택된 리스트로 이동
+	            selectedList.appendChild(label);
+	            cb.checked = false;
+	        });
+	    };
+	    
+	    removeBtn.onclick = function() {
+	        selectedList.querySelectorAll('input[type=checkbox]:checked').forEach(cb => {
+	            const label = cb.parentElement;
+	            const memberNum = cb.value;
+	            const index = parseInt(label.getAttribute('data-index'));
+	            
+	            // 선택된 멤버 배열에서 제거
+	            selectedMembers = selectedMembers.filter(num => num != memberNum);
+	            
+	            // 원래 리스트로 이동
+	            let inserted = false;
+	            memberList.querySelectorAll('label').forEach((targetLabel) => {
+	                const targetIndex = parseInt(targetLabel.getAttribute('data-index'));
+	                if (!inserted && targetIndex > index) {
+	                    memberList.insertBefore(label, targetLabel);
+	                    inserted = true;
+	                }
+	            });
+	            if (!inserted) {
+	                memberList.appendChild(label);
+	            }
+	            cb.checked = false;
+	        });
+	    };
+	    
+	    // 폼 제출 시 선택된 멤버들을 hidden input으로 추가
+	    form.addEventListener('submit', function(e) {
+	        // 기존 hidden input들 제거
+	        form.querySelectorAll('input[name="selectedMemberNums"]').forEach(input => input.remove());
+	        
+	        // 선택된 멤버들을 hidden input으로 추가
+	        selectedMembers.forEach(memberNum => {
+	            const hiddenInput = document.createElement('input');
+	            hiddenInput.type = 'hidden';
+	            hiddenInput.name = 'memberNums';
+	            hiddenInput.value = memberNum;
+	            form.appendChild(hiddenInput);
+	        });
+	    });
+	});
+</script>
+</body>
+</html>

@@ -44,3 +44,292 @@
   display: flex;
   justify-content: flex-end;
 }
+
+/* 조회조건 카드(검색 영역) 테두리/그림자 제거 */
+.search-card {
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    padding: 0 !important;
+}
+
+/* 공통 메인 버튼 스타일 */
+.btn-main {
+    background: #528EFF !important;
+    color: #fff !important;
+    padding: 8px 20px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 1rem;
+    border: none;
+    display: inline-block;
+    transition: background 0.2s;
+}
+.btn-main:hover, .btn-main:focus {
+    background: #3976d2 !important;
+    color: #fff !important;
+}
+
+/* 판매/구매 공통 리스트 스타일 */
+.list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+.list-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+.btn-write, .btn-main {
+    background: #007aff !important;
+    color: #fff !important;
+    border: none !important;
+    border-radius: 6px !important;
+    padding: 8px 20px !important;
+    font-weight: 500 !important;
+    transition: background 0.2s;
+}
+.btn-write:hover, .btn-main:hover {
+    background: #0056b3 !important;
+}
+.custom-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    font-size: 1rem;
+}
+.custom-table th, .custom-table td {
+    border-bottom: 1px solid #eee;
+    padding: 12px 8px;
+    text-align: center;
+}
+.custom-table th {
+    background: #fafafa;
+    font-weight: 600;
+}
+.btn-detail {
+    background: #3498db;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 16px;
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+.search-box {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 20px 20px 16px 20px;
+    margin-bottom: 24px;
+    border: none;
+    box-shadow: none;
+}
+.search-form {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px 0;
+    background: none;
+    width: 100%;
+}
+.search-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: none;
+    margin-bottom: 0;
+    width: 100%;
+    justify-content: flex-start;
+}
+.search-label {
+    width: 54px;
+    color: #222;
+    font-weight: 400;
+    font-size: 0.89rem;
+    text-align: right;
+    white-space: nowrap;
+}
+.search-input, .search-select {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    padding: 4px 8px;
+    font-size: 0.89rem;
+    min-width: 80px;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+.search-input:focus, .search-select:focus {
+    border-color: #007aff;
+    box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.08);
+}
+.search-btn {
+    background: #007aff;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 5px 10px;
+    font-size: 0.89rem;
+    font-weight: 500;
+    margin-left: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+.search-btn:hover {
+    background: #0056b3;
+}
+.search-form .search-row {
+    flex-wrap: nowrap;
+}
+.search-form .search-row label {
+    margin-bottom: 0;
+}
+.search-form .search-row input,
+.search-form .search-row select {
+    margin-bottom: 0;
+}
+.search-form .search-row:last-child {
+    justify-content: center;
+}
+.search-form .search-row.full {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 8px;
+}
+.search-form .search-row.full button {
+    width: 160px;
+    margin: 0;
+    display: block;
+    font-size: 1rem;
+    padding: 8px 0;
+}
+.search-card {
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    border-radius: 16px;
+    border: none;
+    background: #fff;
+    padding: 14px 24px 10px 24px;
+    max-width: 820px;
+    margin: 0 auto;
+}
+.card-header {
+    font-weight: bold;
+    font-size: 0.97rem;
+    margin-bottom: 10px;
+    text-align: left;
+}
+
+/* 공통 버튼 스타일 */
+.btn, .btn-list, .btn-success, #addProductBtn,
+a.btn, a.btn-list, a.btn-success, a#addProductBtn {
+    height: 40px;
+    font-size: 15px;
+    border: none;
+    border-radius: 8px;
+    color: #fff !important;
+    text-align: center;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    vertical-align: middle;
+    min-width: 120px;
+    padding: 0 18px;
+    box-sizing: border-box;
+    background: #4f8cff;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.btn-success, #submitOrderBtn {
+    background: #2ecc71;
+}
+.btn-list {
+    background: #3498ff;
+}
+.btn-success:hover, #submitOrderBtn:hover {
+    background: #27ae60;
+}
+.btn-list:hover {
+    background: #2176c1;
+}
+.btn:hover, #addProductBtn:hover {
+    background: #357ae8;
+}
+
+/* 공통 입력란/셀렉트 스타일 */
+input, select {
+    height: 35px;
+    font-size: 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 0 18px;
+    margin-right: 10px;
+    background: #f9f9f9;
+    transition: border 0.2s;
+    box-sizing: border-box;
+}
+input[readonly] {
+    background: #f1f3f6;
+    color: #888;
+}
+
+/* 상품명 드롭다운(상품명 잘리지 않게) */
+#productSelect {
+    width: 500px;
+    min-width: 300px;
+    max-width: 700px;
+}
+
+/* 공통 테이블 스타일 */
+.product-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-top: 8px;
+    background: #fafbfc;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.04);
+}
+.product-table th, .product-table td {
+    padding: 12px 8px;
+    text-align: center;
+    border-bottom: 1px solid #eaeaea;
+    font-size: 15px;
+}
+.product-table th {
+    background: #f3f6fa;
+    font-weight: 700;
+    color: #222;
+}
+.product-table tr:last-child td {
+    border-bottom: none;
+}
+
+/* 총금액 입력란 */
+.total-input {
+    height: 35px;
+    font-size: 15px;
+    font-weight: 700;
+    color: #2ecc71;
+    background: #f1f3f6;
+    border: none;
+    border-radius: 8px;
+    padding: 0 18px;
+    text-align: right;
+    box-sizing: border-box;
+}
+
+/* 폼 라벨 */
+.sh-box-row label {
+    width: 140px;
+    font-weight: 600;
+    color: #333;
+    margin-right: 18px;
+    font-size: 15px;
+    white-space: nowrap;
+}
