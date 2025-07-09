@@ -21,9 +21,11 @@ import kr.spring.product.vo.ProductVO;
 import kr.spring.util.FileUtil;
 import kr.spring.util.ValidationUtil;
 import lombok.extern.slf4j.Slf4j;
+import kr.spring.member.vo.MemberVO;
+
 @Controller
 @Slf4j
-@RequestMapping("/erp")
+@RequestMapping("/member")
 public class MemberUserController {
 
 	
@@ -83,6 +85,28 @@ public class MemberUserController {
 	@GetMapping("/login")
 	public String formLogin() {
 		return "views/member/memberLogin";
+	}
+	
+	@GetMapping("/info")
+	public String selectMemberInfo(Model model) {
+	    // 임시로 user_num=1로 고정
+	    long user_num = 1;
+
+	    // 서비스에서 회원 상세 정보 조회 (user_num 기준)
+	    MemberVO member = memberService.selectMember(user_num);
+
+	    // 주민등록번호 마스킹 처리 (예시)
+	    if (member.getResident_reg_num() != null) {
+	        String rrn = member.getResident_reg_num();
+	        String masked = rrn.substring(0, 7) + "******";
+	        member.setResident_reg_num(masked);
+	    }
+
+	    // 모델에 담아서 뷰로 전달
+	    model.addAttribute("member", member);
+
+	    // ERP 스타일 사원정보 화면으로 이동
+	    return "views/member/memberInfo";
 	}
 //	
 //	/*

@@ -1,6 +1,9 @@
 <!-- chatRoomList.html: 채팅방 목록 + 채팅창 2분할 구조 -->
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout_basic}">
 <head>
     <meta charset="UTF-8">
     <title>채팅방 목록</title>
@@ -67,6 +70,7 @@
         </div>
     </div>
 </div>
+<div layout:fragment="pageScript">
 <script>
 // 입장 버튼 클릭 시 AJAX로 채팅방 뷰 로드
 $(document).on('click', '.enter-btn', function() {
@@ -85,5 +89,6 @@ $(document).on('click', '.enter-btn', function() {
     });
 });
 </script>
+</div>
 </body>
 </html>

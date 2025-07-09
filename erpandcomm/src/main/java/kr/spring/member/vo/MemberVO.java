@@ -42,6 +42,8 @@ public class MemberVO {
 	private long position_num;
 	private long grade_num;
 	
+	private String department_name;
+	
 	
 	// 비밀번호 변경 시 현재 비밀번호를 저장하는 용도로 사용
 	@Pattern(regexp="^[A-Za-z0-9]{4,12}$")

@@ -1,5 +1,8 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout_basic}">
 <head>
     <meta charset="UTF-8">
     <title>채팅방 생성</title>
@@ -63,12 +66,13 @@
                     </div>
                 </div>
                 <div class="save-btn-wrap">
-                    <button class="save-btn" type="submit">저장</button>
+                    <button class="save-btn" type="submit">생성</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
+<div layout:fragment="pageScript">
 <script>
 	document.addEventListener('DOMContentLoaded', function() {
 	    const addBtn = document.getElementById('addBtn');
@@ -138,5 +142,6 @@
 	    });
 	});
 </script>
+</div>
 </body>
 </html>

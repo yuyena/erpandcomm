@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout_mypage}">
 <head>
     <meta charset="UTF-8">
     <title>마이페이지 - 사원정보</title>
@@ -7,7 +9,7 @@
     <link rel="stylesheet" th:href="@{/assets/css/jm/memberInfo.css}">
 </head>
 <body>
-<div class="page-main">
+<div layout:fragment="content" class="page-main">
     <div class="dashboard-wrapper">
         <th:block th:replace="fragments/nav_sidebar :: sidebar" />
         <div class="mypage-container">
@@ -16,14 +18,14 @@
                 <div class="mypage-section-title">사원 정보</div>
                 <div class="member-info-card">
                     <div class="member-photo">
-                        <img th:src="@{${member.photoUrl}}" alt="증명사진" />
+                        <img th:src="@{${member.photo_name}}" alt="증명사진" />
                     </div>
                     <div class="member-main-info">
                         <div class="member-name">
                             <span th:text="${member.user_name}">이름</span>
                             <span class="member-dept" th:text="${member.department_name}">부서</span>
                         </div>
-                        <div class="member-rrn" th:text="${member.resident_registration_number_masked}">주민등록번호</div>
+                        <div class="member-rrn" th:text="${member.resident_reg_num}">주민등록번호</div>
                     </div>
                 </div>
                 <table class="member-info-table">
@@ -41,7 +43,7 @@
                     </tr>
                     <tr>
                         <th>내선번호</th>
-                        <td th:text="${member.extension_number}"></td>
+                        <td th:text="${member.extension_num}"></td>
                     </tr>
                 </table>
                 <div class="mypage-btn-row">
