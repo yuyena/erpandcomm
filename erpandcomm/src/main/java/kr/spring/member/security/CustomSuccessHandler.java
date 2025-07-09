@@ -28,7 +28,11 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 		
 		log.debug("[Spring Security Login Check 2] AuthenticationSuccessHandler 실행");
 		MemberVO user = ((PrincipalDetails)authentication.getPrincipal()).getMemberVO();
+		// 로그인 사용자 정보를 세션에 저장
+		//request.getSession().setAttribute("loginUser", user);
+
 		log.debug("[Spring Security Login Check 2]" + user);
+		
 		
 		if (user.getAuthority().equals(UserRole.ADMIN.getValue())) { // 관리자
 			setDefaultTargetUrl("/main/admin");

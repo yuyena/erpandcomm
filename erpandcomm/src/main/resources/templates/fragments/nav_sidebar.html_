@@ -1,0 +1,112 @@
+<div th:fragment="sidebar">
+  <aside class="sidebar">
+    <!-- 로고 -->
+    <div class="sidebar-logo">
+      <a th:href="@{/}" class="sidebar-logo-link">
+        <img src="/assets/images/mainlogo.png" alt="Office ERP 로고" />
+      </a>
+    </div>
+        <div class="sidebar-menu-wrap">
+            <nav class="sidebar-menu">
+                <ul>
+                    <li class="menu-item active">
+                        <a th:href="@{/}" class="active">
+                            <img src="/assets/images/dashboard.png" class="menu-icon" alt="대시보드">
+                            <span class="menu-text">대시보드</span>
+                        </a>
+                    </li>
+                    <li class="menu-item has-sub">
+                        <a href="#" class="menu-toggle">
+                            <img src="/assets/images/erp.png" class="menu-icon" alt="ERP 관리">
+                            <span class="menu-text">ERP 관리</span>
+                            <span class="arrow">&#9654;</span>
+                        </a>
+                        <ul class="submenu">
+                            <li><a th:href="@{/sales/orderList}">판매주문</a></li>
+                            <li><a th:href="@{/purchase/orderList}">구매 / 발주</a></li>
+                            <li><a href="#" class="active">재고관리</a></li>
+                            <li><a th:href="@{/client/list}">거래처관리</a></li>
+                        </ul>
+                    </li>
+                    <li class="menu-item has-sub">
+                        <a href="#" class="menu-toggle">
+                            <img src="/assets/images/insa.png" class="menu-icon" alt="인사관리">
+                            <span class="menu-text">인사관리</span>
+                            <span class="arrow">&#9654;</span>
+                        </a>
+                        <ul class="submenu">
+                            <li><a th:href="@{/personnel/department}">부서관리 / 조직도</a></li>
+                            <li><a th:href="@{/personnel/employee}">직원관리</a></li>
+                            <li><a th:href="@{/personnel/attendance}">근태관리</a></li>
+                            <li><a th:href="@{/personnel/vacation}">휴가관리</a></li>
+                            <li><a th:href="@{/personnel/salary}">급여관리</a></li>
+                            <li><a th:href="@{/personnel/evaluation}">평가관리</a></li>
+                            <li><a th:href="@{/personnel/statistics}">인사통계</a></li>
+                        </ul>
+                    </li>
+                    <li class="menu-item has-sub">
+                        <a href="#" class="menu-toggle">
+                            <img src="/assets/images/community.png" class="menu-icon" alt="커뮤니티">
+                            <span class="menu-text">커뮤니티</span>
+                            <span class="arrow">&#9654;</span>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="#">공지사항</a></li>
+                            <li><a href="#">자유게시판</a></li>
+                            <li><a href="#">자료실</a></li>
+                        </ul>
+                    </li>
+                    <li class="menu-item has-sub">
+                        <a href="#" class="menu-toggle">
+                            <img src="/assets/images/insa.png" class="menu-icon" alt="마이페이지">
+                            <span class="menu-text">마이페이지</span>
+                            <span class="arrow">&#9654;</span>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="#">사원정보</a></li>
+                            <li><a href="#">개인근태정보</a></li>
+                            <li><a href="#" class="active">개인휴가정보</a></li>
+                            <li><a href="#">급여정보</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+   <!-- 출퇴근 영역 -->
+    <div class="sidebar-bottom">
+      <div class="worktime-box">
+        <div class="date-time" id="currentDateTime"></div>
+        <div class="worktime-row">
+          <span>출근</span>
+          <input type="time" id="checkInTimeInput" class="check-time" readonly />
+        </div>
+        <div class="worktime-row">
+          <span>퇴근</span>
+          <input type="time" id="checkOutTimeInput" class="check-time" readonly />
+        </div>
+      </div>
+      <div class="worktime-buttons">
+      <!-- 
+      <form id="checkInForm" th:action="@{/attendence/checkin}" method="post">
+      	<input type ="hidden" name="empId" th:value="${session.loginUser.empId}"/>
+      	<input type ="hidden" name="empName" th:value="${session.loginUser.empName}"/>
+      	<input type ="hidden" name="checkIntime" id="hiddenCheckInTime"/>
+      	<input type ="hidden" name="createdAt" id="hiddenCreatedAt"/>
+      	</form>
+      -->
+      	<button type="button" id="checkInBtn" onclick="handleCheckIn()">출근하기</button>  
+      
+        <button type="button" id="checkOutBtn" onclick="handleCheckOut()" disabled>퇴근하기</button>
+      </div>
+    </div>
+            <div class="profile-box">
+                <img class="profile-img" th:src="@{/assets/image_bundle/face.png}" alt="프로필" />
+                <div class="profile-info">
+                    <span class="profile-name">홍길동</span>
+                    <span class="profile-dept">사원(물류)</span>
+                </div>
+                <button class="profile-btn">+</button>
+            </div>
+        </div>
+    </aside>
+</div>

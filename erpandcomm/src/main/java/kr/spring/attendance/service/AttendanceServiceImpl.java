@@ -1,4 +1,4 @@
-package kr.spring.attendence.service;
+package kr.spring.attendance.service;
 
 import java.util.List;
 import java.util.Map;
@@ -7,28 +7,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kr.spring.attendence.dao.AttendenceMapper;
-import kr.spring.attendence.vo.AttendenceVO;
+import kr.spring.attendance.dao.AttendanceMapper;
+import kr.spring.attendance.vo.AttendanceVO;
 
 @Service
 @Transactional
-public class AttendenceServiceImpl implements AttendenceService {
-	@Autowired
-	private AttendenceMapper attendenceMapper;
+public class AttendanceServiceImpl implements AttendanceService {
+
 	@Override
-	public void insertAttendence(AttendenceVO attendence) {
+	public void insertAttendance(AttendanceVO attendence) {
 		// TODO Auto-generated method stub
-		attendenceMapper.insertAttendence(attendence);
+		
 	}
 
 	@Override
-	public AttendenceVO selectAttendence(Long empId) {
+	public AttendanceVO selectAttendance(Long empId) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public List<AttendenceVO> selectList(Map<String, Object> map) {
+	public List<AttendanceVO> selectList(Map<String, Object> map) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -40,15 +39,19 @@ public class AttendenceServiceImpl implements AttendenceService {
 	}
 
 	@Override
-	public void updateAttendence(AttendenceVO attendence) {
+	public void updateAttendance(AttendanceVO attendence) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void deleteAttendence(Long empId) {
+	public void deleteAttendance(Long empId) {
 		// TODO Auto-generated method stub
 		
 	}
+
+	
+	
+	
 
 }
