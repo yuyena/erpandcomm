@@ -58,7 +58,7 @@
             <ul class="submenu">
               <li><a href="#">공지사항</a></li>
               <li><a href="#">자유게시판</a></li>
-              <li><a href="#">자료실</a></li>
+              <li><a th:href="@{/chat/roomList}">채팅</a></li>
             </ul>
           </li>
 
@@ -69,7 +69,7 @@
               <span class="arrow">&#9654;</span>
             </a>
             <ul class="submenu">
-              <li><a href="#">사원정보</a></li>
+              <li><a th:href="@{/member/memberInfo}">사원정보</a></li>
               <li><a href="#">개인근태정보</a></li>
               <li><a href="#" class="active">개인휴가정보</a></li>
               <li><a href="#">급여정보</a></li>

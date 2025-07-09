@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>마이페이지 - 사원정보</title>
+    <link rel="stylesheet" th:href="@{/assets/css/main.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/jm/memberInfo.css}">
+</head>
+<body>
+<div class="page-main">
+    <div class="dashboard-wrapper">
+        <th:block th:replace="fragments/nav_sidebar :: sidebar" />
+        <div class="mypage-container">
+            <div class="mypage-title">마이페이지</div>
+            <div class="mypage-section">
+                <div class="mypage-section-title">사원 정보</div>
+                <div class="member-info-card">
+                    <div class="member-photo">
+                        <img th:src="@{${member.photoUrl}}" alt="증명사진" />
+                    </div>
+                    <div class="member-main-info">
+                        <div class="member-name">
+                            <span th:text="${member.user_name}">이름</span>
+                            <span class="member-dept" th:text="${member.department_name}">부서</span>
+                        </div>
+                        <div class="member-rrn" th:text="${member.resident_registration_number_masked}">주민등록번호</div>
+                    </div>
+                </div>
+                <table class="member-info-table">
+                    <tr>
+                        <th>아이디</th>
+                        <td th:text="${member.employee_code}"></td>
+                    </tr>
+                    <tr>
+                        <th>이메일</th>
+                        <td th:text="${member.email}"></td>
+                    </tr>
+                    <tr>
+                        <th>전화번호</th>
+                        <td th:text="${member.phone}"></td>
+                    </tr>
+                    <tr>
+                        <th>내선번호</th>
+                        <td th:text="${member.extension_number}"></td>
+                    </tr>
+                </table>
+                <div class="mypage-btn-row">
+                    <button class="info-edit-btn" onclick="location.href='/member/modify'">정보 변경</button>
+                    <button class="pw-edit-btn" onclick="location.href='/member/changePassword'">비밀번호 변경</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html> 

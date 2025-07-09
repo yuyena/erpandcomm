@@ -24,6 +24,7 @@ public class MemberVO {
 	private String authority;
 	@NotBlank
 	private String user_name;
+	private String resident_reg_num;
 	@Pattern(regexp="^[A-Za-z0-9]{4,12}$")
 	private String passwd;
 	@NotBlank
@@ -31,6 +32,7 @@ public class MemberVO {
 	@Email
 	@NotBlank
 	private String email;
+	private String extension_num;
 	private byte[] photo;
 	private String photo_name;
 	private Date hire_date;
