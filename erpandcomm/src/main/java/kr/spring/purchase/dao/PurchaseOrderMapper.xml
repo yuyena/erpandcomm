@@ -4,6 +4,9 @@
 
     <!-- purchase_order CRUD -->
     <insert id="insertPurchaseOrder" parameterType="kr.spring.purchase.vo.PurchaseOrderVO">
+        <selectKey keyProperty="purchase_order_num" resultType="long" order="BEFORE">
+            SELECT puchase_order_seq.NEXTVAL FROM dual
+        </selectKey>
         INSERT INTO purchase_order (purchase_order_num, supplier_num, order_date, total_price, emp_num)
         VALUES (#{purchase_order_num}, #{supplier_num}, sysdate, #{total_price}, #{emp_num})
     </insert>

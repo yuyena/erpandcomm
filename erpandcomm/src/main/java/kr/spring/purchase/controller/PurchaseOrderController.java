@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -64,11 +65,18 @@ public class PurchaseOrderController {
 
     // 구매주문 등록 처리
     @PostMapping("/orderInsert")
-    public String orderInsert(@ModelAttribute PurchaseOrderVO purchaseOrderVO) {
+    public String orderInsert(@ModelAttribute PurchaseOrderVO purchaseOrderVO, RedirectAttributes redirectAttributes) {
         // 로그인한 직원의 emp_num을 세팅
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
-        purchaseOrderVO.setEmp_num(principal.getMemberVO().getUser_num());
+        Object principal = authentication.getPrincipal();
+        
+        // PrincipalDetails 타입인지 확인 후 안전하게 처리
+        if (principal instanceof PrincipalDetails) {
+            purchaseOrderVO.setEmp_num(((PrincipalDetails) principal).getMemberVO().getUser_num());
+        } else {
+            // PrincipalDetails가 아닌 경우 기본값 설정 (임시 처리)
+            purchaseOrderVO.setEmp_num(1L); // 기본 직원 번호
+        }
         
         // 1. 구매주문 등록
         purchaseOrderService.insertPurchaseOrder(purchaseOrderVO);
@@ -94,6 +102,7 @@ public class PurchaseOrderController {
             }
         }
         
+        redirectAttributes.addFlashAttribute("orderSuccess", true);
         return "redirect:/purchase/orderList";
     }
 

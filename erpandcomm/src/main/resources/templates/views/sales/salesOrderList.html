@@ -7,6 +7,9 @@
     <title>판매주문 목록</title>
     <link rel="stylesheet" th:href="@{/assets/css/main.css}">
     <link rel="stylesheet" th:href="@{/assets/css/sh.css}">
+    <th:block th:if="${orderSuccess}">
+      <script>alert('주문이 처리되었습니다!');</script>
+    </th:block>
 </head>
 <body>
 <div layout:fragment="content" class="page-main">
@@ -63,7 +66,7 @@
                                 <tr>
                                     <th><input type="checkbox" /></th>
                                     <th>주문 번호</th>
-                                    <th>고객 번호</th>
+                                    <th>고객명(거래처)</th>
                                     <th>주문일</th>
                                     <th>주문 금액</th>
                                     <th>담당 직원</th>
@@ -74,9 +77,9 @@
                                 <tr th:each="order : ${list}">
                                     <td><input type="checkbox" th:value="${order.sales_order_num}" /></td>
                                     <td th:text="${order.sales_order_num}"></td>
-                                    <td th:text="${order.customer_num}"></td>
+                                    <td th:text="${order.client_name}"></td>
                                     <td th:text="${#dates.format(order.order_date, 'yyyy-MM-dd')}"></td>
-                                    <td th:text="${#numbers.formatDecimal(order.total_price, 0, 'COMMA', 2, 'POINT')} + '원'"></td>
+                                    <td th:text="${#numbers.formatInteger(order.total_price, 0, 'COMMA')} + '원'"></td>
                                     <td th:text="${order.emp_num}"></td>
                                     <td>
                                         <a th:href="@{/sales/orderDetail(sales_order_num=${order.sales_order_num})}" class="btn-detail">상세 보기</a>

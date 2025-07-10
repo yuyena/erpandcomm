@@ -7,6 +7,9 @@
     <title>ERP관리 - 발주 관리</title>
     <link rel="stylesheet" th:href="@{/assets/css/main.css}">
     <link rel="stylesheet" th:href="@{/assets/css/sh.css}">
+    <th:block th:if="${orderSuccess}">
+      <script>alert('주문이 처리되었습니다!');</script>
+    </th:block>
 </head>
 <body>
 <div layout:fragment="content" class="page-main">

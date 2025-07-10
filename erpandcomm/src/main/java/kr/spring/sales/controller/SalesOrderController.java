@@ -10,10 +10,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 import java.util.Date;
 import java.util.stream.Collectors;
+import java.util.Map;
+import java.util.LinkedHashMap;
 
 import kr.spring.sales.service.SalesOrderService;
 import kr.spring.sales.vo.SalesOrderVO;
@@ -53,7 +56,16 @@ public class SalesOrderController {
     public String orderForm(Model model) {
         model.addAttribute("salesOrderVO", new SalesOrderVO());
         List<ProductVO> productList = productService.selectProductList();
-        model.addAttribute("productList", productList);
+        // 카테고리별로 그룹핑
+        Map<String, List<ProductVO>> productCategoryMap = new LinkedHashMap<>();
+        for (ProductVO product : productList) {
+            String category = product.getCategory_name();
+            if (!productCategoryMap.containsKey(category)) {
+                productCategoryMap.put(category, new java.util.ArrayList<>());
+            }
+            productCategoryMap.get(category).add(product);
+        }
+        model.addAttribute("productCategoryMap", productCategoryMap);
         // 고객만 필터링해서 전달
         List<ClientVO> customerList = clientService.getClientList().stream()
             .filter(c -> c.getClient_type() == 1)
@@ -65,11 +77,19 @@ public class SalesOrderController {
 
     // 판매주문 등록 처리
     @PostMapping("/orderInsert")
-    public String orderInsert(@ModelAttribute SalesOrderVO salesOrderVO) {
+    public String orderInsert(@ModelAttribute SalesOrderVO salesOrderVO, RedirectAttributes redirectAttributes) {
         // 로그인한 직원의 emp_num을 세팅
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
-        salesOrderVO.setEmp_num(principal.getMemberVO().getUser_num());
+        Object principal = authentication.getPrincipal();
+        
+        // PrincipalDetails 타입인지 확인 후 안전하게 처리
+        if (principal instanceof PrincipalDetails) {
+            salesOrderVO.setEmp_num(((PrincipalDetails) principal).getMemberVO().getUser_num());
+        } else {
+            // PrincipalDetails가 아닌 경우 기본값 설정 (임시 처리)
+            salesOrderVO.setEmp_num(1L); // 기본 직원 번호
+        }
+        
         if (salesOrderVO.getOrder_date() == null) {
             salesOrderVO.setOrder_date(new Date());
         }
@@ -97,7 +117,7 @@ public class SalesOrderController {
                 }
             }
         }
-        
+        redirectAttributes.addFlashAttribute("orderSuccess", true);
         return "redirect:/sales/orderList";
     }
 
