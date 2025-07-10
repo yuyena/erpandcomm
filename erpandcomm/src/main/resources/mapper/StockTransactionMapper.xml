@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.spring.stock.dao.StockTransactionMapper">
+    
+    <!-- 현재 재고 조회 -->
+    <select id="selectCurrentStock" parameterType="long" resultType="kr.spring.stock.vo.CurrentStockVO">
+        SELECT * FROM current_stock WHERE product_num = #{product_num}
+    </select>
+    
+    <!-- 재고 이동 등록 -->
+    <insert id="insertStockMovement" parameterType="kr.spring.stock.vo.StockMovementVO">
+        INSERT INTO stock_movements (movement_num, product_num, emp_num, movement_type, quantity, movement_date, note)
+        VALUES (stock_movement_seq.NEXTVAL, #{product_num}, #{emp_num}, #{movement_type}, #{quantity}, #{movement_date}, #{note})
+    </insert>
+    
+    <!-- 현재 재고 업데이트 (입고/출고 시) -->
+    <update id="updateCurrentStock" parameterType="map">
+        UPDATE current_stock 
+        SET current_quantity = #{current_quantity},
+            last_in_date = CASE WHEN #{movement_type} = 0 THEN SYSDATE ELSE last_in_date END,
+            last_out_date = CASE WHEN #{movement_type} = 1 THEN SYSDATE ELSE last_out_date END,
+            updated_date = SYSDATE,
+            version_num = version_num + 1
+        WHERE product_num = #{product_num}
+    </update>
+    
+    <!-- 재고 이동 이력 조회 -->
+    <select id="selectStockMovementList" parameterType="long" resultType="kr.spring.stock.vo.StockMovementVO">
+        SELECT * FROM stock_movements 
+        WHERE product_num = #{product_num} 
+        ORDER BY movement_date DESC, movement_num DESC
+    </select>
+    
+    <!-- 재고 정보가 없을 경우 새로 생성 -->
+    <insert id="insertCurrentStockIfNotExists" parameterType="map">
+        INSERT INTO current_stock (product_num, current_quantity, min_stock, max_stock, last_in_date, last_out_date, last_movement_num, version_num, updated_date)
+        SELECT #{product_num}, 0, 0, 100, NULL, NULL, NULL, 1, SYSDATE
+        FROM dual
+        WHERE NOT EXISTS (SELECT 1 FROM current_stock WHERE product_num = #{product_num})
+    </insert>
+    
+</mapper> 
