@@ -25,15 +25,16 @@
         </div>
     </div>
     
-    <!-- 카테고리 네비게이션 -->
-    <div class="category-nav">
-        <a href="productView" th:classappend="${category_num == null || category_num == ''} ? 'active' : ''">전체</a>
-        <th:block th:each="category : ${categoryList}">
-            <a th:href="@{productView(category_num=${category['category_num']})}" 
-               th:classappend="${category_num == category['category_num']} ? 'active' : ''"
-               th:text="${category['category_name']}">카테고리명</a>
-        </th:block>
-    </div>
+	<div class="category-nav">
+	    <span th:each="category : ${categoryList}">[[${category['category_name']}]]</span>
+	</div>
+	<div class="category-nav">
+	    <a href="productView" th:classappend="${category_num == null or category_num == ''} ? 'active' : ''">전체</a>
+	    <a th:each="category : ${categoryList}"
+	       th:href="@{/product/productView(category_num=${category['CATEGORY_NUM']})}"
+	       th:classappend="${category_num != null and category_num == category['CATEGORY_NUM']} ? 'active' : ''"
+	       th:text="${category['CATEGORY_NAME']}">카테고리명</a>
+	</div>
     
     <!-- 검색 섹션 -->
     <div class="search-section">
@@ -85,9 +86,9 @@
         </div>
         
         <div>
-            <input sec:authorize="hasRole('ADMIN')" type="button" value="상품 추가" 
+            <input type="button" value="상품 추가" 
                    onclick="location.href='write'" class="btn btn-success">
-            <input sec:authorize="hasRole('ADMIN')" type="button" value="Excel 다운로드" 
+            <input type="button" value="Excel 다운로드" 
                    onclick="downloadExcel()" class="btn">
         </div>
     </div>
@@ -140,7 +141,6 @@
         
         <!-- 페이지네이션 -->
         <div class="pagination" th:utext="${page}">
-            <!-- 페이지네이션이 여기에 렌더링됩니다 -->
         </div>
         </main>
     </div>
