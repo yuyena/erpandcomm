@@ -15,9 +15,13 @@ spring:
     username: ${dataconfig.db-username}
     password: ${dataconfig.db-password}
     hikari: #커넥션풀 
-      connection-timeout : 30000 #클라이언트가 pool에 connection을 요청하는데 기다리는 최대시간을 설정 30초
-      maximum-pool-size : 10 #최대 커넥션 개수 설정
-      max-lifetime : 1800000   
+      connection-timeout: 10000 #10초로 단축
+      maximum-pool-size: 20 #커넥션 풀 크기 증가
+      minimum-idle: 5 #최소 유휴 커넥션
+      max-lifetime: 600000 #10분으로 단축
+      idle-timeout: 300000 #5분 유휴 타임아웃
+      leak-detection-threshold: 60000 #누수 감지 1분
+      connection-test-query: SELECT 1 FROM dual #연결 테스트 쿼리
       
   messages: #메시지
     basename: messages.member,messages.sh,messages.yn,messages.jm,messages.yj,messages.hs
@@ -43,6 +47,7 @@ logging: #로그 지정
   level:
     root: error
     '[kr.spring]': debug
+    '[com.zaxxer.hikari]': debug #Hikari 로그 추가
     org:
       spring:
         security: info

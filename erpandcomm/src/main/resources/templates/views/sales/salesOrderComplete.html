@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout_basic}">
+<head>
+    <meta charset="UTF-8">
+    <title>판매주문 완료</title>
+    <link rel="stylesheet" th:href="@{/assets/css/main.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/sh.css}">
+    <style>
+        .completion-container {
+            max-width: 800px;
+            margin: 60px auto;
+            text-align: center;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            padding: 60px 40px;
+        }
+        
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: #28a745;
+            border-radius: 50%;
+            margin: 0 auto 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 40px;
+        }
+        
+        .completion-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        
+        .completion-subtitle {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 40px;
+        }
+        
+        .order-summary {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 30px;
+            margin: 30px 0;
+            text-align: left;
+        }
+        
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .summary-row:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            font-weight: 600;
+            font-size: 18px;
+            color: #28a745;
+        }
+        
+        .summary-label {
+            color: #666;
+            font-weight: 500;
+        }
+        
+        .summary-value {
+            color: #333;
+            font-weight: 600;
+        }
+        
+        .action-buttons {
+            margin-top: 40px;
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #0056b3;
+            color: white;
+        }
+        
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #1e7e34;
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #545b62;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<div layout:fragment="content" class="page-main">
+    <div class="dashboard-wrapper">
+        <th:block th:replace="fragments/nav_sidebar :: sidebar"></th:block>
+        <main class="main-content">
+            <div class="completion-container">
+                <div class="success-icon">✓</div>
+                <h1 class="completion-title">주문이 성공적으로 완료되었습니다!</h1>
+                <p class="completion-subtitle">아래 주문 정보를 확인해주세요.</p>
+                
+                <div class="order-summary">
+                    <div class="summary-row">
+                        <span class="summary-label">주문번호</span>
+                        <span class="summary-value" th:text="${order.sales_order_num}">#12345</span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="summary-label">고객명</span>
+                        <span class="summary-value" th:text="${order.client_name}">고객명</span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="summary-label">주문일</span>
+                        <span class="summary-value" th:text="${#dates.format(order.order_date, 'yyyy-MM-dd HH:mm')}">2024-01-01</span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="summary-label">주문 상품 수</span>
+                        <span class="summary-value" th:text="${details.size()} + '개'">3개</span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="summary-label">총 주문 금액</span>
+                        <span class="summary-value" th:text="${#numbers.formatInteger(order.total_price, 3, 'COMMA')} + '원'">1,000,000원</span>
+                    </div>
+                </div>
+                
+                <div class="action-buttons">
+                    <a th:href="@{/sales/orderList}" class="btn btn-primary">주문 목록 보기</a>
+                    <a th:href="@{/sales/orderForm}" class="btn btn-success">새 주문 작성</a>
+                    <a th:href="@{/}" class="btn btn-secondary">메인으로</a>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+</body>
+</html> 

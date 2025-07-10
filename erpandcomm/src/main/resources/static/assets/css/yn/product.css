@@ -1,76 +1,136 @@
-/* 기본 구조 */
-.page-main {
-    padding: 20px;
-    font-family: 'Noto Sans KR', sans-serif;
-    background-color: #f8f9fa;
-}
+/* ERP 상품 관리 스타일 - 기존 스타일과 조화 */
 
 /* 페이지 헤더 */
 .page-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #e0e0e0;
 }
 
 .page-title {
-    font-size: 24px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #3b6fd6;
+    margin: 0;
+}
+
+.total-count {
+    font-size: 1rem;
+    color: #666;
+    background-color: #fff;
+    padding: 8px 16px;
+    border-radius: 20px;
+    box-shadow: 0 2px 6px rgba(90,150,255,0.08);
+}
+
+.total-count strong {
+    color: #3b6fd6;
     font-weight: bold;
 }
 
 /* 카테고리 네비게이션 */
 .category-nav {
-    margin-bottom: 20px;
     display: flex;
-    gap: 10px;
+    gap: 8px;
+    margin-bottom: 25px;
+    padding: 20px;
+    background-color: #f6faff;
+    border-radius: 12px;
     flex-wrap: wrap;
 }
 
 .category-nav a {
-    padding: 6px 12px;
-    background-color: #e9ecef;
-    color: #333;
-    border-radius: 4px;
+    padding: 8px 16px;
     text-decoration: none;
+    color: #666;
+    border: 1px solid #e0e0e0;
+    border-radius: 20px;
+    transition: all 0.2s ease;
+    font-weight: 500;
+    white-space: nowrap;
+    font-size: 0.95rem;
+}
+
+.category-nav a:hover {
+    background-color: #eaf1ff;
+    border-color: #3b6fd6;
+    color: #3b6fd6;
 }
 
 .category-nav a.active {
-    background-color: #007bff;
+    background-color: #3b6fd6;
     color: #fff;
+    border-color: #3b6fd6;
 }
 
 /* 검색 섹션 */
 .search-section {
-    padding: 16px;
-    background-color: #ffffff;
-    border: 1px solid #dee2e6;
-    border-radius: 6px;
-    margin-bottom: 20px;
+    background-color: #f6faff;
+    padding: 24px;
+    border-radius: 12px;
+    margin-bottom: 25px;
 }
 
 .search-form {
     display: flex;
     flex-wrap: wrap;
-    gap: 16px;
-    align-items: center;
+    gap: 15px;
+    align-items: end;
 }
 
 .search-group {
     display: flex;
     flex-direction: column;
-    min-width: 180px;
+    gap: 6px;
 }
 
 .search-group label {
-    margin-bottom: 4px;
-    font-weight: 500;
+    font-weight: bold;
+    color: #3b6fd6;
+    font-size: 0.95rem;
 }
 
-.search-group input,
-.search-group select {
-    padding: 6px 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+.search-group select,
+.search-group input[type="search"],
+.search-group input[type="number"] {
+    padding: 8px 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    transition: border-color 0.2s ease;
+    min-width: 120px;
+    background: #fff;
+    box-shadow: 0 2px 6px rgba(90,150,255,0.08);
+}
+
+.search-group select:focus,
+.search-group input[type="search"]:focus,
+.search-group input[type="number"]:focus {
+    border-color: #3b6fd6;
+    outline: none;
+    box-shadow: 0 2px 6px rgba(90,150,255,0.15);
+}
+
+.search-group input[type="search"] {
+    min-width: 200px;
+}
+
+.price-range {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.price-range input[type="number"] {
+    min-width: 80px;
+}
+
+.price-range span {
+    color: #666;
+    font-weight: 500;
 }
 
 /* 컨트롤 섹션 */
@@ -78,93 +138,333 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 16px;
-}
-
-/* 상품 테이블 */
-.table-container {
-    overflow-x: auto;
-}
-
-.product-table {
-    width: 100%;
-    border-collapse: collapse;
-    background-color: #fff;
-}
-
-.product-table th,
-.product-table td {
-    padding: 10px;
-    border: 1px solid #dee2e6;
-    text-align: center;
-    font-size: 14px;
-}
-
-.product-table th {
-    background-color: #f1f3f5;
-    font-weight: 600;
-}
-
-.product-table td.align-left {
-    text-align: left;
-}
-
-.product-table td.align-right {
-    text-align: right;
-}
-
-/* 상태 뱃지 */
-.status-badge {
-    display: inline-block;
-    padding: 4px 8px;
+    margin-bottom: 20px;
+    padding: 16px 20px;
+    background-color: #f6faff;
     border-radius: 12px;
-    font-size: 12px;
-    color: #fff;
 }
 
-.status-active {
-    background-color: #28a745;
+.controls-section .search-group {
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
 }
 
-.status-inactive {
-    background-color: #dc3545;
+.controls-section > div {
+    display: flex;
+    gap: 10px;
 }
 
-/* 버튼 */
+/* 버튼 스타일 - 기존 스타일과 맞춤 */
 .btn {
-    padding: 6px 10px;
-    border: none;
-    border-radius: 4px;
-    font-size: 13px;
+    padding: 8px 16px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: #fff;
+    color: #666;
     cursor: pointer;
-    background-color: #6c757d;
-    color: white;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
     text-decoration: none;
     display: inline-block;
+    text-align: center;
+    box-shadow: 0 2px 6px rgba(90,150,255,0.08);
 }
 
 .btn:hover {
-    background-color: #5a6268;
+    background-color: #eaf1ff;
+    border-color: #3b6fd6;
+    color: #3b6fd6;
 }
 
-.btn.btn-primary {
-    background-color: #007bff;
+.btn-primary {
+    background-color: #3b6fd6;
+    border-color: #3b6fd6;
+    color: #fff;
 }
 
-.btn.btn-success {
+.btn-primary:hover {
+    background-color: #2176e8;
+    border-color: #2176e8;
+}
+
+.btn-success {
     background-color: #28a745;
+    border-color: #28a745;
+    color: #fff;
+}
+
+.btn-success:hover {
+    background-color: #218838;
+    border-color: #218838;
+}
+
+/* 결과 없음 메시지 */
+.no-results {
+    text-align: center;
+    padding: 40px;
+    color: #666;
+    font-size: 1.1rem;
+    background-color: #f6faff;
+    border-radius: 12px;
+}
+
+/* 테이블 컨테이너 */
+.table-container {
+    background-color: #f6faff;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+/* 상품 테이블 */
+.product-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+    background: #f6faff;
+}
+
+.product-table thead {
+    background-color: #f6faff;
+}
+
+.product-table th {
+    padding: 12px 10px;
+    text-align: center;
+    font-weight: bold;
+    color: #3b6fd6;
+    border-bottom: 2px solid #e0e0e0;
+    background: #f6faff;
+}
+
+.product-table td {
+    padding: 12px 10px;
+    border-bottom: 1px solid #e0e0e0;
+    vertical-align: middle;
+    color: #222;
+}
+
+.product-table tbody tr:hover {
+    background-color: #eaf1ff;
+}
+
+.product-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.product-table .align-center {
+    text-align: center;
+}
+
+.product-table .align-left {
+    text-align: left;
+}
+
+.product-table .align-right {
+    text-align: right;
+}
+
+.product-name {
+    color: #3b6fd6;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.product-name:hover {
+    text-decoration: underline;
+    color: #2176e8;
+}
+
+.price {
+    font-weight: bold;
+    color: #28a745;
+}
+
+/* 상태 배지 */
+.status-badge {
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-active {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.status-inactive {
+    background-color: #f8d7da;
+    color: #721c24;
 }
 
 /* 페이지네이션 */
 .pagination {
-    margin-top: 20px;
-    text-align: center;
+    display: flex;
+    justify-content: center;
+    padding: 20px 0;
+    gap: 4px;
 }
 
-/* 메시지 */
-.no-results {
-    text-align: center;
-    padding: 30px;
-    font-size: 16px;
-    color: #6c757d;
+.pagination a,
+.pagination span {
+    padding: 8px 12px;
+    text-decoration: none;
+    color: #3b6fd6;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    background: #fff;
+    font-size: 0.95rem;
+    box-shadow: 0 2px 6px rgba(90,150,255,0.08);
+}
+
+.pagination a:hover {
+    background-color: #eaf1ff;
+    border-color: #3b6fd6;
+}
+
+.pagination .current {
+    background-color: #3b6fd6;
+    color: #fff;
+    border-color: #3b6fd6;
+}
+
+.pagination .disabled {
+    color: #94a3c3;
+    pointer-events: none;
+    background-color: #f6faff;
+    border-color: #e0e0e0;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 1200px) {
+    .search-form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .search-group {
+        flex-direction: column;
+    }
+    
+    .controls-section {
+        flex-direction: column;
+        gap: 15px;
+        align-items: stretch;
+    }
+    
+    .price-range {
+        flex-wrap: wrap;
+    }
+}
+
+@media (max-width: 768px) {
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .category-nav {
+        justify-content: center;
+    }
+    
+    .table-container {
+        overflow-x: auto;
+    }
+    
+    .product-table {
+        min-width: 700px;
+    }
+    
+    .pagination {
+        flex-wrap: wrap;
+    }
+}
+
+@media (max-width: 480px) {
+    .page-title {
+        font-size: 1.3rem;
+    }
+    
+    .search-section,
+    .controls-section {
+        padding: 16px;
+    }
+    
+    .btn {
+        padding: 6px 12px;
+        font-size: 0.9rem;
+    }
+    
+    .category-nav a {
+        padding: 6px 12px;
+        font-size: 0.9rem;
+    }
+    
+    .product-table th,
+    .product-table td {
+        padding: 8px 6px;
+        font-size: 0.9rem;
+    }
+}
+
+/* 포커스 접근성 */
+.btn:focus,
+input:focus,
+select:focus,
+a:focus {
+    outline: 2px solid #3b6fd6;
+    outline-offset: 2px;
+}
+
+/* 로딩 애니메이션 */
+.loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #3b6fd6;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* 애니메이션 효과 */
+.search-section,
+.controls-section,
+.table-container {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* 인쇄 스타일 */
+@media print {
+    .search-section,
+    .controls-section,
+    .pagination {
+        display: none;
+    }
+    
+    .product-table {
+        font-size: 0.85rem;
+    }
+    
+    .product-table th,
+    .product-table td {
+        padding: 6px 4px;
+    }
 }
