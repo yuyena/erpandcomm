@@ -81,7 +81,7 @@
                                     <td><input type="checkbox" th:value="${order.sales_order_num}" /></td>
                                     <td th:text="${order.sales_order_num}"></td>
                                     <td th:text="${order.client_name}"></td>
-                                    <td th:text="${#dates.format(order.order_date, 'yyyy-MM-dd')}"></td>
+                                    <td th:text="${order.order_date != null ? #dates.format(order.order_date, 'yyyy-MM-dd') : ''}"></td>
                                     <td th:text="${#numbers.formatInteger(order.total_price, 0, 'COMMA')} + '원'"></td>
                                     <td th:text="${order.emp_num}"></td>
                                     <td>
