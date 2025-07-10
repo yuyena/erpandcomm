@@ -33,10 +33,12 @@
     
     <!-- 재고 정보가 없을 경우 새로 생성 -->
     <insert id="insertCurrentStockIfNotExists" parameterType="map">
-        INSERT INTO current_stock (product_num, current_quantity, min_stock, max_stock, last_in_date, last_out_date, last_movement_num, version_num, updated_date)
-        SELECT #{product_num}, 0, 0, 100, NULL, NULL, NULL, 1, SYSDATE
-        FROM dual
-        WHERE NOT EXISTS (SELECT 1 FROM current_stock WHERE product_num = #{product_num})
+        MERGE INTO current_stock cs
+        USING (SELECT #{product_num} as product_num FROM dual) src
+        ON (cs.product_num = src.product_num)
+        WHEN NOT MATCHED THEN
+            INSERT (product_num, current_quantity, min_stock, max_stock, last_in_date, last_out_date, last_movement_num, version_num, updated_date)
+            VALUES (#{product_num}, 0, 0, 100, NULL, NULL, NULL, 1, SYSDATE)
     </insert>
     
 </mapper> 

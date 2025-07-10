@@ -10,6 +10,9 @@
     <th:block th:if="${orderSuccess}">
       <script>alert('주문이 처리되었습니다!');</script>
     </th:block>
+    <th:block th:if="${error}">
+      <script>alert('[[${error}]]');</script>
+    </th:block>
 </head>
 <body>
 <div layout:fragment="content" class="page-main">

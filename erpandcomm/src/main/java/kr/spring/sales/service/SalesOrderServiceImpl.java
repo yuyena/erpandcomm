@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import kr.spring.sales.dao.SalesOrderMapper;
 import kr.spring.sales.vo.SalesOrderVO;
@@ -15,6 +16,7 @@ public class SalesOrderServiceImpl implements SalesOrderService {
     private SalesOrderMapper salesOrderMapper;
 
     @Override
+    @Transactional
     public void insertSalesOrder(SalesOrderVO salesOrder) {
         salesOrderMapper.insertSalesOrder(salesOrder);
     }
@@ -30,16 +32,19 @@ public class SalesOrderServiceImpl implements SalesOrderService {
     }
 
     @Override
+    @Transactional
     public void updateSalesOrder(SalesOrderVO salesOrder) {
         salesOrderMapper.updateSalesOrder(salesOrder);
     }
 
     @Override
+    @Transactional
     public void deleteSalesOrder(long sales_order_num) {
         salesOrderMapper.deleteSalesOrder(sales_order_num);
     }
 
     @Override
+    @Transactional
     public void insertSalesOrderDetail(SalesOrderDetailVO detail) {
         salesOrderMapper.insertSalesOrderDetail(detail);
     }
@@ -50,11 +55,13 @@ public class SalesOrderServiceImpl implements SalesOrderService {
     }
 
     @Override
+    @Transactional
     public void updateSalesOrderDetail(SalesOrderDetailVO detail) {
         salesOrderMapper.updateSalesOrderDetail(detail);
     }
 
     @Override
+    @Transactional
     public void deleteSalesOrderDetail(long sales_order_num) {
         salesOrderMapper.deleteSalesOrderDetail(sales_order_num);
     }

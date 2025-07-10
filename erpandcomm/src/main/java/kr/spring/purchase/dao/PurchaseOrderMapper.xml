@@ -5,7 +5,7 @@
     <!-- purchase_order CRUD -->
     <insert id="insertPurchaseOrder" parameterType="kr.spring.purchase.vo.PurchaseOrderVO">
         <selectKey keyProperty="purchase_order_num" resultType="long" order="BEFORE">
-            SELECT puchase_order_seq.NEXTVAL FROM dual
+            SELECT purchase_order_seq.NEXTVAL FROM dual
         </selectKey>
         INSERT INTO purchase_order (purchase_order_num, supplier_num, order_date, total_price, emp_num)
         VALUES (#{purchase_order_num}, #{supplier_num}, sysdate, #{total_price}, #{emp_num})
@@ -16,7 +16,16 @@
     </select>
 
     <select id="selectPurchaseOrderList" resultType="kr.spring.purchase.vo.PurchaseOrderVO">
-        SELECT * FROM purchase_order ORDER BY purchase_order_num DESC
+        SELECT 
+            po.purchase_order_num,
+            po.supplier_num,
+            NVL(c.client_name, '미지정') as supplier_name,
+            po.order_date,
+            po.total_price,
+            po.emp_num
+        FROM purchase_order po
+        LEFT JOIN client c ON po.supplier_num = c.client_num
+        ORDER BY po.purchase_order_num DESC
     </select>
 
     <update id="updatePurchaseOrder" parameterType="kr.spring.purchase.vo.PurchaseOrderVO">

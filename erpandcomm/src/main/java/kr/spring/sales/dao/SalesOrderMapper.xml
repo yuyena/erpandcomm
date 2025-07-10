@@ -16,7 +16,13 @@
     </select>
 
     <select id="selectSalesOrderList" resultType="kr.spring.sales.vo.SalesOrderVO">
-        SELECT so.sales_order_num, so.customer_num, c.client_name, so.order_date, so.total_price, so.emp_num
+        SELECT 
+            so.sales_order_num, 
+            so.customer_num, 
+            NVL(c.client_name, '미지정') as client_name, 
+            so.order_date, 
+            so.total_price, 
+            so.emp_num
         FROM sales_order so
         LEFT JOIN client c ON so.customer_num = c.client_num
         ORDER BY so.sales_order_num DESC

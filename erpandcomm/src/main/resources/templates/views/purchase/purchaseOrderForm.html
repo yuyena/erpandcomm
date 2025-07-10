@@ -7,6 +7,9 @@
     <title>구매주문 등록/수정</title>
     <link rel="stylesheet" th:href="@{/assets/css/main.css}">
     <link rel="stylesheet" th:href="@{/assets/css/sh.css}">
+    <th:block th:if="${orderError}">
+      <script>alert('[[${orderError}]]');</script>
+    </th:block>
     <style>
         .sh-box-form {
             background: #fff;
@@ -138,7 +141,7 @@
             </div>
             <section class="card-section">
                 <div class="sh-box">
-                    <form class="sh-box-form" th:action="@{${purchaseOrderVO.purchase_order_num} != null ? '/purchase/orderUpdate' : '/purchase/orderInsert'}" method="post">
+                    <form class="sh-box-form" th:action="@{/purchase/orderInsert}" method="post">
                         <input type="hidden" th:if="${purchaseOrderVO.purchase_order_num} != null" name="purchase_order_num" th:value="${purchaseOrderVO.purchase_order_num}" />
                         <div class="sh-box-row">
                             <label>주문일</label>
@@ -146,7 +149,7 @@
                         </div>
                         <div class="sh-box-row">
                             <label>거래처(공급업체)</label>
-                            <select name="client_num" required>
+                            <select name="supplier_num" required>
                                 <option value="">거래처 선택</option>
                                 <option th:each="client : ${supplierList}"
                                         th:value="${client.client_num}"
