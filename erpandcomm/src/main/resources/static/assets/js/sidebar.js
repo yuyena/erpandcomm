@@ -39,8 +39,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // 현재 페이지에 해당하는 메뉴 항목 활성화
   var currentPath = window.location.pathname;
-  document.querySelectorAll('.sidebar-menu a[th\:href]').forEach(function(link) {
-    var href = link.getAttribute('href');
+  	document.querySelectorAll('.sidebar-menu a[th\:href]').forEach(function(link) {
+	var href = link.getAttribute('href');
     if (href && currentPath.includes(href.replace('@{', '').replace('}', ''))) {
       link.classList.add('active');
       
