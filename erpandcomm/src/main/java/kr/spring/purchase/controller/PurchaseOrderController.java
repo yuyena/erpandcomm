@@ -55,15 +55,6 @@ public class PurchaseOrderController {
         // 상품 목록도 전달
         List<ProductVO> productList = productService.selectProductList();
         model.addAttribute("productList", productList);
-        model.addAttribute("today", new java.util.Date());
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Object principalObj = authentication.getPrincipal();
-        String empName = "";
-        if (principalObj instanceof kr.spring.member.vo.PrincipalDetails) {
-            PrincipalDetails principal = (PrincipalDetails) principalObj;
-            empName = principal.getMemberVO().getUser_name();
-        }
-        model.addAttribute("empName", empName);
         return "views/purchase/purchaseOrderForm";
     }
 

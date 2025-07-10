@@ -14,21 +14,32 @@
             <div class="main-header">
                 <h2>ERP 관리 - 거래처 관리</h2>
             </div>
+            
+            <!-- 거래처 차트 박스를 맨 위로 이동 -->
+            <div class="card" style="padding: 24px 24px 16px 24px; margin-bottom: 24px; background: #fff; border-radius: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08);">
+              <div style="max-width:300px; min-width:300px; min-height:200px; margin:0 auto;">
+                <canvas id="clientPieChart" width="300" height="200" style="display:block;"></canvas>
+              </div>
+            </div>
+            
             <div class="sh-box">
 
                 <div class="list-header">
                     <span class="list-title">거래처 목록</span>
                     <a th:href="@{/client/form}" class="btn-write">거래처 등록</a>
                 </div>
-                <div class="table-container">
-                    <table class="custom-table">
-                        <thead>
+                
+                <!-- 고객 목록과 공급업체 목록을 한 행에 배치 -->
+                <div style="display: flex; gap: 20px;">
+                    <!-- 고객 목록 -->
+                    <div class="table-container" style="flex: 1;">
+                        <h3 style="margin-bottom: 15px; color: #333; font-size: 1.1rem;">고객 목록</h3>
+                        <table class="custom-table">
+                                                    <thead>
                             <tr>
                                 <th><input type="checkbox" /></th>
-                                <th>번호</th>
+                                <th>　　</th>
                                 <th>이름</th>
-                                <th>구분</th>
-                                <th>담당자</th>
                                 <th>연락처</th>
                                 <th>이메일</th>
                                 <th>주소</th>
@@ -36,12 +47,10 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr th:each="client : ${list}">
+                            <tr th:each="client : ${list}" th:if="${client.client_type == 1}">
                                 <td><input type="checkbox" th:value="${client.client_num}" /></td>
                                 <td th:text="${client.client_num}"></td>
                                 <td th:text="${client.client_name}"></td>
-                                <td th:text="${client.client_type == 0 ? '공급업체' : '고객'}"></td>
-                                <td th:text="${client.contact_person}"></td>
                                 <td th:text="${client.phone}"></td>
                                 <td th:text="${client.email}"></td>
                                 <td th:text="${client.address1} + ' ' + ${client.address2}"></td>
@@ -51,14 +60,43 @@
                                 </td>
                             </tr>
                         </tbody>
-                    </table>
+                        </table>
+                    </div>
+                    
+                    <!-- 공급업체 목록 -->
+                    <div class="table-container" style="flex: 1;">
+                        <h3 style="margin-bottom: 15px; color: #333; font-size: 1.1rem;">공급업체 목록</h3>
+                        <table class="custom-table">
+                            <thead>
+                                <tr>
+                                    <th><input type="checkbox" /></th>
+                                    <th>　　</th>
+                                    <th>이름</th>
+                                    <th>담당자</th>
+                                    <th>연락처</th>
+                                    <th>이메일</th>
+                                    <th>주소</th>
+                                    <th>관리</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="client : ${list}" th:if="${client.client_type == 0}">
+                                    <td><input type="checkbox" th:value="${client.client_num}" /></td>
+                                    <td th:text="${client.client_num}"></td>
+                                    <td th:text="${client.client_name}"></td>
+                                    <td th:text="${client.contact_person}"></td>
+                                    <td th:text="${client.phone}"></td>
+                                    <td th:text="${client.email}"></td>
+                                    <td th:text="${client.address1} + ' ' + ${client.address2}"></td>
+                                    <td>
+                                        <a th:href="@{/client/form(client_num=${client.client_num})}" class="btn-detail" style="background:#2ecc71;">수정</a>
+                                        <a th:href="@{/client/delete(client_num=${client.client_num})}" class="btn-detail" style="background:#e74c3c;" onclick="return confirm('정말 삭제하시겠습니까?');">삭제</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-            </div>
-            <!-- 거래처 차트 박스 -->
-            <div class="card" style="padding: 24px 24px 16px 24px; margin-bottom: 24px; background: #fff; border-radius: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08);">
-              <div style="max-width:300px; min-width:300px; min-height:200px; margin:0 auto;">
-                <canvas id="clientPieChart" width="300" height="200" style="display:block;"></canvas>
-              </div>
             </div>
             <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
             <script>
@@ -116,11 +154,11 @@
     width: 100%;
     border-collapse: collapse;
     background: #fff;
-    font-size: 1rem;
+    font-size: 13px;
 }
 .custom-table th, .custom-table td {
     border-bottom: 1px solid #eee;
-    padding: 12px 8px;
+    padding: 2px 4px;
     text-align: center;
 }
 .custom-table th {
@@ -132,9 +170,9 @@
     color: #fff !important;
     border: none;
     border-radius: 6px;
-    padding: 6px 16px;
+    padding: 4px 11px;
     text-decoration: none;
-    font-size: 0.95rem;
+    font-size: 0.67rem;
     font-weight: 500;
 }
 </style> 
