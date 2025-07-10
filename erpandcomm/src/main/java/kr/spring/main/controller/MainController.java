@@ -14,12 +14,12 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class MainController {
 	
+	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/")
-	public String dashboard() {
+	public String dashboard(@AuthenticationPrincipal PrincipalDetails principal) {
 		return "views/main/main";
 	}
 	
-	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/main/main")
 	public String main(@AuthenticationPrincipal PrincipalDetails principal,Model model) {
 		return "views/main/main";

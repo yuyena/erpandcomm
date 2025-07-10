@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -26,9 +27,6 @@ import kr.spring.member.service.MemberService;
 import kr.spring.member.vo.MemberVO;
 import kr.spring.util.ValidationUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import kr.spring.member.vo.PrincipalDetails;
 
 @Controller
 @Slf4j
@@ -59,7 +57,7 @@ public class ChatUserController {
 	}
 	
 	// 채팅방 생성 폼
-//	@PreAuthorize("isAuthenticated()")
+	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/createRoom")
 	public String form(Model model) {
 		
@@ -82,6 +80,7 @@ public class ChatUserController {
 	}
 	
 	// 채팅방 생성
+	@PreAuthorize("isAuthenticated()")
 	@PostMapping("/createRoom")
 	public String submit(@Valid ChatRoomVO chatRoomVO, @RequestParam(value="memberNums", required=false) List<Long> memberNums,
 						 BindingResult result, Model model, HttpServletRequest request) {
@@ -161,7 +160,7 @@ public class ChatUserController {
 	}
 	
 	// 채팅방 목록
-//	@PreAuthorize("isAuthenticated()")
+	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/roomList")
 	public String getRoomList(Model model) {
 		
@@ -188,6 +187,7 @@ public class ChatUserController {
 	}
 
 	// 채팅방 삭제(비활성화)
+	@PreAuthorize("isAuthenticated()")
 	@PostMapping("/deleteRoom")
 	public String deleteRoom(@RequestParam("room_num") long room_num, HttpServletRequest request, Model model) {
 	    long myUserNum = 1; // 테스트용으로 항상 1로 고정

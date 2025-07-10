@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layouts/layout_mypage}">
+      layout:decorate="~{layouts/layout_basic}">
 <head>
-    <meta charset="UTF-8">
-    <title>마이페이지 - 사원정보</title>
-    <link rel="stylesheet" th:href="@{/assets/css/main.css}">
-    <link rel="stylesheet" th:href="@{/assets/css/jm/memberInfo.css}">
+<meta charset="UTF-8">
+<title>마이페이지 - 사원정보</title>
+<link rel="stylesheet" th:href="@{/assets/css/main.css}">
+<link rel="stylesheet" th:href="@{/assets/css/jm/memberInfo.css}">
+<script type="text/javascript" th:src="@{/assets/js/jquery-3.7.1.min.js}"></script>
+<script type="text/javascript" th:src="@{/assets/js/member.modify.js}"></script>
 </head>
 <body>
 <div layout:fragment="content" class="page-main">
@@ -14,7 +16,7 @@
         <th:block th:replace="fragments/nav_sidebar :: sidebar" />
         <div class="mypage-container">
             <div class="mypage-title">마이페이지</div>
-            <div class="mypage-section">
+            <div class="mypage-section" id="mypageSection">
                 <div class="mypage-section-title">사원 정보</div>
                 <div class="member-info-card">
                     <div class="member-photo">
@@ -30,7 +32,7 @@
                 </div>
                 <table class="member-info-table">
                     <tr>
-                        <th>아이디</th>
+                        <th>사번</th>
                         <td th:text="${member.employee_code}"></td>
                     </tr>
                     <tr>
@@ -47,7 +49,7 @@
                     </tr>
                 </table>
                 <div class="mypage-btn-row">
-                    <button class="info-edit-btn" onclick="location.href='/member/modify'">정보 변경</button>
+                    <button class="info-edit-btn" id="editInfoBtn" type="button">정보 변경</button>
                     <button class="pw-edit-btn" onclick="location.href='/member/changePassword'">비밀번호 변경</button>
                 </div>
             </div>
