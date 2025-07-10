@@ -62,7 +62,7 @@
                     WHEN cs.current_quantity <![CDATA[<=]]> cs.min_stock THEN 'LOW'
                     WHEN cs.current_quantity >= cs.max_stock THEN 'HIGH'
                     ELSE 'NORMAL'
-                END AS stockStatus
+                END AS stock_status
             FROM product p
             JOIN product_category pc ON p.category_num = pc.category_num
             LEFT JOIN current_stock cs ON p.product_num = cs.product_num

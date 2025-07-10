@@ -38,20 +38,20 @@ public class StockController {
     @GetMapping("/stock")
     public String stockList(@RequestParam(value="pageNum", defaultValue="1") int pageNum,
                            @RequestParam(value="keyword", defaultValue="") String keyword,
-                           @RequestParam(value="stockStatus", defaultValue="") String stockStatus,
+                           @RequestParam(value="stock_status", defaultValue="") String stock_status,
                            Model model) {
         
-        log.debug("<<재고 목록>> : " + keyword + ", 재고상태: " + stockStatus);
+        log.debug("<<재고 목록>> : " + keyword + ", 재고상태: " + stock_status);
         
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("keyword", keyword);
-        map.put("stockStatus", stockStatus);
+        map.put("stock_status", stock_status);
         
         // 전체 레코드 수
         int count = stockMapper.selectRowCountStock(map);
         
         // 페이지 처리
-        PagingUtil page = new PagingUtil(pageNum, count, 10, 10, "stock","&keyword=" + keyword + "&stockStatus=" + stockStatus);
+        PagingUtil page = new PagingUtil(pageNum, count, 10, 10, "stock","&keyword=" + keyword + "&stock_status=" + stock_status);
         
         List<ProductVO> list = null;
         if(count > 0) {
@@ -65,7 +65,7 @@ public class StockController {
         model.addAttribute("stockList", list);
         model.addAttribute("page", page.getPage());
         model.addAttribute("keyword", keyword);
-        model.addAttribute("stockStatus", stockStatus);
+        model.addAttribute("stock_status", stock_status);
         
         return "views/stock/stockList";
     }
@@ -166,7 +166,7 @@ public class StockController {
     // Ajax - 재고 상태별 개수 조회
     @GetMapping("/stock/statusCount")
     @ResponseBody
-    public Map<String, Object> getStockStatusCount() {
+    public Map<String, Object> getstock_statusCount() {
         
         Map<String, Object> statusCount = stockMapper.selectStockStatusCount();
         

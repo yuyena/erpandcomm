@@ -31,12 +31,12 @@
             </div>
             <div class="form-group">
                 <label for="stock_status">재고 상태:</label>
-                <select id="stock_status" name="stockStatus">
+                <select id="stock_status" name="stock_status">
                     <option value="">전체</option>
-                    <option value="LOW" th:selected="${param.stockStatus  == 'LOW'}">부족</option>
-                    <option value="NORMAL" th:selected="${param.stockStatus  == 'NORMAL'}">정상</option>
-                    <option value="HIGH" th:selected="${param.stockStatus  == 'HIGH'}">과다</option>
-                    <option value="NO_STOCK" th:selected="${param.stockStatus  == 'NO_STOCK'}">재고없음</option>
+                    <option value="LOW" th:selected="${param.stock_status  == 'LOW'}">부족</option>
+                    <option value="NORMAL" th:selected="${param.stock_status  == 'NORMAL'}">정상</option>
+                    <option value="HIGH" th:selected="${param.stock_status  == 'HIGH'}">과다</option>
+                    <option value="NO_STOCK" th:selected="${param.stock_status  == 'NO_STOCK'}">재고없음</option>
                 </select>
             </div>
             <button type="submit">검색</button>
@@ -44,26 +44,26 @@
         </form>
         
         <!-- 재고 상태 요약 카드 (선택사항) -->
-        <div class="stock-status-cards" th:if="${stockStatusCount != null}">
+        <div class="stock-status-cards" th:if="${stock_statusCount != null}">
             <div class="status-card total">
                 <h3>전체 상품</h3>
-                <div class="count" th:text="${stockStatusCount.total_count}">0</div>
+                <div class="count" th:text="${stock_statusCount.total_count}">0</div>
             </div>
             <div class="status-card low">
                 <h3>부족</h3>
-                <div class="count" th:text="${stockStatusCount.low_stock_count}">0</div>
+                <div class="count" th:text="${stock_statusCount.low_stock_count}">0</div>
             </div>
             <div class="status-card normal">
                 <h3>정상</h3>
-                <div class="count" th:text="${stockStatusCount.normal_stock_count}">0</div>
+                <div class="count" th:text="${stock_statusCount.normal_stock_count}">0</div>
             </div>
             <div class="status-card high">
                 <h3>과다</h3>
-                <div class="count" th:text="${stockStatusCount.high_stock_count}">0</div>
+                <div class="count" th:text="${stock_statusCount.high_stock_count}">0</div>
             </div>
             <div class="status-card no-stock">
                 <h3>재고없음</h3>
-                <div class="count" th:text="${stockStatusCount.no_stock_count}">0</div>
+                <div class="count" th:text="${stock_statusCount.no_stock_count}">0</div>
             </div>
         </div>
         
@@ -94,18 +94,18 @@
                         <td th:text="${#numbers.formatInteger(product.unit_price, 0, 'COMMA')}">원</td>
                         <td>
                             <!-- 수정된 부분: stock_status 필드 사용 -->
-                            <span th:class="'status-badge ' + ${#strings.toLowerCase(product.stockStatus)}"
-                                  th:text="${product.stockStatus  == 'LOW' ? '부족' : 
-                                           (product.stockStatus  == 'NORMAL' ? '정상' : 
-                                           (product.stockStatus  == 'HIGH' ? '과다' : 
-                                           (product.stockStatus  == 'NO_STOCK' ? '재고없음' : '알수없음')))}">
+                            <span th:class="'status-badge ' + ${#strings.toLowerCase(product.stock_status)}"
+                                  th:text="${product.stock_status  == 'LOW' ? '부족' : 
+                                           (product.stock_status  == 'NORMAL' ? '정상' : 
+                                           (product.stock_status  == 'HIGH' ? '과다' : 
+                                           (product.stock_status  == 'NO_STOCK' ? '재고없음' : '알수없음')))}">
                             </span>
                         </td>
                         <td>
                             <div class="quantity-display">
                                 <span th:text="${product.current_quantity != null ? product.current_quantity : 0}">0</span>
                                 <!-- 수정된 부분: stock_status 필드 사용 -->
-                                <div th:class="'quantity-fill fill-' + ${#strings.toLowerCase(product.stockStatus)}"></div>
+                                <div th:class="'quantity-fill fill-' + ${#strings.toLowerCase(product.stock_status)}"></div>
                             </div>
                         </td>
                         <td>

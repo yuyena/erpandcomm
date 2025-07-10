@@ -27,5 +27,5 @@ public class ProductVO {
     private long last_movement_num;  // 마지막 재고이동번호
     private int version_num;        // 동시성 제어용 버전
     private Date updated_date;       // 마지막 거래/수정일
-    private String stockStatus;
+    private String stock_status;
 }

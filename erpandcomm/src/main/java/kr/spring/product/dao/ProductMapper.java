@@ -14,10 +14,13 @@ import kr.spring.product.vo.ProductVO;
 
 @Mapper
 public interface ProductMapper {
-	
+	//전체 상품 조회/검색
 	public List<ProductVO> selectList(Map<String, Object> map);
+	//상품 갯수
 	public Integer selectRowCount(Map<String, Object> map);
+	//상품 상세
 	public ProductVO selectProduct(Long product_num);
+	//상품 카테고리
 	public List<Map<String, Object>> selectCategoryList();
 
 	// 상품 전체 목록 조회
