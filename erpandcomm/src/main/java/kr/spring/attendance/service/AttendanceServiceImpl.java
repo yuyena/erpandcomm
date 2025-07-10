@@ -1,6 +1,7 @@
 package kr.spring.attendance.service;
 
 import java.util.List;
+
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,23 +14,24 @@ import kr.spring.attendance.vo.AttendanceVO;
 @Service
 @Transactional
 public class AttendanceServiceImpl implements AttendanceService {
-
+	
+	@Autowired
+	private AttendanceMapper attendanceMapper;
+	
 	@Override
 	public void insertAttendance(AttendanceVO attendence) {
-		// TODO Auto-generated method stub
+		attendanceMapper.insertAttendance(attendence);
 		
 	}
 
 	@Override
 	public AttendanceVO selectAttendance(Long empId) {
-		// TODO Auto-generated method stub
-		return null;
+		return attendanceMapper.selectAttendance(empId);
 	}
 
 	@Override
 	public List<AttendanceVO> selectList(Map<String, Object> map) {
-		// TODO Auto-generated method stub
-		return null;
+		return attendanceMapper.selectList(map);
 	}
 
 	@Override
@@ -48,6 +50,11 @@ public class AttendanceServiceImpl implements AttendanceService {
 	public void deleteAttendance(Long empId) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public boolean isDuplicate(AttendanceVO attendanceVO) {
+		return attendanceMapper.countDuplicate(attendanceVO) > 0;
 	}
 
 	

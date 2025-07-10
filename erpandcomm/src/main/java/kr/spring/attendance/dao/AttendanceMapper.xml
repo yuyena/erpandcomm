@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.spring.attendance.dao.AttendanceMapper">
+	<!-- 근태 등록 -->
+	<insert id="insertAttendance" parameterType="kr.spring.attendance.vo.AttendanceVO">
+	INSERT INTO attendance(
+		work_date,
+		emp_id,
+		user_name,
+		status,
+		check_in_time,
+		check_out_time,
+		notes,
+		created_at,
+		update_at)
+	VALUES (
+		#{workDate},
+		#{empId},
+		(SELECT user_name FROM EUSER_DETAIL WHERE emp_id=#{empId}),
+		#{status},
+		#{checkIntime},
+		#{checkOuttime},
+		#{notes},
+		now(),
+		now())
+	</insert>
+	
+	<!-- 중복 검사 -->
+	<select id="countDuplicate" resultType="integer" parameterType="AttendanceVO">
+		SELECT count(*)
+		FROM attendance
+		WHERE WORK_DATE=#{workDate}
+			AND EMP_ID=#{empId}
+	</select>
+</mapper>

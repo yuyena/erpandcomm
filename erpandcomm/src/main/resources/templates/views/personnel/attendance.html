@@ -107,7 +107,8 @@
             <button type="button" id="closeModalBtn">&times;</button>
         </div>
         <div class="modal-body">
-            <form id="attendanceForm">
+        <!-- post : 데이터 생성 // get: 데이터 조회 -->
+            <form id="attendanceForm" th:action="@{/attendance/insert}" method="post">
                 <div class="form-group">
                     <label for="attDate">날짜</label><br>
                     <input type="date" id="attDate" name="attDate" value="2025-07-07" required>
