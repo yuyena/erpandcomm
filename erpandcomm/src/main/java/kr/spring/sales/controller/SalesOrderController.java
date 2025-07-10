@@ -53,6 +53,7 @@ public class SalesOrderController {
     public String orderList(Model model) {
         try {
             List<SalesOrderVO> list = salesOrderService.selectSalesOrderList();
+            System.out.println("[DEBUG] 판매주문 목록 개수: " + list.size());
             model.addAttribute("list", list);
             return "views/sales/salesOrderList";
         } catch (Exception e) {

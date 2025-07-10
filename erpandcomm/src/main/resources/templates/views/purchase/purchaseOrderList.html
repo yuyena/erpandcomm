@@ -23,14 +23,12 @@
                 <h2>ERP관리 - 발주 목록</h2>
             </div>
             <!-- 검색조건+차트 한 행 배치 (각각 별도 박스) -->
-            <div style="display: flex; align-items: flex-end; gap: 32px; justify-content: center; margin-bottom: 24px;">
-                <div class="card" style="padding: 24px 24px 16px 24px; background: #fff; border-radius: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); flex:0 0 420px;">
+            <div class="dashboard-flex-row" style="display: flex; gap: 32px; margin-bottom: 24px;">
+                <div class="card" style="padding: 24px 24px 16px 24px; background: #fff; border-radius: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); flex:1 1 0; min-width:340px; max-width:480px;">
                     <form class="search-form" th:action="@{/purchase/orderList}" method="get">
                         <div class="search-row">
-                            <label class="search-label">주문일</label>
-                            <input type="date" name="startDate" th:value="${param.startDate}" class="search-input">
-                            <span style="color:#888;">~</span>
-                            <input type="date" name="endDate" th:value="${param.endDate}" class="search-input">
+                            <label class="search-label">주문 번호</label>
+                            <input type="text" name="orderNum" th:value="${param.orderNum}" placeholder="주문번호" class="search-input">
                         </div>
                         <div class="search-row">
                             <label class="search-label">공급처</label>
@@ -40,13 +38,19 @@
                             <label class="search-label">담당 직원</label>
                             <input type="text" name="emp" th:value="${param.emp}" placeholder="직원명" class="search-input">
                         </div>
-                        <div style="flex-basis: 100%; display: flex; justify-content: flex-end; margin-top: 8px;">
+                        <div class="search-row">
+                            <label class="search-label">주문일</label>
+                            <input type="date" name="startDate" th:value="${param.startDate}" class="search-input" style="width: 48%; display: inline-block;">
+                            <span style="color:#888;">~</span>
+                            <input type="date" name="endDate" th:value="${param.endDate}" class="search-input" style="width: 48%; display: inline-block;">
+                        </div>
+                        <div style="display: flex; justify-content: flex-end; margin-top: 8px;">
                             <button type="submit" class="search-btn" style="background:#888;">전체 검색</button>
                         </div>
                     </form>
                 </div>
-                <div class="card" style="padding: 24px 24px 16px 24px; background: #fff; border-radius: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); max-width:600px; min-width:600px; min-height:300px; flex-basis:300px; align-self:stretch;">
-                    <canvas id="purchaseMonthlyChart" width="600" height="300" style="display:block;"></canvas>
+                <div class="card" style="padding: 24px 24px 16px 24px; background: #fff; border-radius: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); flex:1 1 0; min-width:340px; max-width:600px; min-height:300px; display:flex; align-items:center; justify-content:center;">
+                    <canvas id="purchaseMonthlyChart" width="400" height="200" style="display:block;"></canvas>
                 </div>
             </div>
             <section class="card-section" style="border: none !important;">
