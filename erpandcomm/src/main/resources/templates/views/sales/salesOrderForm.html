@@ -131,7 +131,7 @@
                                 <option value="">거래처 선택</option>
                                 <option th:each="client : ${customerList}"
                                         th:value="${client.client_num}"
-                                        th:text="${client.client_name + ' (' + client.contact_person + ')'}"></option>
+                                        th:text="${client.client_name}"></option>
                             </select>
                         </div>
                         <div class="sh-box-row">

@@ -23,6 +23,7 @@ import kr.spring.product.vo.ProductVO;
 import kr.spring.member.vo.PrincipalDetails;
 import kr.spring.client.service.ClientService;
 import kr.spring.client.vo.ClientVO;
+import kr.spring.stock.service.StockTransactionService;
 
 @Controller
 @RequestMapping("/sales")
@@ -35,6 +36,9 @@ public class SalesOrderController {
 
     @Autowired
     private ClientService clientService;
+    
+    @Autowired
+    private StockTransactionService stockTransactionService;
 
     // 판매주문 목록
     @GetMapping("/orderList")
@@ -69,13 +73,31 @@ public class SalesOrderController {
         if (salesOrderVO.getOrder_date() == null) {
             salesOrderVO.setOrder_date(new Date());
         }
+        
+        // 1. 판매주문 등록
         salesOrderService.insertSalesOrder(salesOrderVO);
+        
+        // 2. 판매주문 상세 등록 및 재고 출고 처리
         if (salesOrderVO.getDetails() != null) {
             for (SalesOrderDetailVO detail : salesOrderVO.getDetails()) {
                 detail.setSales_order_num(salesOrderVO.getSales_order_num());
                 salesOrderService.insertSalesOrderDetail(detail);
+                
+                // 재고 출고 처리
+                try {
+                    stockTransactionService.processStockOut(
+                        detail.getProduct_num(), 
+                        detail.getQuantity(), 
+                        salesOrderVO.getEmp_num(),
+                        "판매주문 #" + salesOrderVO.getSales_order_num() + " 출고"
+                    );
+                } catch (Exception e) {
+                    // 재고 처리 실패 시 예외 처리 (실제로는 더 정교한 예외 처리 필요)
+                    System.err.println("재고 출고 처리 실패: " + e.getMessage());
+                }
             }
         }
+        
         return "redirect:/sales/orderList";
     }
 
@@ -117,8 +139,31 @@ public class SalesOrderController {
     // 판매주문 삭제
     @GetMapping("/orderDelete")
     public String orderDelete(@RequestParam long sales_order_num) {
+        // 1. 기존 주문 상세 조회 (재고 취소를 위해)
+        List<SalesOrderDetailVO> details = salesOrderService.selectSalesOrderDetailList(sales_order_num);
+        SalesOrderVO order = salesOrderService.selectSalesOrder(sales_order_num);
+        
+        // 2. 재고 출고 취소 처리
+        if (details != null) {
+            for (SalesOrderDetailVO detail : details) {
+                try {
+                    stockTransactionService.cancelStockOut(
+                        detail.getProduct_num(), 
+                        detail.getQuantity(), 
+                        order.getEmp_num(),
+                        "판매주문 #" + sales_order_num + " 취소"
+                    );
+                } catch (Exception e) {
+                    // 재고 처리 실패 시 예외 처리
+                    System.err.println("재고 출고 취소 처리 실패: " + e.getMessage());
+                }
+            }
+        }
+        
+        // 3. 주문 삭제
         salesOrderService.deleteSalesOrder(sales_order_num);
         salesOrderService.deleteSalesOrderDetail(sales_order_num);
+        
         return "redirect:/sales/orderList";
     }
 } 

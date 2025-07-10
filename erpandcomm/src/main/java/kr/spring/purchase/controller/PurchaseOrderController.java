@@ -22,6 +22,7 @@ import kr.spring.client.service.ClientService;
 import kr.spring.client.vo.ClientVO;
 import kr.spring.product.service.ProductService;
 import kr.spring.product.vo.ProductVO;
+import kr.spring.stock.service.StockTransactionService;
 
 @Controller
 @RequestMapping("/purchase")
@@ -34,6 +35,9 @@ public class PurchaseOrderController {
 
     @Autowired
     private ProductService productService;
+    
+    @Autowired
+    private StockTransactionService stockTransactionService;
 
     // 구매주문 목록
     @GetMapping("/orderList")
@@ -65,7 +69,31 @@ public class PurchaseOrderController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
         purchaseOrderVO.setEmp_num(principal.getMemberVO().getUser_num());
+        
+        // 1. 구매주문 등록
         purchaseOrderService.insertPurchaseOrder(purchaseOrderVO);
+        
+        // 2. 구매주문 상세 등록 및 재고 입고 처리
+        if (purchaseOrderVO.getDetails() != null) {
+            for (PurchaseOrderDetailVO detail : purchaseOrderVO.getDetails()) {
+                detail.setPurchase_order_num(purchaseOrderVO.getPurchase_order_num());
+                purchaseOrderService.insertPurchaseOrderDetail(detail);
+                
+                // 재고 입고 처리
+                try {
+                    stockTransactionService.processStockIn(
+                        detail.getProduct_num(), 
+                        detail.getQuantity(), 
+                        purchaseOrderVO.getEmp_num(),
+                        "구매주문 #" + purchaseOrderVO.getPurchase_order_num() + " 입고"
+                    );
+                } catch (Exception e) {
+                    // 재고 처리 실패 시 예외 처리 (실제로는 더 정교한 예외 처리 필요)
+                    System.err.println("재고 입고 처리 실패: " + e.getMessage());
+                }
+            }
+        }
+        
         return "redirect:/purchase/orderList";
     }
 
@@ -107,8 +135,31 @@ public class PurchaseOrderController {
     // 구매주문 삭제
     @GetMapping("/orderDelete")
     public String orderDelete(@RequestParam long purchase_order_num) {
+        // 1. 기존 주문 상세 조회 (재고 취소를 위해)
+        List<PurchaseOrderDetailVO> details = purchaseOrderService.selectPurchaseOrderDetailList(purchase_order_num);
+        PurchaseOrderVO order = purchaseOrderService.selectPurchaseOrder(purchase_order_num);
+        
+        // 2. 재고 입고 취소 처리
+        if (details != null) {
+            for (PurchaseOrderDetailVO detail : details) {
+                try {
+                    stockTransactionService.cancelStockIn(
+                        detail.getProduct_num(), 
+                        detail.getQuantity(), 
+                        order.getEmp_num(),
+                        "구매주문 #" + purchase_order_num + " 취소"
+                    );
+                } catch (Exception e) {
+                    // 재고 처리 실패 시 예외 처리
+                    System.err.println("재고 입고 취소 처리 실패: " + e.getMessage());
+                }
+            }
+        }
+        
+        // 3. 주문 삭제
         purchaseOrderService.deletePurchaseOrder(purchase_order_num);
         purchaseOrderService.deletePurchaseOrderDetail(purchase_order_num);
+        
         return "redirect:/purchase/orderList";
     }
 } 
