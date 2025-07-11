@@ -20,6 +20,7 @@ public class MainController {
 		return "views/main/main";
 	}
 	
+	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/main/main")
 	public String main(@AuthenticationPrincipal PrincipalDetails principal,Model model) {
 		return "views/main/main";

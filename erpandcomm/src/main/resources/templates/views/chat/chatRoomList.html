@@ -31,7 +31,6 @@
                             <th>방 이름</th>
                             <th>타입</th>
                             <th>설명</th>
-                            <th>생성자</th>
                             <th>최대 인원</th>
                             <th>생성일</th>
                             <th>입장</th>
@@ -43,12 +42,11 @@
                             <td th:text="${room.room_name}"></td>
                             <td th:text="${room.room_type}"></td>
                             <td class="description-cell" th:text="${room.description != null ? (room.description.length() > 20 ? room.description.substring(0, 20) + '...' : room.description) : ''}" th:title="${room.description}"></td>
-                            <td th:text="${room.created_by}"></td>
                             <td th:text="${room.max_members}"></td>
                             <td th:text="${#dates.format(room.created_at, 'yyyy-MM-dd')}"></td>
                             <td>
                                 <button class="enter-btn" data-room-id="[[${room.room_num}]]">입장</button>
-                                <th:block th:if="${room.created_by == 1}">
+                                <th:block th:if="${room.role == '방장'}">
                                 <form th:action="@{/chat/deleteRoom}" method="post" style="display:inline; margin-left:8px;">
                                     <input type="hidden" name="room_num" th:value="${room.room_num}" />
                                     <button type="submit" class="delete-btn" onclick="return confirm('정말 삭제하시겠습니까?');">삭제</button>

@@ -87,13 +87,13 @@ public class MemberUserController {
 		return "views/member/memberLogin";
 	}
 	
+	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/info")
-	public String selectMemberInfo(Model model) {
-	    // 임시로 user_num=1로 고정
-	    long user_num = 1;
+	public String selectMemberInfo(@AuthenticationPrincipal PrincipalDetails principal, Model model) {
+	    
 
 	    // 서비스에서 회원 상세 정보 조회 (user_num 기준)
-	    MemberVO member = memberService.selectMember(user_num);
+	    MemberVO member = memberService.selectMember(principal.getMemberVO().getUser_num());
 
 	    // 주민등록번호 마스킹 처리 (예시)
 	    if (member.getResident_reg_num() != null) {

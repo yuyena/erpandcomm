@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -25,6 +26,7 @@ import kr.spring.chat.vo.ChatMessageVO;
 import kr.spring.chat.vo.ChatRoomVO;
 import kr.spring.member.service.MemberService;
 import kr.spring.member.vo.MemberVO;
+import kr.spring.member.vo.PrincipalDetails;
 import kr.spring.util.ValidationUtil;
 import lombok.extern.slf4j.Slf4j;
 
@@ -162,26 +164,27 @@ public class ChatUserController {
 	// 채팅방 목록
 	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/roomList")
-	public String getRoomList(Model model) {
+	public String getRoomList(@AuthenticationPrincipal PrincipalDetails principal, Model model) {
 		
 	    // euser 테이블에서 사용자 목록 조회
-	    Map<String, Object> map = new HashMap<String, Object>();
-	    List<MemberVO> userList = memberService.selectMemberList(map);
+	    Map<String, Object> listMap = new HashMap<String, Object>();
+	    List<MemberVO> userList = memberService.selectMemberList(listMap);
 		
-	    // 임시로 사용자 번호를 직접 지정 (예: 1번 사용자)
-	    long user_num = 1;
-	    Map<String, Object> userMap = new HashMap<String, Object>();
-	    userMap.put("member_num", user_num);
+	    // 로그인한 사용자의 user_num 가져오기
+	    long user_num = principal.getMemberVO().getUser_num();
+	    Map<String, Object> map = new HashMap<String, Object>();
+	    map.put("member_num", user_num);
 
 	    // 서비스에서 채팅방 목록 조회
-	    List<ChatRoomVO> chatRoomList = chatService.selectListChatRoom(userMap);
+	    List<ChatRoomVO> chatRoomList = chatService.selectListChatRoom(map);
 
 	    // 모델에 담기
 	    model.addAttribute("userList", userList);
 	    model.addAttribute("accessBtn", "목록으로");
 	    model.addAttribute("chatRoomList", chatRoomList);
 	    
-	    log.debug("<<회원 목록>> : " + userList);
+//	    log.debug("<<회원 목록>> : " + userList);
+	    log.debug("<<현재 로그인한 사용자 번호>> : " + user_num);
 		
 		return "views/chat/chatRoomList";
 	}
@@ -189,7 +192,7 @@ public class ChatUserController {
 	// 채팅방 삭제(비활성화)
 	@PreAuthorize("isAuthenticated()")
 	@PostMapping("/deleteRoom")
-	public String deleteRoom(@RequestParam("room_num") long room_num, HttpServletRequest request, Model model) {
+	public String deleteRoom(@AuthenticationPrincipal PrincipalDetails principal, long room_num, HttpServletRequest request, Model model) {
 	    long myUserNum = 1; // 테스트용으로 항상 1로 고정
 
 	    // 1. 전체 멤버 조회

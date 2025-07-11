@@ -41,7 +41,8 @@
 			r.max_members,
 			r.is_active,
 			r.created_at,
-			r.updated_at
+			r.updated_at,
+			m.role
 		FROM chat_room r
 		JOIN chat_member m ON r.room_num = m.room_num
 		WHERE m.user_num = #{member_num}
