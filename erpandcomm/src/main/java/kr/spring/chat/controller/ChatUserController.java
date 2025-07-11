@@ -61,13 +61,12 @@ public class ChatUserController {
 	// 채팅방 생성 폼
 	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/createRoom")
-	public String form(Model model) {
+	public String form(@AuthenticationPrincipal PrincipalDetails principal, Model model) {
 		
 		Map<String, Object> map = new HashMap<String, Object>();
 		List<MemberVO> userList = memberService.selectMemberList(map);
 		
-	    // 임시로 1번 사용자를 본인으로 간주
-	    long user_num = 1;
+	    long user_num = principal.getMemberVO().getUser_num();
 
 	    List<MemberVO> filteredList = new ArrayList<>();
 	    for (MemberVO member : userList) {
@@ -84,12 +83,13 @@ public class ChatUserController {
 	// 채팅방 생성
 	@PreAuthorize("isAuthenticated()")
 	@PostMapping("/createRoom")
-	public String submit(@Valid ChatRoomVO chatRoomVO, @RequestParam(value="memberNums", required=false) List<Long> memberNums,
+	public String submit(@AuthenticationPrincipal PrincipalDetails principal, @Valid ChatRoomVO chatRoomVO,
+						 @RequestParam(value="memberNums", required=false) List<Long> memberNums,
 						 BindingResult result, Model model, HttpServletRequest request) {
 		
 		if (result.hasErrors()) {
 			ValidationUtil.printErrorFields(result);
-			return form(model);
+			return form(principal,model);
 		} // if
 		
 		// 디버깅 로그
@@ -99,8 +99,21 @@ public class ChatUserController {
 		log.debug("최대 인원: " + chatRoomVO.getMax_members());
 		log.debug("선택된 멤버: " + memberNums);
 		
-		// 임시로 1번 사용자를 생성자로 설정
-		long creatorUserNum = 1L;
+		
+		MemberVO memberVO = new MemberVO();
+		memberVO.setUser_num(principal.getMemberVO().getUser_num());
+		long creatorUserNum = memberVO.getUser_num();
+		if (principal != null && principal.getMemberVO() != null) {
+			log.debug("[디버그] 로그인한 사용자의 user_num: {}", creatorUserNum);
+		} else {
+			System.out.println("[디버그] user_num을 가져올 수 없습니다!");
+		}
+		
+		if (creatorUserNum == 0) {
+			model.addAttribute("accessMsg", "로그인 정보에 문제가 있습니다. 다시 로그인 해주세요.");
+			model.addAttribute("accessUrl", request.getContextPath()+"/main/main");
+			return "views/common/resultView";
+		}
 		chatRoomVO.setCreated_by(creatorUserNum);
 		
 		// 방 이름이 없으면 자동 생성
@@ -189,44 +202,44 @@ public class ChatUserController {
 		return "views/chat/chatRoomList";
 	}
 
-	// 채팅방 삭제(비활성화)
-	@PreAuthorize("isAuthenticated()")
-	@PostMapping("/deleteRoom")
-	public String deleteRoom(@AuthenticationPrincipal PrincipalDetails principal, long room_num, HttpServletRequest request, Model model) {
-	    long myUserNum = 1; // 테스트용으로 항상 1로 고정
-
-	    // 1. 전체 멤버 조회
-	    Map<String, Object> param = new HashMap<>();
-	    param.put("room_num", room_num);
-
-	    List<ChatMemberVO> memberList = chatService.selectMember(param);
-
-	    if (memberList == null) memberList = new java.util.ArrayList<>();
-
-	    // 2. 방장 찾기
-	    ChatMemberVO owner = null;
-	    for (ChatMemberVO member : memberList) {
-	        if (member.getRole().equals("방장")) {
-	            owner = member;
-	            break;
-	        }
-	    }
-	    
-	    log.debug("<<memberList>> : " + memberList);
-	    log.debug("<<owner>> : " + owner);
-	    log.debug("<<userNum>> : " + myUserNum);
-	    log.debug("<<roomNum>> : " + room_num);
-
-	    // 3. 권한 체크 및 삭제(비활성화)
-	    if (owner != null && myUserNum == owner.getUser_num()) {
-	        chatService.notActive(room_num);
-	        model.addAttribute("accessMsg", "채팅방이 삭제(비활성화)되었습니다.");
-	    } else {
-	        model.addAttribute("accessMsg", "방장만 삭제할 수 있습니다.");
-	    }
-	    model.addAttribute("accessUrl", request.getContextPath() + "/chat/roomList");
-	    return "views/common/resultView";
-	}
+	// 채팅방 삭제(비활성화) ajax 통신으로 하기 위해 일단 주석처리 해놨음 안되면 다시 풀거임
+//	@PreAuthorize("isAuthenticated()")
+//	@PostMapping("/deleteRoom")
+//	public String deleteRoom(@AuthenticationPrincipal PrincipalDetails principal, long room_num, BindingResult result ,HttpServletRequest request, Model model) {
+//	    long myUserNum = principal.getMemberVO().getUser_num(); // 테스트용으로 항상 1로 고정
+//	    
+//	    // 1. 전체 멤버 조회
+//	    Map<String, Object> param = new HashMap<>();
+//	    param.put("room_num", room_num);
+//
+//	    List<ChatMemberVO> memberList = chatService.selectMember(param);
+//
+//	    if (memberList == null) memberList = new java.util.ArrayList<>();
+//
+//	    // 2. 방장 찾기
+//	    ChatMemberVO owner = null;
+//	    for (ChatMemberVO member : memberList) {
+//	        if (member.getRole().equals("방장")) {
+//	            owner = member;
+//	            break;
+//	        }
+//	    }
+//	    
+//	    log.debug("<<memberList>> : " + memberList);
+//	    log.debug("<<owner>> : " + owner);
+//	    log.debug("<<userNum>> : " + myUserNum);
+//	    log.debug("<<roomNum>> : " + room_num);
+//
+//	    // 3. 권한 체크 및 삭제(비활성화)
+//	    if (owner != null && myUserNum == owner.getUser_num()) {
+//	        chatService.notActive(room_num);
+//	        model.addAttribute("accessMsg", "채팅방이 삭제(비활성화)되었습니다.");
+//	    } else {
+//	        model.addAttribute("accessMsg", "방장만 삭제할 수 있습니다.");
+//	    }
+//	    model.addAttribute("accessUrl", request.getContextPath() + "/chat/roomList");
+//	    return "views/common/resultView";
+//	}
 
 }
 

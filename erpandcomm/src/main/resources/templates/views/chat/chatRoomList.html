@@ -11,6 +11,7 @@
     <link rel="stylesheet" th:href="@{/assets/css/jm/chatRoomList.css}">
     <link rel="stylesheet" th:href="@{/assets/css/jm/chatView.css}">
     <script type="text/javascript" th:src="@{/assets/js/jquery-3.7.1.min.js}"></script>
+    <script type="text/javascript" th:src="@{/assets/js/chat.delete.js}"></script>
 </head>
 <body>
 <div layout:fragment="content" class="page-main">
@@ -44,16 +45,13 @@
                             <td class="description-cell" th:text="${room.description != null ? (room.description.length() > 20 ? room.description.substring(0, 20) + '...' : room.description) : ''}" th:title="${room.description}"></td>
                             <td th:text="${room.max_members}"></td>
                             <td th:text="${#dates.format(room.created_at, 'yyyy-MM-dd')}"></td>
-                            <td>
-                                <button class="enter-btn" data-room-id="[[${room.room_num}]]">입장</button>
-                                <th:block th:if="${room.role == '방장'}">
-                                <form th:action="@{/chat/deleteRoom}" method="post" style="display:inline; margin-left:8px;">
-                                    <input type="hidden" name="room_num" th:value="${room.room_num}" />
-                                    <button type="submit" class="delete-btn" onclick="return confirm('정말 삭제하시겠습니까?');">삭제</button>
-                                </form>
-                                </th:block>
-                            </td>
-                        </tr>
+							<td>
+								<button class="enter-btn" data-room-id="[[${room.room_num}]]">입장</button>
+								<th:block th:if="${room.role == '방장'}">
+									<button class="delete-btn" data-room-id="[[${room.room_num}]]">삭제</button>
+								</th:block>
+							</td>
+							</tr>
                         <tr th:if="${#lists.isEmpty(chatRoomList)}">
                             <td colspan="8" class="no-chat-room">참여중인 채팅이 없습니다.</td>
                         </tr>
