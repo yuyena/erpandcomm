@@ -12,7 +12,17 @@
     </insert>
 
     <select id="selectSalesOrder" parameterType="long" resultType="kr.spring.sales.vo.SalesOrderVO">
-        SELECT * FROM sales_order WHERE sales_order_num = #{sales_order_num}
+        SELECT so.sales_order_num,
+               so.customer_num,
+               NVL(c.client_name, '미지정') as client_name,
+               so.order_date,
+               so.total_price,
+               so.emp_num,
+               d.user_name as emp_name
+        FROM sales_order so
+        LEFT JOIN client c ON so.customer_num = c.client_num
+        LEFT JOIN euser_detail d ON so.emp_num = d.user_num
+        WHERE so.sales_order_num = #{sales_order_num}
     </select>
 
     <select id="selectSalesOrderList" resultType="kr.spring.sales.vo.SalesOrderVO">
@@ -48,7 +58,10 @@
     </insert>
 
     <select id="selectSalesOrderDetailList" parameterType="long" resultType="kr.spring.sales.vo.SalesOrderDetailVO">
-        SELECT * FROM sales_order_detail WHERE sales_order_num = #{sales_order_num}
+        SELECT d.sales_order_num, d.product_num, p.product_name, d.quantity, d.unit_price
+        FROM sales_order_detail d
+        JOIN product p ON d.product_num = p.product_num
+        WHERE d.sales_order_num = #{sales_order_num}
     </select>
 
     <update id="updateSalesOrderDetail" parameterType="kr.spring.sales.vo.SalesOrderDetailVO">

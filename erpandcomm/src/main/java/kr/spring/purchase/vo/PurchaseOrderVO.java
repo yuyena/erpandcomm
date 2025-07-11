@@ -18,5 +18,6 @@ public class PurchaseOrderVO {
     private Date order_date;           // 주문일
     private double total_price;        // 총 구매금액
     private long emp_num;              // 구매 담당 직원
+    private String emp_name;           // 담당자명(조인)
     private List<PurchaseOrderDetailVO> details; // 주문 상세 리스트
 } 

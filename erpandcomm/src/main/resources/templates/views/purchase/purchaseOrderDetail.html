@@ -6,50 +6,66 @@
     <meta charset="UTF-8">
     <title>구매주문 상세</title>
     <link rel="stylesheet" th:href="@{/assets/css/main.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/sh.css}">
 </head>
 <body>
 <div layout:fragment="content" class="page-main">
     <div class="dashboard-wrapper">
         <th:block th:replace="fragments/nav_sidebar :: sidebar"></th:block>
         <main class="main-content">
-            <div class="main-header">
-                <h2>ERP 관리</h2>
-            </div>
-            <section class="card-section">
-                <div class="section-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px;">
-                    <h3 style="margin: 0;">구매주문 상세</h3>
-                    <a th:href="@{/purchase/orderList}" class="btn">목록</a>
+            <div class="completion-container" style="max-width: 900px; margin: 40px auto;">
+                <h1 class="completion-title" style="font-size: 26px; font-weight: 700; color: #333; margin-bottom: 24px;">구매주문 상세</h1>
+                <div class="order-summary" style="background: #f8f9fa; border-radius: 12px; padding: 30px; margin-bottom: 32px; text-align: left;">
+                    <div class="summary-row" style="display: flex; justify-content: space-between; margin-bottom: 15px; border-bottom: 1px solid #e9ecef; padding-bottom: 10px;">
+                        <span class="summary-label" style="color: #666; font-weight: 500;">주문번호</span>
+                        <span class="summary-value" style="color: #333; font-weight: 600;" th:text="${order.purchase_order_num}"></span>
+                    </div>
+                    <div class="summary-row" style="display: flex; justify-content: space-between; margin-bottom: 15px; border-bottom: 1px solid #e9ecef; padding-bottom: 10px;">
+                        <span class="summary-label">공급업체</span>
+                        <span class="summary-value" th:text="${order.supplier_name}"></span>
+                    </div>
+                    <div class="summary-row" style="display: flex; justify-content: space-between; margin-bottom: 15px; border-bottom: 1px solid #e9ecef; padding-bottom: 10px;">
+                        <span class="summary-label">주문일</span>
+                        <span class="summary-value" th:text="${#dates.format(order.order_date, 'yyyy-MM-dd HH:mm')}"></span>
+                    </div>
+                    <div class="summary-row" style="display: flex; justify-content: space-between; margin-bottom: 15px; border-bottom: 1px solid #e9ecef; padding-bottom: 10px;">
+                        <span class="summary-label">담당자</span>
+                        <span class="summary-value" th:text="${order.emp_name}"></span>
+                    </div>
+                    <div class="summary-row" style="display: flex; justify-content: space-between; margin-bottom: 0; font-weight: 600; font-size: 18px; color: #28a745; border-bottom: none;">
+                        <span class="summary-label">총 주문 금액</span>
+                        <span class="summary-value" th:text="${#numbers.formatInteger(order.total_price, 3, 'COMMA')} + '원'"></span>
+                    </div>
                 </div>
-                <div class="order-info" style="margin-bottom: 24px;">
-                    <h4>주문 정보</h4>
-                    <ul>
-                        <li>주문번호: <span th:text="${order.purchase_order_num}"></span></li>
-                        <li>공급처번호: <span th:text="${order.supplier_num}"></span></li>
-                        <li>주문일: <span th:text="${#dates.format(order.order_date, 'yyyy-MM-dd')}"></span></li>
-                        <li>총금액: <span th:text="${#numbers.formatDecimal(order.total_price, 0, 'COMMA', 2, 'POINT')} + '원'"></span></li>
-                        <li>담당자: <span th:text="${order.emp_num}"></span></li>
-                    </ul>
-                </div>
-                <div class="table-container">
-                    <h4>주문 상세 내역</h4>
-                    <table class="product-table">
+                <div class="table-container" style="margin-bottom: 32px;">
+                    <h4 style="margin-bottom: 12px; color: #222; font-size: 18px; font-weight: 600;">주문 상세내역</h4>
+                    <table class="product-table" style="width: 100%; background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 6px rgba(0,0,0,0.04);">
                         <thead>
-                            <tr>
+                            <tr style="background: #f3f6fa;">
                                 <th>상품번호</th>
+                                <th>상품명</th>
                                 <th>수량</th>
                                 <th>단가</th>
+                                <th>합계</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr th:each="detail : ${details}">
                                 <td th:text="${detail.product_num}"></td>
+                                <td th:text="${detail.product_name}"></td>
                                 <td th:text="${detail.quantity}"></td>
                                 <td th:text="${#numbers.formatDecimal(detail.unit_price, 0, 'COMMA', 2, 'POINT')} + '원'"></td>
+                                <td th:text="${#numbers.formatDecimal(detail.unit_price * detail.quantity, 0, 'COMMA', 2, 'POINT')} + '원'"></td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
-            </section>
+                <div class="action-buttons" style="margin-top: 30px; display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+                    <a th:href="@{/purchase/orderList}" class="btn-main">주문 목록</a>
+                    <a th:href="@{/purchase/orderForm}" class="btn-write btn-main">새 주문 작성</a>
+                    <a th:href="@{/}" class="btn-main">메인으로</a>
+                </div>
+            </div>
         </main>
     </div>
 </div>

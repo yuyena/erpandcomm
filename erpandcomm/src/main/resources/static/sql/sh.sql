@@ -31,3 +31,32 @@ INSERT INTO client VALUES (27, '배수지', 1, '배수지', '010-7890-7777', 'sj
 INSERT INTO client VALUES (28, '유승호', 1, '유승호', '010-8901-8888', 'shyoo@outlook.com', '수원시 팔달구', '영동대로 3');
 INSERT INTO client VALUES (29, '강민경', 1, '강민경', '010-9012-9999', 'mkang@naver.com', '부산시 남구', '대연동 55');
 INSERT INTO client VALUES (30, '조세호', 1, '조세호', '010-0123-0000', 'sehojo@korea.com', '서울시 중랑구', '면목로 12');
+
+-- 1. 포장/배송용품 제조 공급처
+INSERT INTO CLIENT (CLIENT_NUM, CLIENT_NAME, CLIENT_TYPE, CONTACT_PERSON, PHONE, EMAIL, ADDRESS1, ADDRESS2)
+VALUES (CLIENT_SEQ.NEXTVAL, '한진포장산업', 0, '김지훈', '02-1234-5678', 'contact@hanjinpack.co.kr', '서울특별시 금천구 가산디지털1로 142', 'A동 805호');
+
+INSERT INTO CLIENT (CLIENT_NUM, CLIENT_NAME, CLIENT_TYPE, CONTACT_PERSON, PHONE, EMAIL, ADDRESS1, ADDRESS2)
+VALUES (CLIENT_SEQ.NEXTVAL, '세방패키징', 0, '박은정', '031-9876-4321', 'info@sebangpack.com', '경기도 시흥시 공단1대로 89', '패키징센터 2층');
+
+-- 2. 청소/위생용품 제조 공급처
+INSERT INTO CLIENT (CLIENT_NUM, CLIENT_NAME, CLIENT_TYPE, CONTACT_PERSON, PHONE, EMAIL, ADDRESS1, ADDRESS2)
+VALUES (CLIENT_SEQ.NEXTVAL, '클린메이트산업', 0, '이정수', '032-555-7890', 'sales@cleanmate.co.kr', '인천광역시 남동구 남동대로 456', '위생동 3층');
+
+INSERT INTO CLIENT (CLIENT_NUM, CLIENT_NAME, CLIENT_TYPE, CONTACT_PERSON, PHONE, EMAIL, ADDRESS1, ADDRESS2)
+VALUES (CLIENT_SEQ.NEXTVAL, '에코위생솔루션', 0, '최윤아', '02-8765-1234', 'support@ecohygiene.kr', '서울특별시 강서구 공항대로 314', '비즈니스센터 1203호');
+
+-- 3. 사무용 가구 제조 공급처
+INSERT INTO CLIENT (CLIENT_NUM, CLIENT_NAME, CLIENT_TYPE, CONTACT_PERSON, PHONE, EMAIL, ADDRESS1, ADDRESS2)
+VALUES (CLIENT_SEQ.NEXTVAL, '퍼스트오피스', 0, '정해성', '055-234-6789', 'first@officefurni.com', '경상남도 창원시 성산구 중앙대로 102', '3층 제조부');
+
+INSERT INTO CLIENT (CLIENT_NUM, CLIENT_NAME, CLIENT_TYPE, CONTACT_PERSON, PHONE, EMAIL, ADDRESS1, ADDRESS2)
+VALUES (CLIENT_SEQ.NEXTVAL, '에이스퍼니처', 0, '홍지민', '053-789-0123', 'contact@acefurniture.co.kr', '대구광역시 달서구 이곡동 202-9', '가구제조동 1층');
+
+-- 4. 문구류 제조 공급처
+INSERT INTO CLIENT (CLIENT_NUM, CLIENT_NAME, CLIENT_TYPE, CONTACT_PERSON, PHONE, EMAIL, ADDRESS1, ADDRESS2)
+VALUES (CLIENT_SEQ.NEXTVAL, '모던문구산업', 0, '김가은', '042-456-7890', 'info@modernstationery.kr', '대전광역시 유성구 테크노2로 100', 'B동 2층');
+
+INSERT INTO CLIENT (CLIENT_NUM, CLIENT_NAME, CLIENT_TYPE, CONTACT_PERSON, PHONE, EMAIL, ADDRESS1, ADDRESS2)
+VALUES (CLIENT_SEQ.NEXTVAL, '에버펜코리아', 0, '오세진', '051-678-9012', 'cs@everpen.co.kr', '부산광역시 강서구 유통단지1로 55', '문구센터 4층');
+
