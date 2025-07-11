@@ -10,46 +10,46 @@ import java.util.Map;
 @Service
 public class StockServiceImpl implements StockService {
 
-   @Override
-   public Integer selectRowCountStock(Map<String, Object> map) {
-      // TODO Auto-generated method stub
-      return 0;
-   }
+	@Override
+	public Integer selectRowCountStock(Map<String, Object> map) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 
-   @Override
-   public List<ProductVO> selectStockList(Map<String, Object> map) {
-      // TODO Auto-generated method stub
-      return null;
-   }
+	@Override
+	public List<ProductVO> selectStockList(Map<String, Object> map) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-   @Override
-   public Map<String, Object> selectStockStatusCount() {
-      // TODO Auto-generated method stub
-      return null;
-   }
+	@Override
+	public Map<String, Object> selectStockStatusCount() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-   @Override
-   public ProductVO selectStockDetail(int product_num) {
-      // TODO Auto-generated method stub
-      return null;
-   }
+	@Override
+	public ProductVO selectStockDetail(int product_num) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-   @Override
-   public void updateStock(Map<String, Object> map) {
-      // TODO Auto-generated method stub
-      
-   }
+	@Override
+	public void updateStock(Map<String, Object> map) {
+		// TODO Auto-generated method stub
+		
+	}
 
-   @Override
-   public void insertStock(Map<String, Object> map) {
-      // TODO Auto-generated method stub
-      
-   }
+	@Override
+	public void insertStock(Map<String, Object> map) {
+		// TODO Auto-generated method stub
+		
+	}
 
-   @Override
-   public void updateMinMaxStock(Map<String, Object> map) {
-      // TODO Auto-generated method stub
-      
-   }
+	@Override
+	public void updateMinMaxStock(Map<String, Object> map) {
+		// TODO Auto-generated method stub
+		
+	}
     
 } 

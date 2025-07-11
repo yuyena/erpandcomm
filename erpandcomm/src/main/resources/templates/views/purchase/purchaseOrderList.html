@@ -81,8 +81,8 @@
                                 <td th:text="${order.emp_num}"></td>
                                 <td>
                                     <a th:href="@{/purchase/orderDetail(purchase_order_num=${order.purchase_order_num})}" class="btn-detail">상세 보기</a>
-                                    <a th:href="@{/purchase/orderEdit(purchase_order_num=${order.purchase_order_num})}" class="btn-detail" style="background:#2ecc71;" th:if="${#authorization.expression('hasRole(''ADMIN'') or principal.user_num == order.emp_num')}">수정</a>
-                                    <a th:href="@{/purchase/orderDelete(purchase_order_num=${order.purchase_order_num})}" class="btn-detail" style="background:#e74c3c;" th:if="${#authorization.expression('hasRole(''ADMIN'')')}">삭제</a>
+                                    <a th:href="@{/purchase/orderEdit(purchase_order_num=${order.purchase_order_num})}" class="btn-detail" style="background:#2ecc71;">수정</a>
+                                    <a th:href="@{/purchase/orderDelete(purchase_order_num=${order.purchase_order_num})}" class="btn-detail" style="background:#e74c3c;">삭제</a>
                                 </td>
                             </tr>
                         </tbody>

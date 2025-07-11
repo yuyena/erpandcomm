@@ -1,6 +1,7 @@
 package kr.spring.member.vo;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.sql.Date;
 
 import org.springframework.web.multipart.MultipartFile;
@@ -16,7 +17,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString(exclude = {"photo"})
-public class MemberVO {
+public class MemberVO implements Serializable {
 	
 	private long user_num;
 	@Pattern(regexp="^[A-Za-z0-9]{10,11}$")

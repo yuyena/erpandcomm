@@ -85,6 +85,14 @@ public class SalesOrderController {
             .collect(Collectors.toList());
         model.addAttribute("customerList", customerList);
         model.addAttribute("today", new java.util.Date());
+        // 로그인 사원 이름 추가
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Object principal = authentication.getPrincipal();
+        String empName = "";
+        if (principal instanceof PrincipalDetails) {
+            empName = ((PrincipalDetails) principal).getMemberVO().getUser_name();
+        }
+        model.addAttribute("empName", empName);
         return "views/sales/salesOrderForm";
     }
 

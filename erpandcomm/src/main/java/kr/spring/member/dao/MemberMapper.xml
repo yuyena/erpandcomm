@@ -42,14 +42,14 @@
 	<!-- 로그인 처리 -->
 	<select id="selectCheckMember" parameterType="string" resultType="memberVO">
 		SELECT
-		  user_num,
-		  employee_code,
-		  authority,
-		  passwd,
-		  email
-		FROM euser JOIN euser_detail
-		USING (user_num)
-		WHERE employee_code=#{employee_code}
+		  u.user_num,
+		  u.employee_code,
+		  u.authority,
+		  d.passwd,
+		  d.email,
+		  d.user_name
+		FROM euser u JOIN euser_detail d ON u.user_num = d.user_num
+		WHERE u.employee_code=#{employee_code}
 	</select>
 	
 	<!-- 회원정보수정 -->

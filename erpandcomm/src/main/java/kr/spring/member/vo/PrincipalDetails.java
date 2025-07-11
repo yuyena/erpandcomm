@@ -1,5 +1,6 @@
 package kr.spring.member.vo;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -19,7 +20,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Data
 @Slf4j
-public class PrincipalDetails implements UserDetails {
+public class PrincipalDetails implements UserDetails, Serializable {
 	
 	private MemberVO memberVO;
 	
@@ -55,6 +56,11 @@ public class PrincipalDetails implements UserDetails {
 	@Override
 	public String getUsername() {
 		return memberVO.getEmployee_code();
+	}
+	
+	// user_num에 접근하기 위한 getter 추가
+	public long getUserNum() {
+		return memberVO.getUser_num();
 	}
 	
 	/*

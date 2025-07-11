@@ -195,7 +195,8 @@
                         </div>
                         <div class="sh-box-row total-row">
                             <span class="total-label">총금액</span>
-                            <input type="text" id="totalPriceInput" class="total-input" name="total_price" value="0원" readonly />
+                            <input type="text" id="totalPriceInput" class="total-input" value="0원" readonly />
+                            <input type="hidden" id="totalPriceHidden" name="total_price" value="0" />
                         </div>
                         <div class="sh-box-actions">
                             <button type="submit" class="btn btn-success">주문 제출</button>
@@ -292,6 +293,7 @@ document.addEventListener('DOMContentLoaded', function() {
             total += Number(item.unitPrice) * Number(item.quantity);
         });
         totalPriceInput.value = formatPrice(total);
+        document.getElementById('totalPriceHidden').value = total;
     }
 });
 </script>

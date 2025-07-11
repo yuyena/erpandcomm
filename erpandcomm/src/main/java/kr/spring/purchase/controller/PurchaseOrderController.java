@@ -72,6 +72,16 @@ public class PurchaseOrderController {
         // 상품 목록도 전달
         List<ProductVO> productList = productService.selectProductList();
         model.addAttribute("productList", productList);
+        // 로그인 사원 이름 추가
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Object principal = authentication.getPrincipal();
+        String empName = "";
+        if (principal instanceof PrincipalDetails) {
+            empName = ((PrincipalDetails) principal).getMemberVO().getUser_name();
+        }
+        model.addAttribute("empName", empName);
+        // 주문일(today) 추가
+        model.addAttribute("today", new java.util.Date());
         return "views/purchase/purchaseOrderForm";
     }
 
