@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout_basic}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>상품 등록</title>
+    <link rel="stylesheet" th:href="@{/assets/css/yn/register.css}">
+    <script type="text/javascript" th:src="@{/assets/js/jquery-3.7.1.min.js}"></script>
+    <link rel="stylesheet" th:href="@{/assets/css/main.css}">
+</head>
+<body>
+<div layout:fragment="content" class="page-main">
+    <div class="dashboard-wrapper">
+		<!-- 사이드바 -->
+		<th:block th:replace="fragments/nav_sidebar :: sidebar"></th:block>
+	<main class="main-content">
+    <div class="header">
+        <h1>ERP 시스템</h1>
+    </div>
+
+    <div class="container">
+            <div class="form-header">
+                <h2>상품 등록</h2>
+            </div>
+
+            <div class="form-body">
+                <form id="productForm">
+                    <!-- 기본 정보 -->
+                    <div class="form-sectiaon">
+                        <div class="section-title">기본 정보</div>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="productNum">상품 번호 <span class="required">*</span></label>
+                                <input type="number" id="productNum" name="productNum" placeholder="상품 번호" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="productName">상품명 <span class="required">*</span></label>
+                                <input type="text" id="productName" name="productName" placeholder="상품명을 입력하세요" maxlength="100" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="categoryNum">카테고리 <span class="required">*</span></label>
+                                <select id="categoryNum" name="categoryNum" required>
+                                    <option value="">카테고리를 선택하세요</option>
+                                    <option value="1">전자제품</option>
+                                    <option value="2">의류</option>
+                                    <option value="3">생활용품</option>
+                                    <option value="4">도서</option>
+                                    <option value="5">스포츠</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="status">상품 상태 <span class="required">*</span></label>
+                                <select id="status" name="status" required>
+                                    <option value="">상태를 선택하세요</option>
+                                    <option value="1">활성</option>
+                                    <option value="0">비활성</option>
+                                    <option value="2">단종</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 가격 및 단위 정보 -->
+                    <div class="form-section">
+                        <div class="section-title">가격 및 단위 정보</div>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="unitPrice">단가 <span class="required">*</span></label>
+                                <input type="number" id="unitPrice" name="unitPrice" min="0" step="0.01" placeholder="0.00" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="unit">단위 <span class="required">*</span></label>
+                                <select id="unit" name="unit" required>
+                                    <option value="">단위를 선택하세요</option>
+                                    <option value="개">개</option>
+                                    <option value="박스">박스</option>
+                                    <option value="kg">kg</option>
+                                    <option value="L">L</option>
+                                    <option value="m">m</option>
+                                    <option value="세트">세트</option>
+                                    <option value="팩">팩</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="productDate">상품 등록일</label>
+                                <input type="date" id="productDate" name="productDate" value="">
+                                <small style="color: #6b7280; font-size: 0.8rem; margin-top: 0.25rem;">비워두면 오늘 날짜로 자동 설정됩니다</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 재고 정보 -->
+                    <div class="form-section">
+                        <div class="section-title">재고 정보</div>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="initialStock">초기 재고량 <span class="required">*</span></label>
+                                <input type="number" id="initialStock" name="initialStock" min="0" placeholder="0" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="minStock">최소 재고량</label>
+                                <input type="number" id="minStock" name="minStock" min="0" placeholder="0">
+                            </div>
+                            <div class="form-group">
+                                <label for="maxStock">최대 재고량</label>
+                                <input type="number" id="maxStock" name="maxStock" min="0" placeholder="0">
+                            </div>
+                            <div class="form-group">
+                                <label for="unit">단위</label>
+                                <select id="unit" name="unit">
+                                    <option value="개">개</option>
+                                    <option value="박스">박스</option>
+                                    <option value="kg">kg</option>
+                                    <option value="L">L</option>
+                                    <option value="m">m</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 상태 및 기타 -->
+                    <div class="form-section">
+                        <div class="section-title">상태 및 기타</div>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="status">상품 상태</label>
+                                <select id="status" name="status">
+                                    <option value="active">활성</option>
+                                    <option value="inactive">비활성</option>
+                                    <option value="discontinued">단종</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="launchDate">출시일</label>
+                                <input type="date" id="launchDate" name="launchDate">
+                            </div>
+                            <div class="form-group full-width">
+                                <div class="checkbox-group">
+                                    <input type="checkbox" id="isOnline" name="isOnline">
+                                    <label for="isOnline">온라인 판매</label>
+                                </div>
+                                <div class="checkbox-group">
+                                    <input type="checkbox" id="isPhysical" name="isPhysical">
+                                    <label for="isPhysical">매장 판매</label>
+                                </div>
+                                <div class="checkbox-group">
+                                    <input type="checkbox" id="trackInventory" name="trackInventory" checked>
+                                    <label for="trackInventory">재고 추적</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 버튼 그룹 -->
+                    <div class="button-group">
+                        <button type="button" class="btn btn-outline" onclick="resetForm()">초기화</button>
+                        <button type="button" class="btn btn-secondary" onclick="saveDraft()">임시저장</button>
+                        <button type="submit" class="btn btn-primary">상품 등록</button>
+                    </div>
+                </form>
+        </div>
+    </div>
+</main></div></div>
+<div layout:fragment="pageScript">
+<script type="text/javascript">
+       // 폼 초기화
+        function resetForm() {
+            if (confirm('입력한 내용이 모두 삭제됩니다. 계속하시겠습니까?')) {
+                document.getElementById('productForm').reset();
+            }
+        }
+
+        // 임시저장
+        function saveDraft() {
+            const formData = new FormData(document.getElementById('productForm'));
+            const data = {};
+            for (let [key, value] of formData.entries()) {
+                data[key] = value;
+            }
+            
+            localStorage.setItem('productDraft', JSON.stringify(data));
+            alert('임시저장되었습니다.');
+        }
+
+        // 페이지 로드 시 임시저장 데이터 복원
+        window.addEventListener('load', function() {
+            const draft = localStorage.getItem('productDraft');
+            if (draft) {
+                const data = JSON.parse(draft);
+                Object.keys(data).forEach(key => {
+                    const input = document.getElementById(key);
+                    if (input) {
+                        if (input.type === 'checkbox') {
+                            input.checked = data[key] === 'on';
+                        } else {
+                            input.value = data[key];
+                        }
+                    }
+                });
+            }
+        });
+
+</script>
+</div>
+</body>
+</html>

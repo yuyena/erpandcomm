@@ -12,7 +12,7 @@ public interface ProductService {
 	public Integer selectRowCount(Map<String, Object> map);
 	public ProductVO selectProduct(Long product_num);
 	public List<Map<String, Object>> selectCategoryList();
-
+	public void insertProduct(ProductVO product);
 	// 상품 전체 목록 조회
 	List<ProductVO> selectProductList();
 

@@ -41,7 +41,13 @@ public class ProductServiceImpl implements ProductService {
 		return productMapper.selectCategoryList();
 	}
 
-
+	@Override
+	public void insertProduct(ProductVO product) {
+		Long newProductNum = productMapper.selectProductNum();
+		product.setProduct_num(newProductNum);
+	    productMapper.insertProduct(product);
+	    productMapper.insertCurrentStock(product); 
+	}
 	
 	
 	
@@ -51,6 +57,8 @@ public class ProductServiceImpl implements ProductService {
 	public List<ProductVO> selectProductList() {
 		return productMapper.selectProductList();
 	}
+
+	
 
 	
 

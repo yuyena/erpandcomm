@@ -1,5 +1,6 @@
 package kr.spring.product.controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -96,5 +97,41 @@ public class ProductController {
 
 	    log.debug("=== 제품 목록 조회 완료 ===");
 	    return "views/product/productView";  
+	}
+	//게시판 글등록 폼
+	@PreAuthorize("isAuthenticated()")
+	@GetMapping("/register")
+	public String form() {
+		return "views/product/productRegister";
+	}
+	
+	//글등록 처리
+	@PreAuthorize("isAuthenticated()")
+	@PostMapping("/register")
+	public String submit(@Valid ProductVO productVO,
+			             BindingResult result,
+			             HttpServletRequest request,
+			             @AuthenticationPrincipal
+			             PrincipalDetails principal,
+			             Model model) 
+			            		 throws IllegalStateException, 
+			            		               IOException {
+		
+		log.debug("<<게시판 글등록>> : {}",productVO);
+		
+		//유효성 체크 결과 오류가 있으면 폼 호출
+		if(result.hasErrors()) {
+			//유효성 체크 결과 오류 필드 출력
+			ValidationUtil.printErrorFields(result);
+			return form();
+		}		
+		
+		//상품등록
+		productService.insertProduct(productVO);
+		
+		model.addAttribute("message", "상품을 정상적으로 등록했습니다.");
+		model.addAttribute("url", request.getContextPath()+"/product/productView");
+		
+		return "views/common/resultAlert";
 	}
 }
