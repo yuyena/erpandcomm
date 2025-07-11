@@ -157,7 +157,6 @@
 
 /* 버튼 스타일 - 기존 스타일과 맞춤 */
 .btn {
-    padding: 8px 16px;
     border: 1px solid #e0e0e0;
     border-radius: 8px;
     background-color: #fff;
@@ -170,6 +169,7 @@
     display: inline-block;
     text-align: center;
     box-shadow: 0 2px 6px rgba(90,150,255,0.08);
+    vertical-align: middle;
 }
 
 .btn:hover {
@@ -396,12 +396,7 @@
     .controls-section {
         padding: 16px;
     }
-    
-    .btn {
-        padding: 6px 12px;
-        font-size: 0.9rem;
-    }
-    
+   
     .category-nav a {
         padding: 6px 12px;
         font-size: 0.9rem;
@@ -467,4 +462,9 @@ a:focus {
     .product-table td {
         padding: 6px 4px;
     }
+}
+.btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
