@@ -6,10 +6,7 @@
 <meta charset="UTF-8">
 <title>Office ERP - 근태관리</title>
 <link rel="stylesheet" th:href="@{/assets/css/main.css}">
-<link rel="stylesheet" th:href="@{/assets/css/yj.css}">
 <script th:src="@{/assets/js/sidebar.js}"></script>
-<script th:src="@{/assets/js/attendanceForm.js}"></script>
-
 </head>
 <body>
 	<div layout:fragment="content" class="page-main">
@@ -68,8 +65,7 @@
 							style="font-weight: bold; font-size: 1.1rem; margin-bottom: 18px; display: flex; justify-content: space-between; align-items: center;">
 							<span>근태 관리</span>
 							<div style="display: flex; gap: 8px;">
-								<button type="button" class="btn btn-primary"
-									id="openModalBtn">근태 등록</button>
+								<button class="btn btn-primary" onclick="location.href='/attendanceForm'">근태 등록</button>
 								<button class="btn-secondary">근태 수정</button>
 								<button class="btn-danger">근태 삭제</button>
 							</div>
@@ -98,67 +94,5 @@
 			</main>
 		</div>
 	</div>
-	
-<!-- 근태 등록 모달 (초기에는 숨김) -->
-<div id="attendanceModal" class="modal" style="display: none;">
-    <div class="modal-dialog">
-        <div class="modal-header">
-            <h5 class="modal-title">근태 등록</h5>
-            <button type="button" id="closeModalBtn">&times;</button>
-        </div>
-        <div class="modal-body">
-        <!-- post : 데이터 생성 // get: 데이터 조회 -->
-            <form id="attendanceForm" th:action="@{/attendance/insert}" method="post">
-                <div class="form-group">
-                    <label for="attDate">날짜</label><br>
-                    <input type="date" id="attDate" name="attDate" value="2025-07-07" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="empNo">직원번호</label><br>
-                    <input type="text" id="empNo" name="empNo" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="empName">이름</label><br>
-                    <input type="text" id="empName" name="empName" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="status">상태</label><br>
-                    <select id="status" name="status" required>
-                        <option value="">상태 선택</option>
-                        <option value="present">출근</option>
-                        <option value="late">지각</option>
-                        <option value="early_leave">조퇴</option>
-                        <option value="absent">결근</option>
-                    	<option value="holiday">휴가</option> 	
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="inTime">출근시간</label><br>
-                    <input type="time" id="inTime" name="inTime">
-                </div>
-
-                <div class="form-group">
-                    <label for="outTime">퇴근시간</label><br>
-                    <input type="time" id="outTime" name="outTime">
-                </div>
-				<div class="form-group">
-					<label for="notes">메모 (선택)</label><br>
-					<textarea id="notes" name="notes" rows="3" cols="30"
-							placeholder="지각/조퇴 사유 등 자유롭게 입력하세요."></textarea>
-					
-				</div>
-					<div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">저장</button>
-                    <button type="button" id="cancelBtn" class="btn btn-secondary">취소</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-<div layout:fragment="pageScript"></div>
 </body>
 </html>

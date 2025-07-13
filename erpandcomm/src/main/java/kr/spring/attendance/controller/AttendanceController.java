@@ -1,53 +1,65 @@
 package kr.spring.attendance.controller;
 
-import org.apache.commons.logging.Log;
+import java.io.IOException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 
-
-import groovy.util.logging.Slf4j;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import kr.spring.attendance.service.AttendanceService;
 import kr.spring.attendance.vo.AttendanceVO;
+import kr.spring.member.vo.PrincipalDetails;
+import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
+
 @Controller
-@RequestMapping("/attendance")
+@Slf4j
 public class AttendanceController {
 	@Autowired
 	private AttendanceService attendanceService;
 	
-	//자바빈(VO)초기화
+	// 자바빈 초기화
 	@ModelAttribute
 	public AttendanceVO initCommand() {
 		return new AttendanceVO();
 	}
-	
 	// 근태 등록 폼
-	@PostMapping("/attendance/insert")
-	@PreAuthorize("isAuthenticated()") 
-	public String insertForm(@Valid @ModelAttribute AttendanceVO attendanceVO,
-			                  BindingResult result,
-			                  Model model) {
-		if(result.hasErrors()) {
-			model.addAttribute("error","입력값이 잘못되었습니다.");
-			return "views/personnel/attendance";
-		}
-		if(attendanceService.isDuplicate(attendanceVO)) {
-			model.addAttribute("message", "이미 등록된 근태 정보입니다");
-			model.addAttribute("url","/attendance");
-		}
+	@PreAuthorize("isAuthenticated()")
+	@GetMapping("/attendanceForm")
+	public String form(@AuthenticationPrincipal PrincipalDetails principal,
+			            Model model) {
+		// 로그인 사용자 정보를 모델에 추가
+		model.addAttribute("memberVO", principal.getMemberVO());
 		
-		attendanceService.insertAttendance(attendanceVO);
-		return "redirect:/attendance";
+		return "views/personnel/attendanceForm";
 	}
 	
+	// 근태 등록처리
+	@PreAuthorize("isAuthenticated()")
+	@PostMapping("/attendanceForm")
+	public String submit(@Valid AttendanceVO attendanceVO,
+			             BindingResult result,
+			             HttpServletRequest request,
+			             @AuthenticationPrincipal PrincipalDetails principal,
+						 Model model) throws IllegalStateException, IOException{
+		log.debug("<<근태등록>> : {}", attendanceVO);
+		
+		// 근태 등록
+		attendanceService.insertAttendance(attendanceVO);
+		
+		model.addAttribute("message","근태를 정상적으로 등록했습니다.");
+		model.addAttribute("url", request.getContextPath()+"/personnel/attendance");
+		
+		return "views/common/resultAlert";
+	}
 	
 	
 }
