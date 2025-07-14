@@ -15,10 +15,9 @@
                 <h2>ERP 관리 - 거래처 관리</h2>
             </div>
             
-            <!-- 거래처 차트 박스를 맨 위로 이동 -->
-            <div class="card" style="padding: 24px 24px 16px 24px; margin-bottom: 24px; background: #fff; border-radius: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08);">
-              <div style="max-width:300px; min-width:300px; min-height:200px; margin:0 auto;">
-                <canvas id="clientPieChart" width="300" height="200" style="display:block;"></canvas>
+            <div class="card" style="width: 800px; padding: 0; margin: 0 auto 24px auto; background: #fff; border-radius: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08);">
+              <div style="width:800px; min-height:200px; margin:0 auto; text-align:center;">
+                <canvas id="clientPieChart" style="display: inline-block; width: 400px; height: 400px; box-sizing: border-box;" width="400" height="400"></canvas>
               </div>
             </div>
             
@@ -32,13 +31,13 @@
                 <div class="table-container" style="flex: 1; min-width:0; width:100%;">
                     <h3 style="margin-bottom: 15px; color: #333; font-size: 1.1rem;">고객 목록</h3>
                     <form id="clientListForm" method="post" th:action="@{/client/deleteSelected}">
-                      <table class="custom-table">
+                      <table class="custom-table" style="width:85%">
                         <thead>
                           <tr>
                             <th style="width:5%"><input type="checkbox" id="allChk" onclick="toggleAll(this)"></th>
-                            <th style="width:26%">이름</th>
-                            <th style="width:18%">담당자</th>
-                            <th style="width:20%">연락처</th>
+                            <th style="width:9%">이름</th>
+                            <th style="width:9%">담당자</th>
+                            <th style="width:10%">연락처</th>
                             <th style="width:13%">상세보기</th>
                             <th style="width:18%">수정/삭제</th>
                           </tr>
@@ -95,15 +94,15 @@
                 <div class="table-container" style="flex: 1; min-width:0; width:100%;">
                     <h3 style="margin-bottom: 15px; color: #333; font-size: 1.1rem;">공급업체 목록</h3>
                     <form id="supplierListForm" method="post" th:action="@{/client/deleteSelected}">
-                        <table class="custom-table">
+                        <table class="custom-table" style="width:85%">
                             <thead>
                                 <tr>
                                     <th style="width:5%"><input type="checkbox" id="allSupplierChk" onclick="toggleAllSupplier(this)"></th>
-                                    <th style="width:28%">이름</th>
-                                    <th style="width:20%">담당자</th>
-                                    <th style="width:22%">연락처</th>
+                                    <th style="width:9%">이름</th>
+                                    <th style="width:9%">담당자</th>
+                                    <th style="width:10%">연락처</th>
                                     <th style="width:13%">상세보기</th>
-                                    <th style="width:12%">수정/삭제</th>
+                                    <th style="width:18%">수정/삭제</th>
                                 </tr>
                             </thead>
                             <tbody>
