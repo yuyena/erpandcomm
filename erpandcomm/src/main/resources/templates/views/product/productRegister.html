@@ -27,37 +27,32 @@
             </div>
 
             <div class="form-body">
-                <form id="productForm">
+                <form id="productForm" th:action="@{register}" method="post"
+	  				th:object="${productVO}">
                     <!-- 기본 정보 -->
-                    <div class="form-sectiaon">
+                    <div class="form-section">
                         <div class="section-title">기본 정보</div>
                         <div class="form-grid">
                             <div class="form-group">
-                                <label for="productNum">상품 번호 <span class="required">*</span></label>
-                                <input type="number" id="productNum" name="productNum" placeholder="상품 번호" required>
-                            </div>
-                            <div class="form-group">
                                 <label for="productName">상품명 <span class="required">*</span></label>
-                                <input type="text" id="productName" name="productName" placeholder="상품명을 입력하세요" maxlength="100" required>
+                                <input type="text" th:field="*{product_name}" id="productName" placeholder="상품명을 입력하세요" maxlength="100" required>
                             </div>
                             <div class="form-group">
                                 <label for="categoryNum">카테고리 <span class="required">*</span></label>
-                                <select id="categoryNum" name="categoryNum" required>
-                                    <option value="">카테고리를 선택하세요</option>
-                                    <option value="1">전자제품</option>
-                                    <option value="2">의류</option>
-                                    <option value="3">생활용품</option>
-                                    <option value="4">도서</option>
-                                    <option value="5">스포츠</option>
-                                </select>
+                                <select id="categoryNum" th:field="*{category_num}" required>
+			                        <option value="">선택하세요</option>
+			                        <option th:each="category : ${categoryList}"
+			                                th:value="${category['CATEGORY_NUM']}"
+			                                th:text="${category['CATEGORY_NAME']}">
+			                        </option>
+			                    </select>
                             </div>
                             <div class="form-group">
                                 <label for="status">상품 상태 <span class="required">*</span></label>
-                                <select id="status" name="status" required>
+                                <select id="status" th:field="*{status}" required>
                                     <option value="">상태를 선택하세요</option>
                                     <option value="1">활성</option>
                                     <option value="0">비활성</option>
-                                    <option value="2">단종</option>
                                 </select>
                             </div>
                         </div>
@@ -69,11 +64,11 @@
                         <div class="form-grid">
                             <div class="form-group">
                                 <label for="unitPrice">단가 <span class="required">*</span></label>
-                                <input type="number" id="unitPrice" name="unitPrice" min="0" step="0.01" placeholder="0.00" required>
+                                <input type="number" th:field="*{unit_price}" id="unitPrice" min="0" step="0.01" placeholder="0.00" required>
                             </div>
                             <div class="form-group">
                                 <label for="unit">단위 <span class="required">*</span></label>
-                                <select id="unit" name="unit" required>
+                                <select id="unit" th:field="*{unit}" required>
                                     <option value="">단위를 선택하세요</option>
                                     <option value="개">개</option>
                                     <option value="박스">박스</option>
@@ -84,11 +79,6 @@
                                     <option value="팩">팩</option>
                                 </select>
                             </div>
-                            <div class="form-group">
-                                <label for="productDate">상품 등록일</label>
-                                <input type="date" id="productDate" name="productDate" value="">
-                                <small style="color: #6b7280; font-size: 0.8rem; margin-top: 0.25rem;">비워두면 오늘 날짜로 자동 설정됩니다</small>
-                            </div>
                         </div>
                     </div>
 
@@ -98,62 +88,19 @@
                         <div class="form-grid">
                             <div class="form-group">
                                 <label for="initialStock">초기 재고량 <span class="required">*</span></label>
-                                <input type="number" id="initialStock" name="initialStock" min="0" placeholder="0" required>
+                                <input type="number" th:field="*{current_quantity}" id="initialStock" min="0" placeholder="0" required>
                             </div>
                             <div class="form-group">
                                 <label for="minStock">최소 재고량</label>
-                                <input type="number" id="minStock" name="minStock" min="0" placeholder="0">
+                                <input type="number" th:field="*{min_stock}" id="minStock" min="0" placeholder="0">
                             </div>
                             <div class="form-group">
                                 <label for="maxStock">최대 재고량</label>
-                                <input type="number" id="maxStock" name="maxStock" min="0" placeholder="0">
-                            </div>
-                            <div class="form-group">
-                                <label for="unit">단위</label>
-                                <select id="unit" name="unit">
-                                    <option value="개">개</option>
-                                    <option value="박스">박스</option>
-                                    <option value="kg">kg</option>
-                                    <option value="L">L</option>
-                                    <option value="m">m</option>
-                                </select>
+                                <input type="number" th:field="*{max_stock}" id="maxStock"  min="0" placeholder="0">
                             </div>
                         </div>
                     </div>
-
-                    <!-- 상태 및 기타 -->
-                    <div class="form-section">
-                        <div class="section-title">상태 및 기타</div>
-                        <div class="form-grid">
-                            <div class="form-group">
-                                <label for="status">상품 상태</label>
-                                <select id="status" name="status">
-                                    <option value="active">활성</option>
-                                    <option value="inactive">비활성</option>
-                                    <option value="discontinued">단종</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="launchDate">출시일</label>
-                                <input type="date" id="launchDate" name="launchDate">
-                            </div>
-                            <div class="form-group full-width">
-                                <div class="checkbox-group">
-                                    <input type="checkbox" id="isOnline" name="isOnline">
-                                    <label for="isOnline">온라인 판매</label>
-                                </div>
-                                <div class="checkbox-group">
-                                    <input type="checkbox" id="isPhysical" name="isPhysical">
-                                    <label for="isPhysical">매장 판매</label>
-                                </div>
-                                <div class="checkbox-group">
-                                    <input type="checkbox" id="trackInventory" name="trackInventory" checked>
-                                    <label for="trackInventory">재고 추적</label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
+                    
                     <!-- 버튼 그룹 -->
                     <div class="button-group">
                         <button type="button" class="btn btn-outline" onclick="resetForm()">초기화</button>

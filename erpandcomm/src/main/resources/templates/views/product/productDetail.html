@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout_basic}">
+<head>
+    <meta charset="UTF-8">
+    <title>상품 상세</title>
+    <link rel="stylesheet" th:href="@{/assets/css/yn/register.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/main.css}">
+</head>
+<body>
+<div layout:fragment="content" class="page-main">
+    <div class="dashboard-wrapper">
+        <th:block th:replace="fragments/nav_sidebar :: sidebar"></th:block>
+        <main class="main-content">
+            <div class="header">
+                <h1>ERP 시스템</h1>
+            </div>
+
+            <div class="container">
+                <div class="form-header">
+                    <h2>상품 상세</h2>
+                </div>
+
+                <div class="form-body">
+                    <!-- 기본 정보 -->
+                    <div class="form-section">
+                        <div class="section-title">기본 정보</div>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>상품명</label>
+                                <div th:text="${productVO.product_name}">상품명</div>
+                            </div>
+                            <div class="form-group">
+                                <label>카테고리</label>
+                                <div th:text="${productVO.category_name}">카테고리명</div>
+                            </div>
+                            <div class="form-group">
+                                <label>상품 상태</label>
+                                <div th:text="${productVO.status == 1 ? '활성' : '비활성'}">상태</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 가격 및 단위 정보 -->
+                    <div class="form-section">
+                        <div class="section-title">가격 및 단위 정보</div>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>단가</label>
+                                <div th:text="${#numbers.formatDecimal(productVO.unit_price, 1, 'POINT', 2, 'ZERO')}">0.00</div>
+                            </div>
+                            <div class="form-group">
+                                <label>단위</label>
+                                <div th:text="${productVO.unit}">단위</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 재고 정보 -->
+                    <div class="form-section">
+                        <div class="section-title">재고 정보</div>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>현재 재고</label>
+                                <div th:text="${productVO.current_quantity}">0</div>
+                            </div>
+                            <div class="form-group">
+                                <label>최소 재고량</label>
+                                <div th:text="${productVO.min_stock}">0</div>
+                            </div>
+                            <div class="form-group">
+                                <label>최대 재고량</label>
+                                <div th:text="${productVO.max_stock}">0</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 버튼 그룹 -->
+                    <div class="button-group">
+                        <a th:href="@{/product/update/{num}(num=${productVO.product_num})}" class="btn btn-secondary">수정</a>
+                        <a th:href="@{/product/delete/{num}(num=${productVO.product_num})}" class="btn btn-outline" onclick="return confirm('정말 삭제하시겠습니까?')">삭제</a>
+                        <a th:href="@{/product/list}" class="btn btn-primary">목록</a>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+</body>
+</html>

@@ -29,6 +29,7 @@ import kr.spring.product.service.ProductService;
 import kr.spring.product.vo.ProductVO;
 import kr.spring.util.FileUtil;
 import kr.spring.util.PagingUtil;
+import kr.spring.util.StringUtil;
 import kr.spring.util.ValidationUtil;
 import lombok.extern.slf4j.Slf4j;
 
@@ -98,10 +99,13 @@ public class ProductController {
 	    log.debug("=== 제품 목록 조회 완료 ===");
 	    return "views/product/productView";  
 	}
-	//게시판 글등록 폼
+	//상품 등록 폼
 	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/register")
-	public String form() {
+	public String form(Model model) {
+		List<Map<String, Object>> categoryList = productService.selectCategoryList();
+		model.addAttribute("categoryList", categoryList);
+		
 		return "views/product/productRegister";
 	}
 	
@@ -117,13 +121,13 @@ public class ProductController {
 			            		 throws IllegalStateException, 
 			            		               IOException {
 		
-		log.debug("<<게시판 글등록>> : {}",productVO);
+		log.debug("<<상품 등록>> : {}",productVO);
 		
 		//유효성 체크 결과 오류가 있으면 폼 호출
 		if(result.hasErrors()) {
 			//유효성 체크 결과 오류 필드 출력
 			ValidationUtil.printErrorFields(result);
-			return form();
+			return "views/product/productRegister";
 		}		
 		
 		//상품등록
@@ -134,4 +138,29 @@ public class ProductController {
 		
 		return "views/common/resultAlert";
 	}
+	
+	//게시판 상세
+//	@GetMapping("/detail")
+//	public String getDetail(long board_num, Model model) {
+//		
+//		log.debug("<<상품 상세>> board_num : {}",board_num);
+//		
+//		//해당 글의 조회수 증가
+//		Service.updateHit(board_num);
+//		
+//		BoardVO board = boardService.selectBoard(board_num);
+//		
+//		//제목에 태그를 허용하지 않음
+//		board.setTitle(
+//				StringUtil.useNoHtml(board.getTitle()));
+//		
+//		//내용에 태그를 허용하지 않으면서 줄바꿈 처리
+//		//(summernote 사용시 주석 처리)
+//		//board.setContent(StringUtil.useBrNoHtml(board.getContent()));
+//		
+//		model.addAttribute("board", board);
+//		
+//		return "views/board/boardView";
+//	}
+	
 }
