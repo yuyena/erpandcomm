@@ -30,6 +30,7 @@ public interface ChatService {
 	// ChatMessage
 	public List<ChatMessageVO> selectMessage(Long chat_room);
 	public void insertMessage(ChatMessageVO chatMessage);
+	public List<ChatMessageVO> selectNewMessages(Long room_num, Long lastMessageId);
 	
 	// ChatMessageRead
 	public List<ChatMessageReadVO> selectMessageRead(Long message_num);

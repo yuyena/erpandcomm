@@ -3,7 +3,62 @@
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
 <mapper namespace="kr.spring.chat.dao.ChatMessageMapper">
-	
+    <!-- 메시지 저장 -->
+    <insert id="insertMessage" parameterType="ChatMessageVO">
+        INSERT INTO chat_message (
+            message_num,
+            room_num,
+            sender_num,
+            content,
+            sent_at
+        ) VALUES (
+            chat_message_seq.nextval,
+            #{room_num},
+            #{sender_num},
+            #{content},
+            SYSDATE
+        )
+    </insert>
+    
+    <!-- 채팅방의 메시지 목록 조회 -->
+    <select id="selectMessage" parameterType="Long" resultType="ChatMessageVO">
+        SELECT 
+            m.message_num,
+            m.room_num,
+            m.sender_num,
+            m.content,
+            TO_CHAR(m.sent_at, 'YYYY-MM-DD HH24:MI:SS') as sent_at,
+            u.user_name as sender_name
+        FROM chat_message m
+        LEFT JOIN euser_detail u ON m.sender_num = u.user_num
+        WHERE m.room_num = #{chat_room}
+        ORDER BY m.sent_at ASC
+    </select>
+    
+    <!-- 새 메시지 조회 -->
+    <select id="selectNewMessages" parameterType="map" resultType="ChatMessageVO">
+        SELECT 
+            m.message_num,
+            m.room_num,
+            m.sender_num,
+            m.content,
+            TO_CHAR(m.sent_at, 'YYYY-MM-DD HH24:MI:SS') as sent_at,
+            u.user_name as sender_name
+        FROM chat_message m
+        LEFT JOIN euser_detail u ON m.sender_num = u.user_num
+        WHERE m.room_num = #{room_num}
+        AND m.message_num > #{lastMessageId}
+        ORDER BY m.sent_at ASC
+    </select>
+    
+    <!-- 메시지 삭제 -->
+    <delete id="deleteMessageByUserNum" parameterType="Long">
+        DELETE FROM chat_message WHERE sender_num = #{user_num}
+    </delete>
+    
+    <delete id="deleteMessageByRoomNum" parameterType="Long">
+        DELETE FROM chat_message WHERE room_num = #{room_num}
+    </delete>
 </mapper>
 
 

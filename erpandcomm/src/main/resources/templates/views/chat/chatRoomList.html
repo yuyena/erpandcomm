@@ -46,9 +46,9 @@
                             <td th:text="${room.max_members}"></td>
                             <td th:text="${#dates.format(room.created_at, 'yyyy-MM-dd')}"></td>
 							<td>
-								<button class="enter-btn" data-room-id="[[${room.room_num}]]">입장</button>
+								<button class="enter-btn" th:data-room-id="${room.room_num}">입장</button>
 								<th:block th:if="${room.role == '방장'}">
-									<button class="delete-btn" data-room-id="[[${room.room_num}]]">삭제</button>
+									<button class="delete-btn" th:data-room-id="${room.room_num}">삭제</button>
 								</th:block>
 							</td>
 							</tr>
@@ -61,35 +61,119 @@
             <!-- 오른쪽: 채팅창 (동적 삽입) -->
             <div class="chat-room-view-container" id="chatRoomViewContainer">
                 <!-- 입장 버튼 클릭 시 AJAX로 chatView.html 내용이 이곳에 삽입됨 -->
-                <div class="chat-room-placeholder">채팅방을 선택하세요.</div>
+                <div class="chat-room-placeholder">
+                    <p>환영합니다!</p>
+                    <p>왼쪽 목록에서 채팅방을 선택해주세요.</p>
+                </div>
             </div>
         </div>
     </div>
 </div>
 <div layout:fragment="pageScript">
-<script>
-// 입장 버튼 클릭 시 AJAX로 채팅방 뷰 로드
+<script th:inline="javascript">
+// Thymeleaf 변수 선언
+const contextPath = /*[[@{/}]]*/ '';
+
+// 입장 버튼 클릭 시 AJAX로 채팅방 입장
 $(document).on('click', '.enter-btn', function() {
-    var roomId = $(this).data('room-id');
+    var roomId = $(this).attr('data-room-id');  // data() 대신 attr() 사용
     var $btn = $(this);
     
     // 버튼 비활성화
     $btn.prop('disabled', true).text('입장중...');
     
+    // 먼저 채팅방 입장 처리
     $.ajax({
-        url: '/chat/roomView',
+        url: contextPath + 'chat/enter/' + roomId,
         type: 'GET',
-        data: { room_num: roomId },
-        success: function(html) {
-            $('#chatRoomViewContainer').html(html);
-            // 모든 입장 버튼에서 active 클래스 제거
-            $('.enter-btn').removeClass('active');
-            // 클릭된 버튼에 active 클래스 추가
-            $btn.addClass('active');
+        success: function(response) {
+            if (response.result === 'success') {
+                // 채팅방 뷰 컨테이너에 채팅 UI 구성
+                var chatHtml = `
+                    <div class="chat-view-wrapper">
+                        <div class="chat-header">
+                            <div class="chat-header-title">
+                                <span>${response.room.room_name}</span>
+                            </div>
+                            <div class="chat-header-actions">
+                                <button class="chat-header-btn" title="멤버 목록" onclick="toggleMemberList()"><span>👥</span></button>
+                                <button class="chat-header-btn" title="파일첨부"><span>📎</span></button>
+                                <button class="chat-header-btn" title="설정"><span>⚙️</span></button>
+                            </div>
+                        </div>
+                        
+                        <div class="chat-member-list" id="memberList" style="display: none;">
+                            <div class="member-list-header">
+                                <h4>멤버 목록</h4>
+                                <button onclick="toggleMemberList()" class="close-btn">×</button>
+                            </div>
+                            <div class="member-list-content">
+                                ${response.memberList.map(member => `
+                                    <div class="member-item">
+                                        <span class="member-name">${member.user_name}</span>
+                                        <span class="member-role">${member.role}</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                        
+                        <div class="chat-messages" id="chatMessages">
+                            ${response.messageList && response.messageList.length > 0 ? 
+                                response.messageList.map(message => `
+                                    <div class="chat-message-row ${message.sender_num == response.currentUserNum ? 'me' : ''}">
+                                        <div class="chat-bubble">${message.content}</div>
+                                        <div class="chat-message-meta">${message.sent_at}</div>
+                                    </div>
+                                `).join('') : 
+                                `<div class="no-message">
+                                    <p>아직 메시지가 없습니다.</p>
+                                    <p>첫 번째 메시지를 보내보세요!</p>
+                                </div>`
+                            }
+                        </div>
+                        
+                        <form class="chat-input-area" id="chatSendForm" autocomplete="off">
+                            <input type="hidden" name="room_num" value="${response.room.room_num}">
+                            <input type="text" class="chat-input" name="message" id="chatMessageInput" 
+                                   placeholder="메시지를 입력하세요..." autocomplete="off" required>
+                            <button type="submit" class="chat-send-btn">보내기</button>
+                        </form>
+                    </div>
+                `;
+                
+                $('#chatRoomViewContainer').html(chatHtml);
+                
+                // 모든 입장 버튼에서 active 클래스 제거
+                $('.enter-btn').removeClass('active');
+                // 클릭된 버튼에 active 클래스 추가
+                $btn.addClass('active');
+                
+                // WebSocket 연결 초기화
+                if (typeof connectWebSocket === 'function') {
+                    connectWebSocket();
+                }
+                
+                // 스크롤을 최하단으로 이동
+                var chatMessages = document.getElementById('chatMessages');
+                if (chatMessages) {
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                }
+            } else {
+                alert(response.message || '채팅방 입장에 실패했습니다.');
+            }
         },
-        error: function(xhr, status, error) {
-            console.error('채팅방 로드 오류:', error);
-            $('#chatRoomViewContainer').html('<div class="chat-room-error">채팅방을 불러오지 못했습니다.</div>');
+        error: function(xhr) {
+            var errorMsg = '채팅방을 불러오지 못했습니다.';
+            if (xhr.responseJSON && xhr.responseJSON.message) {
+                errorMsg = xhr.responseJSON.message;
+            }
+            alert(errorMsg);
+            $('#chatRoomViewContainer').html(`
+                <div class="chat-room-error">
+                    <p>${errorMsg}</p>
+                    <p>다시 시도해주세요.</p>
+                </div>
+            `);
         },
         complete: function() {
             // 버튼 다시 활성화
@@ -98,13 +182,15 @@ $(document).on('click', '.enter-btn', function() {
     });
 });
 
-// 페이지 로드 시 첫 번째 채팅방 자동 입장 (선택사항)
-$(document).ready(function() {
-    var firstRoomBtn = $('.enter-btn').first();
-    if (firstRoomBtn.length > 0) {
-        firstRoomBtn.click();
+// 멤버 목록 토글 함수
+function toggleMemberList() {
+    var memberList = document.getElementById('memberList');
+    if (memberList.style.display === 'none') {
+        memberList.style.display = 'block';
+    } else {
+        memberList.style.display = 'none';
     }
-});
+}
 </script>
 </div>
 </body>

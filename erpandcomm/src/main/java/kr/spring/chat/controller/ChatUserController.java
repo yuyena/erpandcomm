@@ -202,55 +202,70 @@ public class ChatUserController {
 		return "views/chat/chatRoomList";
 	}
 
-	// 채팅방 입장 (AJAX)
-	@PreAuthorize("isAuthenticated()")
-	@GetMapping("/roomView")
-	public String getRoomView(@AuthenticationPrincipal PrincipalDetails principal, 
-							 @RequestParam("room_num") Long roomNum, Model model) {
-		
-		long userNum = principal.getMemberVO().getUser_num();
-		
-		// 채팅방 정보 조회
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("room_num", roomNum);
-		List<ChatRoomVO> roomList = chatService.selectListChatRoom(map);
-		
-		if (roomList.isEmpty()) {
-			model.addAttribute("error", "채팅방을 찾을 수 없습니다.");
-			return "views/chat/chatView";
-		}
-		
-		ChatRoomVO room = roomList.get(0);
-		
-		// 채팅방 멤버 조회
-		Map<String, Object> memberMap = new HashMap<String, Object>();
-		memberMap.put("room_num", roomNum);
-		List<ChatMemberVO> memberList = chatService.selectMember(memberMap);
-		
-		// 현재 사용자가 해당 채팅방의 멤버인지 확인
-		boolean isMember = false;
-		for (ChatMemberVO member : memberList) {
-			if (member.getUser_num() == userNum) {
-				isMember = true;
-				break;
-			}
-		}
-		
-		if (!isMember) {
-			model.addAttribute("error", "해당 채팅방의 멤버가 아닙니다.");
-			return "views/chat/chatView";
-		}
-		
-		// 메시지 조회 (서비스 구현 후 활성화)
-		// List<ChatMessageVO> messageList = chatService.selectMessage(roomNum);
-		
-		model.addAttribute("room", room);
-		model.addAttribute("memberList", memberList);
-		model.addAttribute("currentUserNum", userNum);
-		// model.addAttribute("messageList", messageList);
-		
-		return "views/chat/chatView";
-	}
+//	// 채팅방 입장 (AJAX)
+//	@PreAuthorize("isAuthenticated()")
+//	@GetMapping("/roomView")
+//	public String getRoomView(@AuthenticationPrincipal PrincipalDetails principal, 
+//							 @RequestParam("room_num") Long roomNum, Model model) {
+//		
+//		long userNum = principal.getMemberVO().getUser_num();
+//		String userName = principal.getMemberVO().getUser_name();
+//		
+//		// 채팅방 정보 조회
+//		Map<String, Object> map = new HashMap<String, Object>();
+//		map.put("room_num", roomNum);
+//		List<ChatRoomVO> roomList = chatService.selectListChatRoom(map);
+//		
+//		if (roomList.isEmpty()) {
+//			model.addAttribute("error", "채팅방을 찾을 수 없습니다.");
+//			return "views/chat/chatView";
+//		}
+//		
+//		ChatRoomVO room = roomList.get(0);
+//		
+//		// 채팅방 멤버 조회
+//		Map<String, Object> memberMap = new HashMap<String, Object>();
+//		memberMap.put("room_num", roomNum);
+//		List<ChatMemberVO> memberList = chatService.selectMember(memberMap);
+//		
+//		// 현재 사용자가 해당 채팅방의 멤버인지 확인
+//		boolean isMember = false;
+//		boolean isFirstJoin = true;
+//		for (ChatMemberVO member : memberList) {
+//			if (member.getUser_num() == userNum) {
+//				isMember = true;
+//				isFirstJoin = false;
+//				break;
+//			}
+//		}
+//		
+//		if (!isMember) {
+//			model.addAttribute("error", "해당 채팅방의 멤버가 아닙니다.");
+//			return "views/chat/chatView";
+//		}
+//		
+//		// 메시지 조회
+//		List<ChatMessageVO> messageList = chatService.selectMessage(roomNum);
+//		
+//		// 처음 입장하는 경우 입장 메시지 추가
+//		if (isFirstJoin) {
+//			ChatMessageVO joinMessage = new ChatMessageVO();
+//			joinMessage.setRoom_num(roomNum);
+//			joinMessage.setSender_num(userNum);
+//			joinMessage.setContent(userName + "님이 채팅방에 입장하셨습니다.");
+//			chatService.insertMessage(joinMessage);
+//			
+//			// 새로 추가된 입장 메시지도 목록에 포함
+//			messageList = chatService.selectMessage(roomNum);
+//		}
+//		
+//		model.addAttribute("room", room);
+//		model.addAttribute("memberList", memberList);
+//		model.addAttribute("currentUserNum", userNum);
+//		model.addAttribute("messageList", messageList);
+//		
+//		return "views/chat/chatView";
+//	}
 
 	// 채팅방 삭제(비활성화) ajax 통신으로 하기 위해 일단 주석처리 해놨음 안되면 다시 풀거임
 //	@PreAuthorize("isAuthenticated()")
