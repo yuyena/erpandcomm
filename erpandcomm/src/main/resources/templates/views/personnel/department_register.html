@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout_basic}">
+<head>
+    <meta charset="UTF-8">
+    <title>Office ERP - 부서 등록</title>
+    <link rel="stylesheet" th:href="@{/assets/css/main.css}">
+</head>
+<body>
+<div layout:fragment="content" class="page-main">
+    <div class="dashboard-wrapper">
+        <!-- 사이드바 -->
+        <th:block th:replace="fragments/nav_sidebar :: sidebar"></th:block>
+
+        <!-- 메인 컨텐츠 -->
+        <main class="main-content">
+            <div class="page-title">
+                <h1 style="color: #1976D2; font-weight: bold; font-size: 1.5rem; margin-bottom: 24px; text-align: left;">부서 등록</h1>
+            </div>
+            
+            <section class="card-section">
+                <div class="card" style="border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); padding: 24px;">
+                    <form th:action="@{/personnel/department/register}" method="post" class="form-container">
+                        <div class="form-group">
+                            <label for="departmentCode" style="display: block; margin-bottom: 8px; font-weight: 600;">부서코드</label>
+                            <input type="text" id="departmentCode" name="department_code" 
+                                   class="form-input" placeholder="부서코드를 입력하세요" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="departmentName" style="display: block; margin-bottom: 8px; font-weight: 600;">부서명</label>
+                            <input type="text" id="departmentName" name="department_name" 
+                                   class="form-input" placeholder="부서명을 입력하세요" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="departmentHead" style="display: block; margin-bottom: 8px; font-weight: 600;">부서장</label>
+                            <select id="departmentHead" name="department_head" class="form-input" required>
+                                <option value="">부서장을 선택하세요</option>
+                                <th:block th:each="member : ${memberList}">
+                                    <option th:value="${member.user_name}" th:text="${member.user_name}"></option>
+                                </th:block>
+                            </select>
+                        </div>
+                        
+
+                        
+                        <div class="form-buttons" style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px;">
+                            <button type="button" class="btn-secondary" onclick="history.back()">취소</button>
+                            <button type="submit" class="btn-primary">등록</button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+        </main>
+    </div>
+</div>
+
+<div layout:fragment="pageScript">
+    <script>
+        // 부서코드 중복 체크
+        document.getElementById('departmentCode').addEventListener('change', function() {
+            const code = this.value;
+            if (code) {
+                fetch(`/personnel/department/checkCode?code=${code}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.exists) {
+                            alert('이미 사용 중인 부서코드입니다.');
+                            this.value = '';
+                        }
+                    });
+            }
+        });
+    </script>
+</div>
+</body>
+</html>

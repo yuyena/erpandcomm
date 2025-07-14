@@ -48,6 +48,5 @@ public class AttendanceVO {
 		}
 		return name;
 	}
-	
-	
+
 }
