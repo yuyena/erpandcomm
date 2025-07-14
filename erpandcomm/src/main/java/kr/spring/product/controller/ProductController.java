@@ -29,6 +29,7 @@ import kr.spring.product.service.ProductService;
 import kr.spring.product.vo.ProductVO;
 import kr.spring.util.FileUtil;
 import kr.spring.util.PagingUtil;
+import kr.spring.util.StringUtil;
 import kr.spring.util.ValidationUtil;
 import lombok.extern.slf4j.Slf4j;
 
@@ -109,32 +110,57 @@ public class ProductController {
 	}
 	
 	//글등록 처리
-//	@PreAuthorize("isAuthenticated()")
-//	@PostMapping("/register")
-//	public String submit(@Valid ProductVO productVO,
-//			             BindingResult result,
-//			             HttpServletRequest request,
-//			             @AuthenticationPrincipal
-//			             PrincipalDetails principal,
-//			             Model model) 
-//			            		 throws IllegalStateException, 
-//			            		               IOException {
+	@PreAuthorize("isAuthenticated()")
+	@PostMapping("/register")
+	public String submit(@Valid ProductVO productVO,
+			             BindingResult result,
+			             HttpServletRequest request,
+			             @AuthenticationPrincipal
+			             PrincipalDetails principal,
+			             Model model) 
+			            		 throws IllegalStateException, 
+			            		               IOException {
+		
+		log.debug("<<상품 등록>> : {}",productVO);
+		
+		//유효성 체크 결과 오류가 있으면 폼 호출
+		if(result.hasErrors()) {
+			//유효성 체크 결과 오류 필드 출력
+			ValidationUtil.printErrorFields(result);
+			return "views/product/productRegister";
+		}		
+		
+		//상품등록
+		productService.insertProduct(productVO);
+		
+		model.addAttribute("message", "상품을 정상적으로 등록했습니다.");
+		model.addAttribute("url", request.getContextPath()+"/product/productView");
+		
+		return "views/common/resultAlert";
+	}
+	
+	//게시판 상세
+//	@GetMapping("/detail")
+//	public String getDetail(long board_num, Model model) {
 //		
-//		log.debug("<<게시판 글등록>> : {}",productVO);
+//		log.debug("<<상품 상세>> board_num : {}",board_num);
 //		
-//		//유효성 체크 결과 오류가 있으면 폼 호출
-//		if(result.hasErrors()) {
-//			//유효성 체크 결과 오류 필드 출력
-//			ValidationUtil.printErrorFields(result);
-//			return "views/product/productRegister";
-//		}		
+//		//해당 글의 조회수 증가
+//		Service.updateHit(board_num);
 //		
-//		//상품등록
-//		productService.insertProduct(productVO);
+//		BoardVO board = boardService.selectBoard(board_num);
 //		
-//		model.addAttribute("message", "상품을 정상적으로 등록했습니다.");
-//		model.addAttribute("url", request.getContextPath()+"/product/productView");
+//		//제목에 태그를 허용하지 않음
+//		board.setTitle(
+//				StringUtil.useNoHtml(board.getTitle()));
 //		
-//		return "views/common/resultAlert";
+//		//내용에 태그를 허용하지 않으면서 줄바꿈 처리
+//		//(summernote 사용시 주석 처리)
+//		//board.setContent(StringUtil.useBrNoHtml(board.getContent()));
+//		
+//		model.addAttribute("board", board);
+//		
+//		return "views/board/boardView";
 //	}
+	
 }
