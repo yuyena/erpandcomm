@@ -9,7 +9,7 @@
   background: #fff;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-  padding: 24px;
+  padding: 12px;
   margin-bottom: 24px;
 }
 
@@ -332,4 +332,8 @@ input[readonly] {
     margin-right: 18px;
     font-size: 15px;
     white-space: nowrap;
+}
+
+.main-content {
+  padding: 40px 12px 0 12px !important;
 }

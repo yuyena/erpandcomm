@@ -22,82 +22,161 @@
               </div>
             </div>
             
+            <div class="list-header">
+              <span class="list-title">거래처 목록</span>
+              <a th:href="@{/client/form}" class="btn-write">거래처 등록</a>
+            </div>
             <div class="sh-box">
-
-                <div class="list-header">
-                    <span class="list-title">거래처 목록</span>
-                    <a th:href="@{/client/form}" class="btn-write">거래처 등록</a>
-                </div>
-                
-                <!-- 고객 목록과 공급업체 목록을 한 행에 배치 -->
-                <div style="display: flex; gap: 20px;">
-                    <!-- 고객 목록 -->
-                    <div class="table-container" style="flex: 1;">
-                        <h3 style="margin-bottom: 15px; color: #333; font-size: 1.1rem;">고객 목록</h3>
-                        <table class="custom-table">
-                                                    <thead>
-                            <tr>
-                                <th><input type="checkbox" /></th>
-                                <th>　　</th>
-                                <th>이름</th>
-                                <th>연락처</th>
-                                <th>이메일</th>
-                                <th>주소</th>
-                                <th>관리</th>
-                            </tr>
+              <!-- 고객 목록, 공급업체 목록 테이블 flex row -->
+                <!-- 고객 목록 -->
+                <div class="table-container" style="flex: 1; min-width:0; width:100%;">
+                    <h3 style="margin-bottom: 15px; color: #333; font-size: 1.1rem;">고객 목록</h3>
+                    <form id="clientListForm" method="post" th:action="@{/client/deleteSelected}">
+                      <table class="custom-table">
+                        <thead>
+                          <tr>
+                            <th style="width:5%"><input type="checkbox" id="allChk" onclick="toggleAll(this)"></th>
+                            <th style="width:26%">이름</th>
+                            <th style="width:18%">담당자</th>
+                            <th style="width:20%">연락처</th>
+                            <th style="width:13%">상세보기</th>
+                            <th style="width:18%">수정/삭제</th>
+                          </tr>
                         </thead>
                         <tbody>
-                            <tr th:each="client : ${list}" th:if="${client.client_type == 1}">
-                                <td><input type="checkbox" th:value="${client.client_num}" /></td>
-                                <td th:text="${client.client_num}"></td>
-                                <td th:text="${client.client_name}"></td>
-                                <td th:text="${client.phone}"></td>
-                                <td th:text="${client.email}"></td>
-                                <td th:text="${client.address1} + ' ' + ${client.address2}"></td>
-                                <td>
-                                    <a th:href="@{/client/form(client_num=${client.client_num})}" class="btn-detail" style="background:#2ecc71;">수정</a>
-                                    <a th:href="@{/client/delete(client_num=${client.client_num})}" class="btn-detail" style="background:#e74c3c;" onclick="return confirm('정말 삭제하시겠습니까?');">삭제</a>
-                                </td>
+                          <th:block th:each="client, stat : ${list}">
+                            <tr th:if="${client.client_type == 1}">
+                              <td><input type="checkbox" name="clientChk" th:value="${client.client_num}"></td>
+                              <td th:text="${client.client_name}"></td>
+                              <td th:text="${client.contact_person}"></td>
+                              <td th:text="${client.phone}"></td>
+                              <td>
+                                <button type="button" class="btn-detail" th:attr="data-idx=${stat.index}" onclick="toggleDetail(this)">상세보기</button>
+                              </td>
+                              <td style="padding:2px 4px;">
+                                <a th:href="@{/client/form(client_num=${client.client_num})}" class="btn-detail" style="background:#2ecc71; margin-right:2px;">수정</a>
+                                <a th:href="@{/client/delete(client_num=${client.client_num})}" class="btn-detail" style="background:#e74c3c; margin-left:2px;" onclick="return confirm('정말 삭제하시겠습니까?');">삭제</a>
+                              </td>
                             </tr>
+                            <tr th:if="${client.client_type == 1}" th:id="'detail-row-' + ${stat.index}" class="detail-row" style="display:none;">
+                              <td colspan="6">
+                                <b>주소:</b> <span th:text="${client.address1} + ' ' + ${client.address2}"></span>
+                                &nbsp;|&nbsp;
+                                <b>연락처:</b> <span th:text="${client.phone}"></span>
+                              </td>
+                            </tr>
+                          </th:block>
                         </tbody>
-                        </table>
-                    </div>
-                    
-                    <!-- 공급업체 목록 -->
-                    <div class="table-container" style="flex: 1;">
-                        <h3 style="margin-bottom: 15px; color: #333; font-size: 1.1rem;">공급업체 목록</h3>
+                      </table>
+                      <div style="margin-top:10px; text-align:right;">
+                        <button type="button" onclick="deleteSelected()" style="background:#e74c3c; color:#fff; border:none; border-radius:5px; padding:6px 16px; font-weight:600; cursor:pointer;">선택 삭제</button>
+                      </div>
+                    </form>
+                    <script>
+                    function toggleAll(all) {
+                      const chks = document.querySelectorAll('input[name=\"clientChk\"]');
+                      chks.forEach(function(chk) { chk.checked = all.checked; });
+                    }
+                    function deleteSelected() {
+                      const form = document.getElementById('clientListForm');
+                      const checked = document.querySelectorAll('input[name=\"clientChk\"]:checked');
+                      if (checked.length === 0) {
+                        alert('삭제할 거래처를 선택하세요.');
+                        return;
+                      }
+                      if (confirm('정말 선택한 거래처를 삭제하시겠습니까?')) {
+                        form.submit();
+                      }
+                    }
+                    </script>
+                </div>
+                
+                <!-- 공급업체 목록 -->
+                <div class="table-container" style="flex: 1; min-width:0; width:100%;">
+                    <h3 style="margin-bottom: 15px; color: #333; font-size: 1.1rem;">공급업체 목록</h3>
+                    <form id="supplierListForm" method="post" th:action="@{/client/deleteSelected}">
                         <table class="custom-table">
                             <thead>
                                 <tr>
-                                    <th><input type="checkbox" /></th>
-                                    <th>　　</th>
-                                    <th>이름</th>
-                                    <th>담당자</th>
-                                    <th>연락처</th>
-                                    <th>이메일</th>
-                                    <th>주소</th>
-                                    <th>관리</th>
+                                    <th style="width:5%"><input type="checkbox" id="allSupplierChk" onclick="toggleAllSupplier(this)"></th>
+                                    <th style="width:28%">이름</th>
+                                    <th style="width:20%">담당자</th>
+                                    <th style="width:22%">연락처</th>
+                                    <th style="width:13%">상세보기</th>
+                                    <th style="width:12%">수정/삭제</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr th:each="client : ${list}" th:if="${client.client_type == 0}">
-                                    <td><input type="checkbox" th:value="${client.client_num}" /></td>
-                                    <td th:text="${client.client_num}"></td>
-                                    <td th:text="${client.client_name}"></td>
-                                    <td th:text="${client.contact_person}"></td>
-                                    <td th:text="${client.phone}"></td>
-                                    <td th:text="${client.email}"></td>
-                                    <td th:text="${client.address1} + ' ' + ${client.address2}"></td>
-                                    <td>
-                                        <a th:href="@{/client/form(client_num=${client.client_num})}" class="btn-detail" style="background:#2ecc71;">수정</a>
-                                        <a th:href="@{/client/delete(client_num=${client.client_num})}" class="btn-detail" style="background:#e74c3c;" onclick="return confirm('정말 삭제하시겠습니까?');">삭제</a>
-                                    </td>
-                                </tr>
+                                <th:block th:each="client, stat : ${list}">
+                                    <tr th:if="${client.client_type == 0}">
+                                        <td><input type="checkbox" name="supplierChk" th:value="${client.client_num}"></td>
+                                        <td th:text="${client.client_name}"></td>
+                                        <td th:text="${client.contact_person}"></td>
+                                        <td th:text="${client.phone}"></td>
+                                        <td>
+                                            <button type="button" class="btn-detail" th:attr="data-idx=${stat.index}" onclick="toggleSupplierDetail(this)">상세보기</button>
+                                        </td>
+                                        <td style="padding:2px 4px;">
+                                            <a th:href="@{/client/form(client_num=${client.client_num})}" class="btn-detail" style="background:#2ecc71; margin-right:2px;">수정</a>
+                                            <a th:href="@{/client/delete(client_num=${client.client_num})}" class="btn-detail" style="background:#e74c3c; margin-left:2px;" onclick="return confirm('정말 삭제하시겠습니까?');">삭제</a>
+                                        </td>
+                                    </tr>
+                                    <tr th:if="${client.client_type == 0}" th:id="'supplier-detail-row-' + ${stat.index}" class="detail-row" style="display:none;">
+                                        <td colspan="6">
+                                            <b>주소:</b> <span th:text="${client.address1} + ' ' + ${client.address2}"></span>
+                                            &nbsp;|&nbsp;
+                                            <b>연락처:</b> <span th:text="${client.phone}"></span>
+                                            &nbsp;|&nbsp;
+                                            <b>이메일:</b> <span th:text="${client.email}"></span>
+                                        </td>
+                                    </tr>
+                                </th:block>
                             </tbody>
                         </table>
-                    </div>
+                        <div style="margin-top:10px; text-align:right;">
+                            <button type="button" onclick="deleteSelectedSupplier()" style="background:#e74c3c; color:#fff; border:none; border-radius:5px; padding:6px 16px; font-weight:600; cursor:pointer;">선택 삭제</button>
+                        </div>
+                    </form>
                 </div>
             </div>
+            <script>
+            function toggleAll(all) {
+              const chks = document.querySelectorAll('input[name=\"clientChk\"]');
+              chks.forEach(function(chk) { chk.checked = all.checked; });
+            }
+            function deleteSelected() {
+              const form = document.getElementById('clientListForm');
+              const checked = document.querySelectorAll('input[name=\"clientChk\"]:checked');
+              if (checked.length === 0) {
+                alert('삭제할 거래처를 선택하세요.');
+                return;
+              }
+              if (confirm('정말 선택한 거래처를 삭제하시겠습니까?')) {
+                form.submit();
+              }
+            }
+            function toggleSupplierDetail(btn) {
+                var idx = btn.getAttribute('data-idx');
+                var detailRow = document.getElementById('supplier-detail-row-' + idx);
+                // 이미 열려있으면 닫기
+                if (detailRow.style.display === '' || detailRow.style.display === 'table-row') {
+                    detailRow.style.display = 'none';
+                    btn.textContent = '상세보기';
+                    return;
+                }
+                // 모든 상세행 닫기
+                document.querySelectorAll('.detail-row').forEach(function(row) {
+                    row.style.display = 'none';
+                });
+                // 모든 버튼 텍스트 초기화
+                document.querySelectorAll('.btn-detail').forEach(function(b) {
+                    if(b.tagName === 'BUTTON') b.textContent = '상세보기';
+                });
+                // 펼치기
+                detailRow.style.display = '';
+                btn.textContent = '닫기';
+            }
+            </script>
             <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
             <script>
             document.addEventListener('DOMContentLoaded', function() {
@@ -154,16 +233,20 @@
     width: 100%;
     border-collapse: collapse;
     background: #fff;
-    font-size: 13px;
+    font-size: 9pt;
 }
 .custom-table th, .custom-table td {
     border-bottom: 1px solid #eee;
-    padding: 2px 4px;
+    padding: 2px 8px;
     text-align: center;
+    font-size: 9pt;
 }
 .custom-table th {
     background: #fafafa;
     font-weight: 600;
+    height: 38px;
+    padding: 8px 8px;
+    font-size: 1.1em;
 }
 .btn-detail {
     background: #528eff;
@@ -174,5 +257,38 @@
     text-decoration: none;
     font-size: 0.67rem;
     font-weight: 500;
+    margin: 0 1px;
+}
+/* 상세정보 행만 별도 스타일 */
+.detail-row td {
+    border-bottom: 1px solid #eee;
+    background: #fff;
+    padding: 8px 6px 8px 12px;
+    font-size: 9pt;
+    text-align: left;
+    color: #222;
+    border-top: none;
+}
+.detail-row {
+    /* 위쪽에 약간의 여백 */
+    height: 1.5em;
+}
+.table-container {
+  flex: 1 1 auto;
+  min-width: 0;
+  width: 100%;
+  max-width: 100%;
+}
+.sh-box {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+}
+.page-main, .dashboard-wrapper, .main-content, .card {
+  padding: 0 !important;
+  margin: 0 !important;
+  width: 100vw !important;
+  max-width: 100vw !important;
+  box-sizing: border-box;
 }
 </style> 
