@@ -15,6 +15,7 @@ public class ChatMessageVO {
 	private long sender_num; // 보낸 사람(유저번호)
 	private String content; // 메시지 내용
 	private String sent_at; // 보낸 시간
+	private String sender_name; // 보낸 사람 이름
 	
 	public void setSent_at(String sent_at) {
 		this.sent_at = DurationFromNow.getTimeDiffLabel(sent_at);

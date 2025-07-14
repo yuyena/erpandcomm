@@ -1,6 +1,7 @@
 package kr.spring.chat.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
@@ -11,6 +12,7 @@ public interface ChatMessageMapper {
 	
 	public List<ChatMessageVO> selectMessage(Long chat_room);
 	public void insertMessage(ChatMessageVO chatMessage);
+	public List<ChatMessageVO> selectNewMessages(Map<String, Object> map);
 	
 	// 퇴사 시 삭제
 	public void deleteMessageByUserNum(Long user_num);

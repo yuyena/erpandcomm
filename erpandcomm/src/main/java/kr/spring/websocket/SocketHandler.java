@@ -8,54 +8,77 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class SocketHandler extends TextWebSocketHandler {
 
-	private Map<String, WebSocketSession> users = new ConcurrentHashMap<String, WebSocketSession>();
+    // roomId별로 세션을 관리
+    private Map<String, Map<String, WebSocketSession>> roomSessions = new ConcurrentHashMap<>();
+    private ObjectMapper objectMapper = new ObjectMapper();
 
-	/*
-	 * 클라이언트가 연결되면, 클라이언트와 관련된 WebSocketSession을 users 맵에 저장한다. 이 users 맵은
-	 * 채팅 메시지를 연결된 전체 클라이언트에 전달할 때 사용
-	 */
-	@Override
-	public void afterConnectionEstablished(
-			WebSocketSession session) throws Exception {
-		log.debug(session.getId() + " 연결 됨");
-		users.put(session.getId(), session);
-	}
+    @Override
+    public void afterConnectionEstablished(WebSocketSession session) throws Exception {
+        String roomId = extractRoomId(session);
+        String sessionId = session.getId();
+        
+        log.debug("새로운 웹소켓 연결 - sessionId: {}, roomId: {}", sessionId, roomId);
+        
+        // 해당 방의 세션 맵이 없으면 생성
+        roomSessions.computeIfAbsent(roomId, k -> new ConcurrentHashMap<>());
+        
+        // 세션을 방에 추가
+        roomSessions.get(roomId).put(sessionId, session);
+        
+        log.debug("방 {} 의 현재 접속자 수: {}", roomId, roomSessions.get(roomId).size());
+    }
 
-	/*
-	 * 클라이언트와의 연결이 종료되면, 클라이언트에 해당하는 WebSocketSession을 users 맵에서 제거한다.
-	 */
-	@Override
-	public void afterConnectionClosed(
-			WebSocketSession session, CloseStatus status) throws Exception {
-		log.debug(session.getId() + " 연결 종료됨");
-		users.remove(session.getId());
-	}
+    @Override
+    public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
+        String roomId = extractRoomId(session);
+        String sessionId = session.getId();
+        
+        log.debug("웹소켓 연결 종료 - sessionId: {}, roomId: {}", sessionId, roomId);
+        
+        // 방에서 세션 제거
+        if (roomSessions.containsKey(roomId)) {
+            roomSessions.get(roomId).remove(sessionId);
+            
+            // 방에 아무도 없으면 방 제거
+            if (roomSessions.get(roomId).isEmpty()) {
+                roomSessions.remove(roomId);
+            }
+        }
+    }
 
-	/*
-	 * 클라이언트가 전송한 메시지를 users 맵에 보관한 전체 WebSocketSession에 다시 전달한다. 클라이언트는
-	 * 메시지를 수신하면 채팅 영역에 보여주도록 구현, 특정 클라이언트가 채팅 메시지를 서버에 보내면 전체 클라이언트는
-	 * 다시 그 메시지를 받아서 화면에 보여주게 된다.
-	 */
-	@Override
-	protected void handleTextMessage(
-			WebSocketSession session, TextMessage message) throws Exception {
-		log.debug(session.getId() + "로부터 메시지 수신: " + message.getPayload());
-		
-		log.debug("[접속 user 수 : " + users.values().size()+"]");
-		for (WebSocketSession s : users.values()) {
-			s.sendMessage(message);
-			log.debug(s.getId() + "에 메시지 발송: " + message.getPayload());
-		}
-	}
+    @Override
+    protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
+        String roomId = extractRoomId(session);
+        
+        log.debug("메시지 수신 - roomId: {}, message: {}", roomId, message.getPayload());
+        
+        // 해당 방의 모든 세션에 메시지 전송
+        Map<String, WebSocketSession> sessions = roomSessions.get(roomId);
+        if (sessions != null) {
+            sessions.values().forEach(s -> {
+                try {
+                    s.sendMessage(message);
+                } catch (Exception e) {
+                    log.error("메시지 전송 실패", e);
+                }
+            });
+        }
+    }
 
-	@Override
-	public void handleTransportError(
-			WebSocketSession session, Throwable exception) throws Exception {
-		log.debug(session.getId() + " 익셉션 발생: " + exception.toString());
-	}
+    private String extractRoomId(WebSocketSession session) {
+        String path = session.getUri().getPath();
+        return path.substring(path.lastIndexOf('/') + 1);
+    }
+
+    @Override
+    public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
+        log.error("웹소켓 전송 오류 - sessionId: " + session.getId(), exception);
+    }
 }

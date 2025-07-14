@@ -2,6 +2,7 @@ package kr.spring.chat.service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -96,14 +97,20 @@ public class ChatServiceImpl implements ChatService {
 
 	@Override
 	public List<ChatMessageVO> selectMessage(Long chat_room) {
-		// TODO Auto-generated method stub
-		return null;
+		return chatMessageMapper.selectMessage(chat_room);
 	}
 
 	@Override
 	public void insertMessage(ChatMessageVO chatMessage) {
-		// TODO Auto-generated method stub
-		
+		chatMessageMapper.insertMessage(chatMessage);
+	}
+	
+	@Override
+	public List<ChatMessageVO> selectNewMessages(Long room_num, Long lastMessageId) {
+		Map<String, Object> map = new HashMap<>();
+		map.put("room_num", room_num);
+		map.put("lastMessageId", lastMessageId);
+		return chatMessageMapper.selectNewMessages(map);
 	}
 
 	@Override
