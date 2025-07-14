@@ -15,8 +15,8 @@ public interface AttendanceMapper {
 	// 개별 작성
 	// 날짜, 직원번호, 이름, 상태, 출근시간, 퇴근시간
 	public void insertAttendance(AttendanceVO attendence); // 수동 등록
-	//중복체크
-	public Integer countDuplicate(AttendanceVO attendanceVO);
+	//사원번호 매핑
+	public Integer selectUserNumByEmployeeCode(String employeeCode);
 	public void autoInsertAttendance(String empId); // 출근 버튼용
 	//@Update("UPDATE attendance SET CHECK_OUT_TIME = now(), UPDATE_AT = NOW() WHERE EMP_ID = #{empId} AND WORK_DATE = now() AND CHECK_OUT_TIME IS NULL")
 	public void autoUpdateCheckout(String empId);; // 퇴근 버튼용

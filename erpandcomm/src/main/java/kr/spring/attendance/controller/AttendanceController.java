@@ -1,6 +1,9 @@
 package kr.spring.attendance.controller;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -11,6 +14,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -22,7 +26,9 @@ import lombok.extern.slf4j.Slf4j;
 
 @Controller
 @Slf4j
+@RequestMapping("/personnel")
 public class AttendanceController {
+
 	@Autowired
 	private AttendanceService attendanceService;
 	
@@ -31,9 +37,24 @@ public class AttendanceController {
 	public AttendanceVO initCommand() {
 		return new AttendanceVO();
 	}
+	// 근태 목록 조회
+	@GetMapping("/attendanceList")
+	public String getAttendanceListByEmpId(@AuthenticationPrincipal PrincipalDetails principal,
+			                               Model model) {
+		Long empId = principal.getMemberVO().getUser_num(); // 로그인 한 사용자의 empId
+		Map<String, Object> map = new HashMap<>();
+		map.put("empId", empId); // 이 empId로 해당 직원의 근태 목록만 조회
+		
+		List<AttendanceVO> list = attendanceService.selectList(map);
+		model.addAttribute("list", list);
+		return "views/personnel/attendanceList"; //리스트 보여줄 뷰
+	}
+	
+	
+	
 	// 근태 등록 폼
 	@PreAuthorize("isAuthenticated()")
-	@GetMapping("/attendanceForm")
+	@GetMapping("/Form")
 	public String form(@AuthenticationPrincipal PrincipalDetails principal,
 			            Model model) {
 		// 로그인 사용자 정보를 모델에 추가
@@ -44,7 +65,7 @@ public class AttendanceController {
 	
 	// 근태 등록처리
 	@PreAuthorize("isAuthenticated()")
-	@PostMapping("/attendanceForm")
+	@PostMapping("/Form")
 	public String submit(@Valid AttendanceVO attendanceVO,
 			             BindingResult result,
 			             HttpServletRequest request,
@@ -52,14 +73,25 @@ public class AttendanceController {
 						 Model model) throws IllegalStateException, IOException{
 		log.debug("<<근태등록>> : {}", attendanceVO);
 		
+		// 유효성 검사 실패 시 다시
+		if(result.hasErrors()) {
+			return "views/personnel/attendanceForm";
+		}
+		
+		// 1. employee_code는 로그인한 사용자 정보에서 가져오기
+		String employeeCode = principal.getMemberVO().getEmployee_code();
+		// 2. employee_code -> user_num 조회
+		Long userNum = attendanceService.selectUserNumByEmployeeCode(employeeCode);
+		//Long userNum = principal.getMemberVO().getUser_num(); // 바로가져오면 됨
+		// 3. 조회한 user_num을 attendanceVO.empID에 세팅
+		attendanceVO.setEmpId(userNum);
+		
 		// 근태 등록
 		attendanceService.insertAttendance(attendanceVO);
 		
 		model.addAttribute("message","근태를 정상적으로 등록했습니다.");
-		model.addAttribute("url", request.getContextPath()+"/personnel/attendance");
+		model.addAttribute("url", request.getContextPath()+"/personnel/attendanceList");
 		
 		return "views/common/resultAlert";
 	}
-	
-	
 }

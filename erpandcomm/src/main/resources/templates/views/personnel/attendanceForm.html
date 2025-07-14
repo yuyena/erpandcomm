@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorate="~{layouts/layout_basic}">
+
 <head>
 <meta charset="UTF-8">
 <title>근태등록 폼</title>
@@ -18,7 +19,7 @@
 				<h2>근태 등록</h2>
 			</div>
 			<section class="card-section">
-				<form th:action="@{/attendance/insert}" method="post">
+				<form th:action="@{/personnel/Form}" method="post">
 					<div class="form-group">
 						<label for="workDate">날짜</label>
 						<input type="date" id="workDate" name="workDate" required
@@ -48,7 +49,18 @@
 						</select>
 					</div>
 
-					<div class="form-group">
+						<div class="form-group">
+							<label for="workType">근무 유형</label> <select id="workType"
+								name="workType" required>
+								<option value="">근무 유형 선택</option>
+								<option value="normal">정상 근무</option>
+								<option value="overtime">초과 근무</option>
+								<option value="night">야간 근무</option>
+								<option value="holiday">휴일 근무</option>
+							</select>
+						</div>
+
+						<div class="form-group">
 						<label for="inTime">출근시간</label>
 						<input type="time" id="inTime" name="inTime" />
 					</div>
@@ -66,7 +78,7 @@
 
 					<div class="button-group">
 						<button type="submit" class="btn btn-primary">저장</button>
-						<button type="button" onclick="location.href='/Attendance'" class="btn btn-secondary">취소</button>
+						<button type="button" onclick="location.href='/personnel/attendanceList'" class="btn btn-secondary">취소</button>
 					</div>
 				</form>
 			</section>
@@ -76,6 +88,5 @@
 
 <!-- 페이지 전용 스크립트 -->
 <div layout:fragment="pageScript"></div>
-
 </body>
 </html>

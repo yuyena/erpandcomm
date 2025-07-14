@@ -52,10 +52,18 @@ public class AttendanceServiceImpl implements AttendanceService {
 		
 	}
 
-	@Override
-	public boolean isDuplicate(AttendanceVO attendanceVO) {
-		return attendanceMapper.countDuplicate(attendanceVO) > 0;
+	/*
+	public Long selectUserNumByEmployeeCode(String employeeCode) {
+		return attendanceMapper.selectUserNumByEmployeeCode(employeeCode);
 	}
+	 */
+	@Override
+	public Long selectUserNumByEmployeeCode(String employeeCode) {
+	    Integer userNum = attendanceMapper.selectUserNumByEmployeeCode(employeeCode);
+	    return userNum != null ? userNum.longValue() : null;
+	}
+
+
 
 	
 	

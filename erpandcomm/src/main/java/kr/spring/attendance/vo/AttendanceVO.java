@@ -22,7 +22,10 @@ public class AttendanceVO {
 	 */
 	private Long attendanceId; //출퇴근 id
 	private Date workDate; // 일자
-	private Long empId; // 사원번호
+	private Date scheduledInTime; // 출근 예정
+	private Date scheduledOutTime; // 퇴근 예정
+	private Long empId; // empUser
+	private String employeeCode; //사원번호
 	@NotBlank
 	private String empName; // 사원 이름
 	@NotBlank
@@ -48,5 +51,6 @@ public class AttendanceVO {
 		}
 		return name;
 	}
-
+	
+	
 }

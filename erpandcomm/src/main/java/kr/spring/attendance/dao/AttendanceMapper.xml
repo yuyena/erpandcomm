@@ -4,27 +4,57 @@
 	<!-- 근태 등록 -->
 <insert id="insertAttendance" parameterType="kr.spring.attendance.vo.AttendanceVO">
 	INSERT INTO attendance(
-		work_date,
+		attendance_id, 
 		emp_id,
-		user_name,
+		work_date,
+		scheduled_in_time,
+		scheduled_out_time,
 		status,
+		work_type,
 		check_in_time,
 		check_out_time,
 		notes,
 		created_at,
-		update_at)
+		updated_at)
 	VALUES (
-		#{workDate},
+		ATTENDANCE_SEQ.NEXTVAL,
 		#{empId},
-		(SELECT user_name FROM EUSER_DETAIL WHERE emp_id=#{empId}),
+		#{workDate},
+		TO_DATE('09:00', 'HH24:MI'),
+        TO_DATE('18:00', 'HH24:MI'),
 		#{status},
-		#{checkIntime},
-		#{checkOuttime},
+		#{workType},
+		#{checkIntime,jdbcType=DATE},
+		#{checkOuttime,jdbcType=DATE},
 		#{notes},
-		now(),
-		now())
+		SYSDATE,
+		SYSDATE)
 	</insert>
+	<!-- user_num 을 employeecode와 매핑-->
+	<select id = "selectUserNumByEmployeeCode" parameterType="string" resultType="int">
+		SELECT 
+			user_num
+		FROM euser
+		WHERE employee_code = #{employeeCode}
+	</select>
+   
+	<!-- 근태 목록 검색 -->
+	<select id = "selectList" parameterType="map" resultType="kr.spring.attendance.vo.AttendanceVO">
+	<!-- 날짜 직원번호 이름 상태 출근시간 퇴근시간 관리 -->
+	SELECT
+		a.work_date,
+		a.emp_id,
+		u.user_name,
+		a.status,
+		a.check_in_time,
+		a.check_out_time,
+		a.notes,
+		a.created_at,
+		a.updated_at
+	FROM attendance a
+	JOIN EUSER_DETAIL u ON a.emp_id = u.emp_id
+	WHERE a.emp_id = #{empId} <!-- 사원번호 -->
+	</select>
 	
-	<!-- 근태 검색 조건 -->
 	
 </mapper>
