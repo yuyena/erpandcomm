@@ -91,6 +91,17 @@
     background: #125ea2;
 }
 
+.enter-btn.active {
+    background: #388bfa;
+    box-shadow: 0 2px 8px rgba(56,139,250,0.3);
+}
+
+.enter-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
 .delete-btn {
     display: inline-block;
     padding: 6px 18px;

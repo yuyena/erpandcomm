@@ -106,4 +106,116 @@
 
 .chat-send-btn:hover {
     background: #125ea2;
+}
+
+/* 멤버 목록 스타일 */
+.chat-member-list {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 250px;
+    height: 100%;
+    background: #fff;
+    border-left: 1.5px solid #eaf1ff;
+    z-index: 10;
+    box-shadow: -2px 0 8px rgba(0,0,0,0.1);
+}
+
+.member-list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    border-bottom: 1.5px solid #eaf1ff;
+    background: #f7faff;
+}
+
+.member-list-header h4 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #2176e8;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #888;
+    cursor: pointer;
+    padding: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.close-btn:hover {
+    color: #e53935;
+}
+
+.member-list-content {
+    padding: 16px 20px;
+    overflow-y: auto;
+    max-height: calc(100% - 60px);
+}
+
+.member-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.member-item:last-child {
+    border-bottom: none;
+}
+
+.member-name {
+    font-weight: 600;
+    color: #222;
+}
+
+.member-role {
+    font-size: 0.9rem;
+    color: #2176e8;
+    background: #eaf1ff;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-weight: 600;
+}
+
+/* 메시지가 없을 때 스타일 */
+.no-message {
+    text-align: center;
+    padding: 60px 20px;
+    color: #888;
+}
+
+.no-message p {
+    margin: 8px 0;
+    font-size: 1.1rem;
+}
+
+.no-message p:first-child {
+    font-weight: 600;
+    color: #666;
+}
+
+/* 헤더 버튼 스타일 */
+.chat-header-btn {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 6px;
+    transition: background 0.2s;
+    margin-left: 8px;
+}
+
+.chat-header-btn:hover {
+    background: #eaf1ff;
 } 

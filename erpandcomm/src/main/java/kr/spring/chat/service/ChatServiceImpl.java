@@ -64,8 +64,7 @@ public class ChatServiceImpl implements ChatService {
 
 	@Override
 	public List<ChatMemberVO> selectMember(Map<String, Object> map) {
-		// TODO Auto-generated method stub
-		return null;
+		return chatMemberMapper.selectMember(map);
 	}
 	
 	@Override

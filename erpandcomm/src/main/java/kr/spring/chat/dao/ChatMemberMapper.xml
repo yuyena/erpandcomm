@@ -20,10 +20,21 @@
 	
 	<!-- 채팅 멤버 조회 -->
 	<select id="selectMember" parameterType="map" resultType="ChatMemberVO">
-		SELECT *
-		FROM chat_member
-		WHERE room_num = #{room_num}
-		AND is_active = 'Y'
+		SELECT 
+			cm.member_num,
+			cm.room_num,
+			cm.user_num,
+			cm.role,
+			cm.joined_at,
+			cm.is_active,
+			ud.user_name
+		FROM chat_member cm
+		LEFT JOIN euser_detail ud ON cm.user_num = ud.user_num
+		WHERE cm.room_num = #{room_num}
+		AND cm.is_active = 'Y'
+		ORDER BY 
+			CASE WHEN cm.role = '방장' THEN 1 ELSE 2 END,
+			cm.joined_at ASC
 	</select>
 	
 </mapper>

@@ -1,71 +1,156 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layouts/layout_basic}">
-<head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
-<link rel="stylesheet" th:href="@{/assets/css/product.css}">
-<script type="text/javascript" th:src="@{/assets/js/jquery-3.7.1.min.js}"></script>
-<script type="text/javascript" th:src="@{/assets/js/product.js}"></script>
-</head>
-<body>
-<div class="page-main">
-	<div class="content-main">
-		<!-- chatView.html: 오른쪽 채팅방 상세 -->
-		<div class="chat-view-wrapper">
-		    <!-- 상단 헤더 -->
-		    <div class="chat-header">
-		        <div class="chat-header-title">[[${room.room_name}]]</div>
-		        <div class="chat-header-actions">
-		            <!-- 검색, 파일, 설정 등 아이콘 자리 (추후 구현) -->
-		            <button class="chat-header-btn" title="파일첨부"><span>📎</span></button>
-		            <button class="chat-header-btn" title="설정"><span>⚙️</span></button>
-		        </div>
-		    </div>
-		    <!-- 메시지 목록 -->
-		    <div class="chat-messages" id="chatMessages">
-		        <!-- 예시 메시지 (실제론 AJAX로 불러옴) -->
-		        <div class="chat-message-row">
-		            <div class="chat-bubble">안녕하세요, 가능하실까요?</div>
-		            <div class="chat-message-meta">2024-05-01 14:22</div>
-		        </div>
-		        <div class="chat-message-row me">
-		            <div class="chat-bubble">네! 지금 바로 확인해드릴게요.</div>
-		            <div class="chat-message-meta">2024-05-01 14:23</div>
-		        </div>
-		        <!-- ... -->
-		    </div>
-		    <!-- 입력창 -->
-		    <form class="chat-input-area" id="chatSendForm" autocomplete="off">
-		        <input type="hidden" name="room_num" value="[[${room.room_num}]]">
-		        <input type="text" class="chat-input" name="message" id="chatMessageInput" placeholder="메시지를 입력하세요..." autocomplete="off" required>
-		        <button type="submit" class="chat-send-btn">보내기</button>
-		    </form>
-		</div>
-	</div>
+<!-- chatView.html: 채팅방 상세 뷰 -->
+<div class="chat-view-wrapper">
+    <!-- 상단 헤더 -->
+    <div class="chat-header">
+        <div class="chat-header-title">
+            <span th:if="${room != null}" th:text="${room.room_name}">채팅방</span>
+            <span th:if="${error != null}" th:text="${error}" style="color: #e53935;"></span>
+        </div>
+        <div class="chat-header-actions" th:if="${room != null}">
+            <button class="chat-header-btn" title="멤버 목록" onclick="toggleMemberList()"><span>👥</span></button>
+            <button class="chat-header-btn" title="파일첨부"><span>📎</span></button>
+            <button class="chat-header-btn" title="설정"><span>⚙️</span></button>
+        </div>
+    </div>
+    
+    <!-- 멤버 목록 (숨김) -->
+    <div class="chat-member-list" id="memberList" style="display: none;">
+        <div class="member-list-header">
+            <h4>멤버 목록</h4>
+            <button onclick="toggleMemberList()" class="close-btn">×</button>
+        </div>
+        <div class="member-list-content">
+            <div th:each="member : ${memberList}" class="member-item">
+                <span class="member-name" th:text="${member.user_name}">사용자</span>
+                <span class="member-role" th:text="${member.role}">멤버</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 메시지 목록 -->
+    <div class="chat-messages" id="chatMessages" th:if="${room != null}">
+        <!-- 메시지가 없을 때 -->
+        <div class="no-message" th:if="${messageList == null || #lists.isEmpty(messageList)}">
+            <p>아직 메시지가 없습니다.</p>
+            <p>첫 번째 메시지를 보내보세요!</p>
+        </div>
+        
+        <!-- 메시지 목록 (나중에 구현) -->
+        <div th:each="message : ${messageList}" class="chat-message-row" 
+             th:classappend="${message.sender_num == currentUserNum ? 'me' : ''}">
+            <div class="chat-bubble" th:text="${message.content}">메시지</div>
+            <div class="chat-message-meta" th:text="${message.sent_at}">시간</div>
+        </div>
+    </div>
+    
+    <!-- 입력창 -->
+    <form class="chat-input-area" id="chatSendForm" autocomplete="off" th:if="${room != null}">
+        <input type="hidden" name="room_num" th:value="${room.room_num}">
+        <input type="text" class="chat-input" name="message" id="chatMessageInput" 
+               placeholder="메시지를 입력하세요..." autocomplete="off" required>
+        <button type="submit" class="chat-send-btn">보내기</button>
+    </form>
 </div>
-<script>
-// 메시지 전송 AJAX 예시
-$('#chatSendForm').on('submit', function(e) {
-    e.preventDefault();
-    var msg = $('#chatMessageInput').val();
-    var roomNum = $(this).find('input[name="room_num"]').val();
-    if (!msg.trim()) return;
-    // 실제로는 /chat/sendMessage 등으로 AJAX POST
-    $.ajax({
-        url: '/chat/sendMessage', // 임시 URL
-        type: 'POST',
-        data: { room_num: roomNum, message: msg },
-        success: function(res) {
-            // 성공 시 메시지 목록 갱신(여기선 임시로 바로 추가)
-            $('#chatMessages').append('<div class="chat-message-row me"><div class="chat-bubble">'+msg+'</div><div class="chat-message-meta">방금</div></div>');
+
+<script th:inline="javascript">
+// WebSocket 연결
+var socket = null;
+var roomNum = /*[[${room != null ? room.room_num : 'null'}]]*/ 'null';
+var currentUserNum = /*[[${currentUserNum}]]*/ 0;
+
+// WebSocket 연결 함수
+function connectWebSocket() {
+    if (roomNum && roomNum !== 'null') {
+        socket = new WebSocket('ws://' + window.location.host + '/message-ws');
+        
+        socket.onopen = function(event) {
+            console.log('WebSocket 연결됨');
+            // 방 입장 메시지 전송
+            var joinMessage = {
+                type: 'join',
+                roomNum: roomNum,
+                userNum: currentUserNum
+            };
+            socket.send(JSON.stringify(joinMessage));
+        };
+        
+        socket.onmessage = function(event) {
+            console.log('메시지 수신:', event.data);
+            var data = JSON.parse(event.data);
+            
+            if (data.type === 'message') {
+                // 새 메시지 추가
+                addMessageToChat(data);
+            }
+        };
+        
+        socket.onclose = function(event) {
+            console.log('WebSocket 연결 종료');
+        };
+        
+        socket.onerror = function(error) {
+            console.error('WebSocket 오류:', error);
+        };
+    }
+}
+
+// 메시지를 채팅창에 추가
+function addMessageToChat(data) {
+    var isMyMessage = data.senderNum == currentUserNum;
+    var messageHtml = '<div class="chat-message-row' + (isMyMessage ? ' me' : '') + '">' +
+                     '<div class="chat-bubble">' + data.content + '</div>' +
+                     '<div class="chat-message-meta">방금</div>' +
+                     '</div>';
+    
+    $('#chatMessages').append(messageHtml);
+    $('#chatMessages').scrollTop($('#chatMessages')[0].scrollHeight);
+}
+
+// 멤버 목록 토글
+function toggleMemberList() {
+    var memberList = document.getElementById('memberList');
+    if (memberList.style.display === 'none') {
+        memberList.style.display = 'block';
+    } else {
+        memberList.style.display = 'none';
+    }
+}
+
+// 페이지 로드 시 WebSocket 연결
+$(document).ready(function() {
+    if (roomNum && roomNum !== 'null') {
+        connectWebSocket();
+    }
+    
+    // 메시지 전송
+    $('#chatSendForm').on('submit', function(e) {
+        e.preventDefault();
+        var message = $('#chatMessageInput').val().trim();
+        if (!message) return;
+        
+        if (socket && socket.readyState === WebSocket.OPEN) {
+            // WebSocket으로 메시지 전송
+            var messageData = {
+                type: 'message',
+                roomNum: roomNum,
+                senderNum: currentUserNum,
+                content: message
+            };
+            socket.send(JSON.stringify(messageData));
+            
+            // 입력창 초기화
             $('#chatMessageInput').val('');
-            $('#chatMessages').scrollTop($('#chatMessages')[0].scrollHeight);
+        } else {
+            alert('연결이 끊어졌습니다. 페이지를 새로고침해주세요.');
+        }
+    });
+    
+    // Enter 키로 메시지 전송
+    $('#chatMessageInput').on('keypress', function(e) {
+        if (e.which === 13 && !e.shiftKey) {
+            e.preventDefault();
+            $('#chatSendForm').submit();
         }
     });
 });
 </script>
-</body>
-</html>

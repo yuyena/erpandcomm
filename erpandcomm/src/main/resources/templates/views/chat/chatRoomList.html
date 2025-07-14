@@ -71,18 +71,39 @@
 // 입장 버튼 클릭 시 AJAX로 채팅방 뷰 로드
 $(document).on('click', '.enter-btn', function() {
     var roomId = $(this).data('room-id');
-    // 임시: 실제로는 /chat/room/{roomId} 등으로 AJAX 요청
+    var $btn = $(this);
+    
+    // 버튼 비활성화
+    $btn.prop('disabled', true).text('입장중...');
+    
     $.ajax({
-        url: '/chat/roomView', // 임시 URL (백엔드 완성 전)
+        url: '/chat/roomView',
         type: 'GET',
         data: { room_num: roomId },
         success: function(html) {
             $('#chatRoomViewContainer').html(html);
+            // 모든 입장 버튼에서 active 클래스 제거
+            $('.enter-btn').removeClass('active');
+            // 클릭된 버튼에 active 클래스 추가
+            $btn.addClass('active');
         },
-        error: function() {
+        error: function(xhr, status, error) {
+            console.error('채팅방 로드 오류:', error);
             $('#chatRoomViewContainer').html('<div class="chat-room-error">채팅방을 불러오지 못했습니다.</div>');
+        },
+        complete: function() {
+            // 버튼 다시 활성화
+            $btn.prop('disabled', false).text('입장');
         }
     });
+});
+
+// 페이지 로드 시 첫 번째 채팅방 자동 입장 (선택사항)
+$(document).ready(function() {
+    var firstRoomBtn = $('.enter-btn').first();
+    if (firstRoomBtn.length > 0) {
+        firstRoomBtn.click();
+    }
 });
 </script>
 </div>
