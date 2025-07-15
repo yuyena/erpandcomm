@@ -103,83 +103,19 @@
         
         <div class="profile-info">
           <span class="profile-name" th:text="${loginMember != null ? loginMember.user_name : ''}">이름</span>
-          <th:block th:with="positionText=${positionMap[loginMember.position_num] != null} ? '(' + positionMap[loginMember.position_num] + ')' : ''">
-            <div class="profile-dept-position">
+          <div class="profile-row">
+            <span>
               <span class="profile-subinfo" th:text="${loginMember.department_name}">부서</span>
               <span class="profile-subinfo" th:if="${positionMap[loginMember.position_num] != null}" th:text="|(${positionMap[loginMember.position_num]})|">(직책)</span>
-            </div>
-          </th:block>
+            </span>
+            <form method="post" action="/logout" class="profile-logout-form">
+              <button type="submit" class="profile-btn" title="로그아웃">
+                <img src="/assets/images/logout1.png" alt="로그아웃" style="width:20px;height:20px;" />
+              </button>
+            </form>
+          </div>
         </div>
-        
-      </div>
-      <div class="logout-btn-wrap">
-        <form method="post" action="/logout" style="margin:0; padding:0; border:none; background:none;">
-          <button type="submit" class="profile-btn">
-            <img src="/assets/images/logout1.png" alt="로그아웃" style="width:20px;height:20px;" />
-          </button>
-        </form>
       </div>
     </div>
   </aside>
 </div>
-
-<style>
-.profile-box {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px;
-}
-
-.profile-img {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-.profile-info {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.profile-name {
-  font-weight: bold;
-  font-size: 14px;
-  color: #333;
-}
-
-.profile-dept-position {
-  display: flex;
-  gap: 4px;
-  align-items: center;
-}
-
-.profile-subinfo {
-  font-size: 12px;
-  color: #666;
-  display: inline;
-}
-
-.profile-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 4px;
-  border-radius: 4px;
-  transition: background-color 0.2s;
-}
-
-.profile-btn:hover {
-  background-color: rgba(0,0,0,0.1);
-}
-
-.logout-btn-wrap {
-  position: absolute;
-  right: 18px;
-  bottom: 18px;
-  z-index: 10;
-}
-</style>
