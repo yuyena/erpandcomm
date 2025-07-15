@@ -51,35 +51,35 @@
                 <canvas id="clientPieChart" style="display: inline-block; width: 400px; height: 400px; box-sizing: border-box;" width="400" height="400"></canvas>
               </div>
             </div>
-            
-            <div class="list-header">
-              <span class="list-title">거래처 목록</span>
-              <a th:href="@{/client/form}" class="btn-write">거래처 등록</a>
-            </div>
+
+                <div class="list-header">
+                    <span class="list-title">거래처 목록</span>
+                    <a th:href="@{/client/form}" class="btn-write">거래처 등록</a>
+                </div>
             <div class="sh-box">
               <!-- 고객 목록, 공급업체 목록 테이블 flex row -->
-                <!-- 고객 목록 -->
+                    <!-- 고객 목록 -->
                 <div class="table-container" style="width: 600px; margin-right: 20px;">
                     <h3 style="margin-bottom: 15px; color: #3b6fd6; font-size: 1.1rem;">고객 목록</h3>
                     <form id="clientListForm" method="post" th:action="@{/client/deleteSelected}">
                       <table class="custom-table" style="width:85%">
-                        <thead>
-                          <tr>
+                                                    <thead>
+                            <tr>
                             <th style="width:5%"><input type="checkbox" id="allChk" onclick="toggleAll(this)"></th>
                             <th style="width:9%">이름</th>
                             <th style="width:9%">담당자</th>
                             <th style="width:10%">연락처</th>
                             <th style="width:13%">상세보기</th>
                             <th style="width:18%">수정/삭제</th>
-                          </tr>
+                            </tr>
                         </thead>
                         <tbody>
                           <th:block th:each="client, stat : ${list}">
                             <tr th:if="${client.client_type == 1}">
                               <td><input type="checkbox" name="clientChk" th:value="${client.client_num}"></td>
-                              <td th:text="${client.client_name}"></td>
+                                <td th:text="${client.client_name}"></td>
                               <td th:text="${client.contact_person}"></td>
-                              <td th:text="${client.phone}"></td>
+                                <td th:text="${client.phone}"></td>
                               <td>
                                 <button type="button" class="btn-detail" th:attr="data-idx=${stat.index}" onclick="toggleDetail(this)">상세보기</button>
                               </td>
@@ -93,11 +93,11 @@
                                 <b>주소:</b> <span th:text="${client.address1} + ' ' + ${client.address2}"></span>
                                 &nbsp;|&nbsp;
                                 <b>연락처:</b> <span th:text="${client.phone}"></span>
-                              </td>
+                                </td>
                             </tr>
                           </th:block>
                         </tbody>
-                      </table>
+                        </table>
                       <div style="margin-top:10px; text-align:right;">
                         <button type="button" onclick="deleteSelected()" style="background:#e74c3c; color:#fff; border:none; border-radius:5px; padding:6px 16px; font-weight:600; cursor:pointer;">선택 삭제</button>
                       </div>
@@ -119,9 +119,9 @@
                       }
                     }
                     </script>
-                </div>
-                
-                <!-- 공급업체 목록 -->
+                    </div>
+                    
+                    <!-- 공급업체 목록 -->
                 <div class="table-container" style="width: 600px;">
                     <h3 style="margin-bottom: 15px; color: #3b6fd6; font-size: 1.1rem;">공급업체 목록</h3>
                     <form id="supplierListForm" method="post" th:action="@{/client/deleteSelected}">
@@ -140,9 +140,9 @@
                                 <th:block th:each="client, stat : ${list}">
                                     <tr th:if="${client.client_type == 0}">
                                         <td><input type="checkbox" name="supplierChk" th:value="${client.client_num}"></td>
-                                        <td th:text="${client.client_name}"></td>
-                                        <td th:text="${client.contact_person}"></td>
-                                        <td th:text="${client.phone}"></td>
+                                    <td th:text="${client.client_name}"></td>
+                                    <td th:text="${client.contact_person}"></td>
+                                    <td th:text="${client.phone}"></td>
                                         <td>
                                             <button type="button" class="btn-detail" th:attr="data-idx=${stat.index}" onclick="toggleSupplierDetail(this)">상세보기</button>
                                         </td>
@@ -158,14 +158,14 @@
                                             <b>연락처:</b> <span th:text="${client.phone}"></span>
                                             &nbsp;|&nbsp;
                                             <b>이메일:</b> <span th:text="${client.email}"></span>
-                                        </td>
-                                    </tr>
+                                    </td>
+                                </tr>
                                 </th:block>
                             </tbody>
                         </table>
                         <div style="margin-top:10px; text-align:right;">
                             <button type="button" onclick="deleteSelectedSupplier()" style="background:#e74c3c; color:#fff; border:none; border-radius:5px; padding:6px 16px; font-weight:600; cursor:pointer;">선택 삭제</button>
-                        </div>
+                    </div>
                     </form>
                 </div>
             </div>

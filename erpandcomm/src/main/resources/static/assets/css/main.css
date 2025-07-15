@@ -274,31 +274,31 @@ body {
 
 /* === 프로필 박스 스타일 === */
 .profile-box {
-  display: flex;
-  align-items: center;
+    display: flex;
+    align-items: center;
   flex-direction: row;
   gap: 0;
   padding: 12px 0 12px 18px;
-  margin-top: 10px;
+    margin-top: 10px;
   background-color: #729FF8;
-  border-radius: 0 0 18px 0;
-  margin-left: 0;
-  margin-right: 0;
+    border-radius: 0 0 18px 0;
+    margin-left: 0;
+    margin-right: 0;
   width: auto !important;
 }
 
 .profile-img {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
   object-fit: cover;
-  margin-right: 10px;
-  background: #fff;
+    margin-right: 10px;
+    background: #fff;
 }
 
 .profile-info {
-  display: flex;
-  flex-direction: column;
+    display: flex;
+    flex-direction: column;
   align-items: flex-start;
   gap: 2px;
 }
@@ -312,9 +312,9 @@ body {
 }
 
 .profile-name {
-  font-weight: bold;
+    font-weight: bold;
   font-size: 14px;
-  color: #fff;
+    color: #fff;
 }
 
 .profile-dept-position {
@@ -340,13 +340,13 @@ body {
   margin: 0;
   border-radius: 4px;
   transition: background-color 0.2s;
-  color: #fff;
-  width: 28px;
-  height: 28px;
-  font-size: 1.2rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    color: #fff;
+    width: 28px;
+    height: 28px;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   box-shadow: none;
   outline: none;
 }
