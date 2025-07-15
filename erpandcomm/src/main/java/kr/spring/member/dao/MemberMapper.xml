@@ -40,15 +40,21 @@
 	</select>
 	
 	<!-- 로그인 처리 -->
-	<select id="selectCheckMember" parameterType="string" resultType="memberVO">
+	<select id="selectCheckMember" parameterType="string" resultMap="memberResultMap">
 		SELECT
 		  u.user_num,
 		  u.employee_code,
 		  u.authority,
 		  d.passwd,
 		  d.email,
-		  d.user_name
-		FROM euser u JOIN euser_detail d ON u.user_num = d.user_num
+		  d.user_name,
+		  d.department_num,
+		  dept.department_name AS department_name,
+		  d.position_num,
+		  d.grade_num
+		FROM euser u 
+		JOIN euser_detail d ON u.user_num = d.user_num
+		LEFT JOIN department dept ON d.department_num = dept.department_num
 		WHERE u.employee_code=#{employee_code}
 	</select>
 	
@@ -131,6 +137,18 @@
     	ON u.user_num = d.user_num
 	</select>
 	
+    <resultMap id="memberResultMap" type="kr.spring.member.vo.MemberVO">
+        <result property="user_num" column="user_num"/>
+        <result property="employee_code" column="employee_code"/>
+        <result property="authority" column="authority"/>
+        <result property="passwd" column="passwd"/>
+        <result property="email" column="email"/>
+        <result property="user_name" column="user_name"/>
+        <result property="department_num" column="department_num"/>
+        <result property="department_name" column="department_name"/>
+        <result property="position_num" column="position_num"/>
+        <result property="grade_num" column="grade_num"/>
+    </resultMap>
 
 </mapper>
 
