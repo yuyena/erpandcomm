@@ -7,11 +7,14 @@
 <head>
     <meta charset="UTF-8">
     <title>채팅방 목록</title>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <link rel="stylesheet" th:href="@{/assets/css/main.css}">
     <link rel="stylesheet" th:href="@{/assets/css/jm/chatRoomList.css}">
     <link rel="stylesheet" th:href="@{/assets/css/jm/chatView.css}">
     <script type="text/javascript" th:src="@{/assets/js/jquery-3.7.1.min.js}"></script>
     <script type="text/javascript" th:src="@{/assets/js/chat.delete.js}"></script>
+    <script type="text/javascript" th:src="@{/assets/js/chat.js}"></script>
 </head>
 <body>
 <div layout:fragment="content" class="page-main">
@@ -28,32 +31,42 @@
                 <table class="chat-room-table">
                     <thead>
                         <tr>
-                            <th>방 번호</th>
+                            <th>번호</th>
                             <th>방 이름</th>
                             <th>타입</th>
                             <th>설명</th>
-                            <th>최대 인원</th>
+                            <th>인원</th>
                             <th>생성일</th>
-                            <th>입장</th>
+                            <th>관리</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr th:each="room : ${chatRoomList}">
                             <td th:text="${room.room_num}"></td>
                             <td th:text="${room.room_name}"></td>
-                            <td th:text="${room.room_type}"></td>
-                            <td class="description-cell" th:text="${room.description != null ? (room.description.length() > 20 ? room.description.substring(0, 20) + '...' : room.description) : ''}" th:title="${room.description}"></td>
-                            <td th:text="${room.max_members}"></td>
+                            <td>
+                                <span th:class="'room-type-badge ' + (${room.room_type == '1:1'} ? 'one-to-one' : 'group')"
+                                      th:text="${room.room_type}"></span>
+                            </td>
+                            <td class="description-cell" 
+                                th:text="${room.description != null ? (room.description.length() > 20 ? room.description.substring(0, 20) + '...' : room.description) : ''}" 
+                                th:title="${room.description}"></td>
+                            <td>
+                                <span th:if="${room.room_type == '1:1'}">2</span>
+                                <span th:if="${room.room_type == 'group'}" th:text="${room.max_members}"></span>
+                            </td>
                             <td th:text="${#dates.format(room.created_at, 'yyyy-MM-dd')}"></td>
 							<td>
+                                <div class="action-buttons">
 								<button class="enter-btn" th:data-room-id="${room.room_num}">입장</button>
 								<th:block th:if="${room.role == '방장'}">
 									<button class="delete-btn" th:data-room-id="${room.room_num}">삭제</button>
 								</th:block>
+                                </div>
 							</td>
 							</tr>
                         <tr th:if="${#lists.isEmpty(chatRoomList)}">
-                            <td colspan="8" class="no-chat-room">참여중인 채팅이 없습니다.</td>
+                            <td colspan="7" class="no-chat-room">참여중인 채팅이 없습니다.</td>
                         </tr>
                     </tbody>
                 </table>
@@ -71,124 +84,24 @@
 </div>
 <div layout:fragment="pageScript">
 <script th:inline="javascript">
-// Thymeleaf 변수 선언
+// CSRF 토큰 설정
+const token = $("meta[name='_csrf']").attr("content");
+const header = $("meta[name='_csrf_header']").attr("content");
+
+// contextPath 설정
 const contextPath = /*[[@{/}]]*/ '';
 
 // 입장 버튼 클릭 시 AJAX로 채팅방 입장
 $(document).on('click', '.enter-btn', function() {
-    var roomId = $(this).attr('data-room-id');  // data() 대신 attr() 사용
-    var $btn = $(this);
-    
-    // 버튼 비활성화
-    $btn.prop('disabled', true).text('입장중...');
-    
-    // 먼저 채팅방 입장 처리
-    $.ajax({
-        url: contextPath + 'chat/enter/' + roomId,
-        type: 'GET',
-        success: function(response) {
-            if (response.result === 'success') {
-                // 채팅방 뷰 컨테이너에 채팅 UI 구성
-                var chatHtml = `
-                    <div class="chat-view-wrapper">
-                        <div class="chat-header">
-                            <div class="chat-header-title">
-                                <span>${response.room.room_name}</span>
-                            </div>
-                            <div class="chat-header-actions">
-                                <button class="chat-header-btn" title="멤버 목록" onclick="toggleMemberList()"><span>👥</span></button>
-                                <button class="chat-header-btn" title="파일첨부"><span>📎</span></button>
-                                <button class="chat-header-btn" title="설정"><span>⚙️</span></button>
-                            </div>
-                        </div>
-                        
-                        <div class="chat-member-list" id="memberList" style="display: none;">
-                            <div class="member-list-header">
-                                <h4>멤버 목록</h4>
-                                <button onclick="toggleMemberList()" class="close-btn">×</button>
-                            </div>
-                            <div class="member-list-content">
-                                ${response.memberList.map(member => `
-                                    <div class="member-item">
-                                        <span class="member-name">${member.user_name}</span>
-                                        <span class="member-role">${member.role}</span>
-                                    </div>
-                                `).join('')}
-                            </div>
-                        </div>
-                        
-                        <div class="chat-messages" id="chatMessages">
-                            ${response.messageList && response.messageList.length > 0 ? 
-                                response.messageList.map(message => `
-                                    <div class="chat-message-row ${message.sender_num == response.currentUserNum ? 'me' : ''}">
-                                        <div class="chat-bubble">${message.content}</div>
-                                        <div class="chat-message-meta">${message.sent_at}</div>
-                                    </div>
-                                `).join('') : 
-                                `<div class="no-message">
-                                    <p>아직 메시지가 없습니다.</p>
-                                    <p>첫 번째 메시지를 보내보세요!</p>
-                                </div>`
-                            }
-                        </div>
-                        
-                        <form class="chat-input-area" id="chatSendForm" autocomplete="off">
-                            <input type="hidden" name="room_num" value="${response.room.room_num}">
-                            <input type="text" class="chat-input" name="message" id="chatMessageInput" 
-                                   placeholder="메시지를 입력하세요..." autocomplete="off" required>
-                            <button type="submit" class="chat-send-btn">보내기</button>
-                        </form>
-                    </div>
-                `;
-                
-                $('#chatRoomViewContainer').html(chatHtml);
-                
-                // 모든 입장 버튼에서 active 클래스 제거
-                $('.enter-btn').removeClass('active');
-                // 클릭된 버튼에 active 클래스 추가
-                $btn.addClass('active');
-                
-                // WebSocket 연결 초기화
-                if (typeof connectWebSocket === 'function') {
-                    connectWebSocket();
-                }
-                
-                // 스크롤을 최하단으로 이동
-                var chatMessages = document.getElementById('chatMessages');
-                if (chatMessages) {
-                    chatMessages.scrollTop = chatMessages.scrollHeight;
-                }
-            } else {
-                alert(response.message || '채팅방 입장에 실패했습니다.');
-            }
-        },
-        error: function(xhr) {
-            var errorMsg = '채팅방을 불러오지 못했습니다.';
-            if (xhr.responseJSON && xhr.responseJSON.message) {
-                errorMsg = xhr.responseJSON.message;
-            }
-            alert(errorMsg);
-            $('#chatRoomViewContainer').html(`
-                <div class="chat-room-error">
-                    <p>${errorMsg}</p>
-                    <p>다시 시도해주세요.</p>
-                </div>
-            `);
-        },
-        complete: function() {
-            // 버튼 다시 활성화
-            $btn.prop('disabled', false).text('입장');
-        }
-    });
+    var roomId = $(this).attr('data-room-id');
+    enterChatRoom(roomId, $(this));
 });
 
 // 멤버 목록 토글 함수
 function toggleMemberList() {
     var memberList = document.getElementById('memberList');
-    if (memberList.style.display === 'none') {
-        memberList.style.display = 'block';
-    } else {
-        memberList.style.display = 'none';
+    if (memberList) {
+        memberList.style.display = memberList.style.display === 'none' ? 'block' : 'none';
     }
 }
 </script>

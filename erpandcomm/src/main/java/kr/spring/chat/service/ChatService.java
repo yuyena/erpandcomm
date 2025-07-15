@@ -36,5 +36,9 @@ public interface ChatService {
 	public List<ChatMessageReadVO> selectMessageRead(Long message_num);
 	public void insertMessageRead(ChatMessageReadVO messageRead);
 	public int countUnreadMessage(Long message_num);
+	
+	// 메시지 읽음 처리
+	public void markAllMessagesAsRead(Long room_num, Long user_num);
+	public void markMessageAsRead(Long message_num, Long user_num);
 
 }

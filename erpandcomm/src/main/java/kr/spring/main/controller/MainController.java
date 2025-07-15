@@ -7,7 +7,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import kr.spring.member.vo.PrincipalDetails;
-import kr.spring.member.vo.UserRole;
 import lombok.extern.slf4j.Slf4j;
 
 @Controller
@@ -17,6 +16,9 @@ public class MainController {
 	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/")
 	public String dashboard(@AuthenticationPrincipal PrincipalDetails principal) {
+		String user_name = principal.getMemberVO().getUser_name();
+		
+		System.out.println(user_name);
 		return "views/main/main";
 	}
 	

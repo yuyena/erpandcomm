@@ -104,6 +104,10 @@ public class ChatRestController {
                 // 새로 추가된 입장 메시지도 포함하여 다시 조회
                 messageList = chatService.selectMessage(room_num);
             }
+            
+            // 채팅방 입장 시 모든 메시지를 읽음 처리
+            chatService.markAllMessagesAsRead(room_num, userNum);
+            log.debug("<<모든 메시지 읽음 처리 완료>> room_num: {}, user_num: {}", room_num, userNum);
 
             mapAjax.put("result", "success");
             mapAjax.put("room", room);
@@ -138,11 +142,26 @@ public class ChatRestController {
     		// 메시지 저장
     		chatService.insertMessage(message);
     		
-    		// 저장된 메시지 정보에 보낸 사람 이름 추가
-    		message.setSender_name(userName);
+    		// 저장된 메시지를 다시 조회하여 정확한 시간 정보 가져오기
+    		List<ChatMessageVO> messages = chatService.selectMessage(message.getRoom_num());
+    		ChatMessageVO savedMessage = null;
+    		
+    		// 가장 최근 메시지 찾기 (방금 저장한 메시지)
+    		if (!messages.isEmpty()) {
+    			savedMessage = messages.get(messages.size() - 1);
+    		}
+    		
+    		// 저장된 메시지가 없으면 원본 메시지 사용하되 현재 시간으로 설정
+    		if (savedMessage == null) {
+    			savedMessage = message;
+    			savedMessage.setSender_name(userName);
+    			// DurationFromNow.getTimeDiffLabel()이 기대하는 형식으로 설정
+    			java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    			savedMessage.setSent_at(sdf.format(new java.util.Date()));
+    		}
     		
     		mapAjax.put("result", "success");
-    		mapAjax.put("message", message);
+    		mapAjax.put("message", savedMessage);
     		
     		return new ResponseEntity<Map<String,Object>>(mapAjax, HttpStatus.OK);
     		
@@ -175,6 +194,37 @@ public class ChatRestController {
             log.error("메시지 조회 중 오류 발생", e);
             mapAjax.put("result", "error");
             mapAjax.put("message", "메시지 조회에 실패했습니다.");
+            return new ResponseEntity<Map<String,Object>>(mapAjax, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    
+    // 메시지 읽음 처리
+    @PostMapping("/messages/{message_num}/read")
+    public ResponseEntity<Map<String, Object>> markMessageAsRead(
+            @PathVariable("message_num") long message_num,
+            @AuthenticationPrincipal PrincipalDetails principal) {
+        
+        Map<String, Object> mapAjax = new HashMap<>();
+        
+        try {
+            long userNum = principal.getMemberVO().getUser_num();
+            
+            // 메시지 읽음 처리
+            chatService.markMessageAsRead(message_num, userNum);
+            
+            // 읽음 처리 후 업데이트된 안 읽은 수 조회
+            int updatedUnreadCount = chatService.countUnreadMessage(message_num);
+            
+            mapAjax.put("result", "success");
+            mapAjax.put("message_num", message_num);
+            mapAjax.put("unread_count", updatedUnreadCount);
+            
+            return new ResponseEntity<Map<String,Object>>(mapAjax, HttpStatus.OK);
+            
+        } catch (Exception e) {
+            log.error("메시지 읽음 처리 중 오류 발생", e);
+            mapAjax.put("result", "error");
+            mapAjax.put("message", "메시지 읽음 처리에 실패했습니다.");
             return new ResponseEntity<Map<String,Object>>(mapAjax, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

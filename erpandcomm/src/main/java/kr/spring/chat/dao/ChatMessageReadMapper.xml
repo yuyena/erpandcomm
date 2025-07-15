@@ -3,7 +3,70 @@
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
 <mapper namespace="kr.spring.chat.dao.ChatMessageReadMapper">
-	
+    
+    <!-- 메시지 읽음 상태 조회 -->
+    <select id="selectMessageRead" parameterType="Long" resultType="ChatMessageReadVO">
+        SELECT 
+            mr.message_num,
+            mr.user_num,
+            TO_CHAR(mr.read_at, 'YYYY-MM-DD HH24:MI:SS') as read_at
+        FROM chat_message_read mr
+        WHERE mr.message_num = #{message_num}
+        ORDER BY mr.read_at ASC
+    </select>
+    
+    <!-- 메시지 읽음 상태 등록 -->
+    <insert id="insertMessageRead" parameterType="ChatMessageReadVO">
+        INSERT INTO chat_message_read (
+            message_num,
+            user_num,
+            read_at
+        ) VALUES (
+            #{message_num},
+            #{user_num},
+            SYSDATE
+        )
+    </insert>
+    
+    <!-- 특정 메시지의 안 읽은 사람 수 조회 -->
+    <select id="countUnreadMessage" parameterType="map" resultType="int">
+        SELECT COUNT(*) 
+        FROM chat_member cm
+        WHERE cm.room_num = #{room_num}
+        AND cm.user_num != #{sender_num}
+        AND cm.is_active = 'Y'
+        AND cm.user_num NOT IN (
+            SELECT mr.user_num 
+            FROM chat_message_read mr 
+            WHERE mr.message_num = #{message_num}
+        )
+    </select>
+    
+    <!-- 사용자별 메시지 읽음 처리 (채팅방 입장 시) -->
+    <insert id="insertMessageReadBatch" parameterType="map">
+        INSERT INTO chat_message_read (message_num, user_num, read_at)
+        SELECT m.message_num, #{user_num}, SYSDATE
+        FROM chat_message m
+        WHERE m.room_num = #{room_num}
+        AND m.message_num NOT IN (
+            SELECT mr.message_num 
+            FROM chat_message_read mr 
+            WHERE mr.user_num = #{user_num}
+        )
+    </insert>
+    
+    <!-- 퇴사 시 삭제 -->
+    <delete id="deleteMessageReadByUserNum" parameterType="Long">
+        DELETE FROM chat_message_read WHERE user_num = #{user_num}
+    </delete>
+    
+    <delete id="deleteMessageReadByRoomNum" parameterType="Long">
+        DELETE FROM chat_message_read 
+        WHERE message_num IN (
+            SELECT message_num FROM chat_message WHERE room_num = #{room_num}
+        )
+    </delete>
+    
 </mapper>
 
 

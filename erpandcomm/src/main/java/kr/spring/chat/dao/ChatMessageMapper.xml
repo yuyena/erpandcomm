@@ -27,8 +27,19 @@
             m.room_num,
             m.sender_num,
             m.content,
-            TO_CHAR(m.sent_at, 'YYYY-MM-DD HH24:MI:SS') as sent_at,
-            u.user_name as sender_name
+            m.sent_at,
+            TO_CHAR(m.sent_at, 'YYYY-MM-DD') as sent_date,
+            u.user_name as sender_name,
+            (SELECT COUNT(*) 
+             FROM chat_member cm
+             WHERE cm.room_num = m.room_num
+             AND cm.user_num != m.sender_num
+             AND cm.is_active = 'Y'
+             AND cm.user_num NOT IN (
+                 SELECT mr.user_num 
+                 FROM chat_message_read mr 
+                 WHERE mr.message_num = m.message_num
+             )) as unread_count
         FROM chat_message m
         LEFT JOIN euser_detail u ON m.sender_num = u.user_num
         WHERE m.room_num = #{chat_room}
@@ -42,8 +53,19 @@
             m.room_num,
             m.sender_num,
             m.content,
-            TO_CHAR(m.sent_at, 'YYYY-MM-DD HH24:MI:SS') as sent_at,
-            u.user_name as sender_name
+            m.sent_at,
+            TO_CHAR(m.sent_at, 'YYYY-MM-DD') as sent_date,
+            u.user_name as sender_name,
+            (SELECT COUNT(*) 
+             FROM chat_member cm
+             WHERE cm.room_num = m.room_num
+             AND cm.user_num != m.sender_num
+             AND cm.is_active = 'Y'
+             AND cm.user_num NOT IN (
+                 SELECT mr.user_num 
+                 FROM chat_message_read mr 
+                 WHERE mr.message_num = m.message_num
+             )) as unread_count
         FROM chat_message m
         LEFT JOIN euser_detail u ON m.sender_num = u.user_num
         WHERE m.room_num = #{room_num}

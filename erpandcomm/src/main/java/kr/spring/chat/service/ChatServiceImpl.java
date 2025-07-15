@@ -115,20 +115,34 @@ public class ChatServiceImpl implements ChatService {
 
 	@Override
 	public List<ChatMessageReadVO> selectMessageRead(Long message_num) {
-		// TODO Auto-generated method stub
-		return null;
+		return chatMessageReadMapper.selectMessageRead(message_num);
 	}
 
 	@Override
 	public void insertMessageRead(ChatMessageReadVO messageRead) {
-		// TODO Auto-generated method stub
-		
+		chatMessageReadMapper.insertMessageRead(messageRead);
 	}
 
 	@Override
 	public int countUnreadMessage(Long message_num) {
-		// TODO Auto-generated method stub
+		// 이 메서드는 더 이상 사용하지 않음 (쿼리에서 직접 계산)
 		return 0;
+	}
+	
+	// 채팅방 입장 시 모든 메시지를 읽음 처리
+	public void markAllMessagesAsRead(Long room_num, Long user_num) {
+		Map<String, Object> map = new HashMap<>();
+		map.put("room_num", room_num);
+		map.put("user_num", user_num);
+		chatMessageReadMapper.insertMessageReadBatch(map);
+	}
+	
+	// 특정 메시지를 읽음 처리
+	public void markMessageAsRead(Long message_num, Long user_num) {
+		ChatMessageReadVO messageRead = new ChatMessageReadVO();
+		messageRead.setMessage_num(message_num);
+		messageRead.setUser_num(user_num);
+		chatMessageReadMapper.insertMessageRead(messageRead);
 	}
 
 
