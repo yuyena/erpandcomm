@@ -85,7 +85,7 @@ public class SecurityConfig {
 						//로그아웃을 처리할 URL를 지정
 						.logoutUrl("/member/logout")
 						//로그아웃 성공시 리다이렉트할 목적지를 지정
-						.logoutSuccessUrl("/")
+						.logoutSuccessUrl("/member/login")
 						//로그아웃시 세션을 무효화
 						.invalidateHttpSession(true)
 						//로그아웃시 쿠키를 삭제

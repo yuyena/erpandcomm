@@ -64,9 +64,9 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
 		
 		if (accessDeniedException instanceof InvalidCsrfTokenException | accessDeniedException instanceof MissingCsrfTokenException) {
 			
-			// 동작 상에서는 토큰이 없어졌는데 로그아웃 눌렀을때 메인페이지로 이동되게
+			// 동작 상에서는 토큰이 없어졌는데 로그아웃 눌렀을때 로그인페이지로 이동되게
 			if (request.getRequestURI().equals("/member/logout")) {
-				response.sendRedirect("/main/main");
+				response.sendRedirect("/memeber/login");
 				return;
 			} // if
 			

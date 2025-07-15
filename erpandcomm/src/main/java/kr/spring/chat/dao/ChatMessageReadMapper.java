@@ -1,7 +1,6 @@
 package kr.spring.chat.dao;
 
 import java.util.List;
-import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
@@ -12,10 +11,10 @@ public interface ChatMessageReadMapper {
 	
 	public List<ChatMessageReadVO> selectMessageRead(Long message_num);
 	public void insertMessageRead(ChatMessageReadVO messageRead);
-	public int countUnreadMessage(Map<String, Object> map);
-	public void insertMessageReadBatch(Map<String, Object> map);
+	public int countUnreadMessage(Long message_num);
 	
 	// 퇴사 시 삭제
 	public void deleteMessageReadByUserNum(Long user_num);
 	public void deleteMessageReadByRoomNum(Long room_num);
+
 }
