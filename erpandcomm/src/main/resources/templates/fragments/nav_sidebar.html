@@ -1,13 +1,11 @@
 <div th:fragment="sidebar">
-  <aside class="sidebar">
-    <!-- 로고 -->
+  <aside class="sidebar" style="position:relative;">
     <div class="sidebar-logo">
       <a th:href="@{/}" class="sidebar-logo-link">
         <img src="/assets/images/mainlogo.png" alt="Office ERP 로고" />
       </a>
     </div>
 
-    <!-- 사이드바 메뉴 -->
     <div class="sidebar-menu-wrap">
       <nav class="sidebar-menu">
         <ul>
@@ -80,7 +78,6 @@
       </nav>
     </div>
 
-    <!-- 출퇴근 영역 -->
     <div class="sidebar-bottom">
       <div class="worktime-box">
         <div class="date-time" id="currentDateTime"></div>
@@ -100,18 +97,89 @@
       </div>
 
       <div class="profile-box">
-    <img class="profile-img"
-         th:src="${loginMember != null && loginMember.photo_name != null ? '/uploads/' + loginMember.photo_name : '/assets/image_bundle/face.png'}"
-         alt="프로필" />
-    <th:block th:with="positionText=${positionMap[loginMember.position_num] != null ? '(' + positionMap[loginMember.position_num] + ')' : ''}">
+        <img class="profile-img"
+             th:src="${loginMember != null && loginMember.photo_name != null ? '/uploads/' + loginMember.photo_name : '/assets/image_bundle/face.png'}"
+             alt="프로필" />
+        
         <div class="profile-info">
-            <span class="profile-name" th:text="${loginMember != null ? loginMember.user_name : ''}">이름</span>
-            <span class="profile-subinfo" th:if="${loginMember != null}" th:text="${loginMember.department_name}">부서</span>
-            <span class="profile-subinfoo" th:if="${positionText != ''}" th:text="${positionText}">(직책)</span>
+          <span class="profile-name" th:text="${loginMember != null ? loginMember.user_name : ''}">이름</span>
+          <th:block th:with="positionText=${positionMap[loginMember.position_num] != null} ? '(' + positionMap[loginMember.position_num] + ')' : ''">
+            <div class="profile-dept-position">
+              <span class="profile-subinfo" th:text="${loginMember.department_name}">부서</span>
+              <span class="profile-subinfo" th:if="${positionMap[loginMember.position_num] != null}" th:text="|(${positionMap[loginMember.position_num]})|">(직책)</span>
+            </div>
+          </th:block>
         </div>
-    </th:block>
-    <button class="profile-btn">+</button>
-</div>
+        
+      </div>
+      <div class="logout-btn-wrap">
+        <form method="post" action="/logout" style="margin:0; padding:0; border:none; background:none;">
+          <button type="submit" class="profile-btn">
+            <img src="/assets/images/logout1.png" alt="로그아웃" style="width:20px;height:20px;" />
+          </button>
+        </form>
+      </div>
     </div>
   </aside>
 </div>
+
+<style>
+.profile-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+}
+
+.profile-img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.profile-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.profile-name {
+  font-weight: bold;
+  font-size: 14px;
+  color: #333;
+}
+
+.profile-dept-position {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.profile-subinfo {
+  font-size: 12px;
+  color: #666;
+  display: inline;
+}
+
+.profile-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.profile-btn:hover {
+  background-color: rgba(0,0,0,0.1);
+}
+
+.logout-btn-wrap {
+  position: absolute;
+  right: 18px;
+  bottom: 18px;
+  z-index: 10;
+}
+</style>

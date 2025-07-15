@@ -300,6 +300,17 @@ table.striped-table tr:nth-child(odd){
 	transition:0.2s ease-out;
 	height:30px;
 }
+.logout-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+.logout-btn:hover {
+  background-color: rgba(0,0,0,0.08);
+}
 
 
 

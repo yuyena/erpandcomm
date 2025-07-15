@@ -50,6 +50,7 @@ body {
     justify-content: flex-start;
     background-color: #5C93FF;
     overflow: visible !important;
+    position: relative;
 }
 
 .sidebar-logo {
@@ -193,6 +194,7 @@ body {
 .sidebar-bottom {
     padding: 0 0 24px 0;
     border-top: none;
+    position: relative;
 }
 
 .worktime-box {
@@ -322,7 +324,7 @@ body {
 }
 
 .profile-btn {
-    background: #3b6fd6;
+    background: transparent !important;
     color: #fff;
     border: none;
     border-radius: 50%;
@@ -334,6 +336,9 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    box-shadow: none;
+    outline: none;
+    transition: none;
 }
 
 .main-content {
