@@ -108,7 +108,7 @@
               <span class="profile-subinfo" th:text="${loginMember.department_name}">부서</span>
               <span class="profile-subinfo" th:if="${positionMap[loginMember.position_num] != null}" th:text="|(${positionMap[loginMember.position_num]})|">(직책)</span>
             </span>
-            <form method="post" action="@{/member/logout}" class="profile-logout-form">
+            <form method="post" th:action="@{/member/logout}" class="profile-logout-form">
               <button type="submit" class="profile-btn" title="로그아웃">
                 <img src="/assets/images/logout1.png" alt="로그아웃" style="width:20px;height:20px;" />
               </button>
