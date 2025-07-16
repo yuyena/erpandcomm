@@ -15,7 +15,7 @@ public interface ChatMessageMapper {
 	public List<ChatMessageVO> selectNewMessages(Map<String, Object> map);
 	
 	// 퇴사 시 삭제
-	public void deleteMessageByUserNum(Long user_num);
-	public void deleteMessageByRoomNum(Long room_num);
+	public void deleteMessageByUserNum(long user_num);
+	public void deleteMessageByRoomNum(long room_num);
 
 }

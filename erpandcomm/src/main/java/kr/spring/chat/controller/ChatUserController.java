@@ -189,6 +189,7 @@ public class ChatUserController {
 		
 	    // 로그인한 사용자의 user_num 가져오기
 	    long user_num = principal.getMemberVO().getUser_num();
+	    String user_name = principal.getMemberVO().getUser_name();
 	    Map<String, Object> map = new HashMap<String, Object>();
 	    map.put("member_num", user_num);
 
@@ -199,6 +200,8 @@ public class ChatUserController {
 	    model.addAttribute("userList", userList);
 	    model.addAttribute("accessBtn", "목록으로");
 	    model.addAttribute("chatRoomList", chatRoomList);
+	    model.addAttribute("currentUserNum", user_num);
+	    model.addAttribute("currentUserName", user_name);
 	    
 //	    log.debug("<<회원 목록>> : " + userList);
 	    log.debug("<<현재 로그인한 사용자 번호>> : " + user_num);
@@ -276,7 +279,7 @@ public class ChatUserController {
 	@PostMapping("/notActiveRoom")
 	@ResponseBody
 	public ResponseEntity<Map<String, Object>> notActiveRoom(
-			@RequestParam Long room_num,
+			@RequestParam(value = "room_num") long room_num,
 			@AuthenticationPrincipal PrincipalDetails principal) {
 		
 		Map<String, Object> mapAjax = new HashMap<>();

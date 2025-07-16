@@ -16,9 +16,9 @@ public interface ChatService {
 	public void insertRoom(ChatRoomVO chatRoom);
 	public long selectLastRoomNum();
 	public void updateRoom(ChatRoomVO chatRoom);
-	public void deleteRoom(Long room_num);
+	public void deleteRoom(long room_num);
 	// 채팅방 비활성화
-	public void notActive(Long room_num);
+	public void notActive(long room_num);
 	
 	// ChatMember
 	public List<ChatMemberVO> selectMember(Map<String, Object> map);
@@ -28,16 +28,16 @@ public interface ChatService {
 	public void deleteMember(ChatMemberVO chatMember);
 	
 	// ChatMessage
-	public List<ChatMessageVO> selectMessage(Long room_num, Long current_user_num);
+	public List<ChatMessageVO> selectMessage(long room_num, long current_user_num);
 	public void insertMessage(ChatMessageVO chatMessage);
-	public List<ChatMessageVO> selectNewMessages(Long room_num, Long lastMessageId);
+	public List<ChatMessageVO> selectNewMessages(long room_num, long lastMessageId);
 	
 	// ChatMessageRead
-	public List<ChatMessageReadVO> selectMessageRead(Long message_num);
-	public void markMessageAsRead(Long message_num, Long user_num);
+	public List<ChatMessageReadVO> selectMessageRead(long message_num);
+	public void markMessageAsRead(long message_num, long user_num);
 	public int countUnreadMessage(Map<String, Object> map);
 	
 	// 메시지 읽음 처리
-	public void markAllMessagesAsRead(Long room_num, Long user_num);
+	public void markAllMessagesAsRead(long room_num, long user_num);
 
 }

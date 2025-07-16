@@ -58,7 +58,7 @@ public class ChatServiceImpl implements ChatService {
 	}
 
 	@Override
-	public void deleteRoom(Long room_num) {
+	public void deleteRoom(long room_num) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -69,7 +69,7 @@ public class ChatServiceImpl implements ChatService {
 	}
 	
 	@Override
-	public void notActive(Long room_num) {
+	public void notActive(long room_num) {
 		chatRoomMapper.notActive(room_num);
 	}
 
@@ -96,7 +96,7 @@ public class ChatServiceImpl implements ChatService {
 	}
 
 	@Override
-	public List<ChatMessageVO> selectMessage(Long room_num, Long current_user_num) {
+	public List<ChatMessageVO> selectMessage(long room_num, long current_user_num) {
 		Map<String, Object> map = new HashMap<>();
 		map.put("room_num", room_num);
 		map.put("current_user_num", current_user_num);
@@ -109,7 +109,7 @@ public class ChatServiceImpl implements ChatService {
 	}
 	
 	@Override
-	public List<ChatMessageVO> selectNewMessages(Long room_num, Long lastMessageId) {
+	public List<ChatMessageVO> selectNewMessages(long room_num, long lastMessageId) {
 		Map<String, Object> map = new HashMap<>();
 		map.put("room_num", room_num);
 		map.put("lastMessageId", lastMessageId);
@@ -118,7 +118,7 @@ public class ChatServiceImpl implements ChatService {
 	}
 
 	@Override
-	public List<ChatMessageReadVO> selectMessageRead(Long message_num) {
+	public List<ChatMessageReadVO> selectMessageRead(long message_num) {
 		return chatMessageReadMapper.selectMessageRead(message_num);
 	}
 
@@ -128,7 +128,7 @@ public class ChatServiceImpl implements ChatService {
 	}
 
 	@Override
-	public void markMessageAsRead(Long message_num, Long user_num) {
+	public void markMessageAsRead(long message_num, long user_num) {
 		// 이미 읽음 처리된 메시지인지 확인
 		List<ChatMessageReadVO> readList = chatMessageReadMapper.selectMessageRead(message_num);
 		boolean alreadyRead = false;
@@ -150,11 +150,7 @@ public class ChatServiceImpl implements ChatService {
 	}
 
 	// 채팅방 입장 시 모든 메시지를 읽음 처리
-	public void markAllMessagesAsRead(Long room_num, Long user_num) {
-		if (room_num == null || user_num == null) {
-			return; // null 체크
-		}
-		
+	public void markAllMessagesAsRead(long room_num, long user_num) {
 		Map<String, Object> map = new HashMap<>();
 		map.put("room_num", room_num);
 		map.put("user_num", user_num);

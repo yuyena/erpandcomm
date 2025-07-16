@@ -32,20 +32,16 @@
             u.user_name as sender_name,
             <choose>
                 <when test="current_user_num != null">
-                    (CASE 
-                        WHEN m.sender_num = #{current_user_num} THEN
-                            (SELECT COUNT(*) 
-                             FROM chat_member cm
-                             WHERE cm.room_num = m.room_num
-                             AND cm.user_num != m.sender_num
-                             AND cm.is_active = 'Y'
-                             AND cm.user_num NOT IN (
-                                 SELECT mr.user_num 
-                                 FROM chat_message_read mr 
-                                 WHERE mr.message_num = m.message_num
-                             ))
-                        ELSE 0
-                    END) as unread_count
+                    (SELECT COUNT(*) 
+                     FROM chat_member cm
+                     WHERE cm.room_num = m.room_num
+                     AND cm.user_num != m.sender_num
+                     AND cm.is_active = 'Y'
+                     AND cm.user_num NOT IN (
+                         SELECT mr.user_num 
+                         FROM chat_message_read mr 
+                         WHERE mr.message_num = m.message_num
+                     )) as unread_count
                 </when>
                 <otherwise>
                     0 as unread_count

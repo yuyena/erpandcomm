@@ -164,7 +164,7 @@ $(function(){
             sent_at: '' // DB에서 가져온 정확한 시간으로 나중에 업데이트
     };
     
-        // 1. HTTP API로 DB에 저장 후 WebSocket 전송
+        // 1. HTTP API로 DB에 저장 (서버에서 자동으로 WebSocket 브로드캐스트)
         $.ajax({
             url: contextPath + 'chat/messages/send',
             type: 'POST',
@@ -181,27 +181,7 @@ $(function(){
             success: function(response) {
                 if (response.result === 'success') {
                     console.log('메시지 DB 저장 성공');
-                    
-                    // DB에서 받은 정확한 정보로 WebSocket 메시지 전송
-                    if (response.message && response.message.sent_at) {
-                        const websocketMessage = {
-                            type: 'CHAT',
-                            room_num: chat.room.id,
-                            content: response.message.content,
-                            sender_num: response.message.sender_num,
-                            sender_name: response.message.sender_name,
-                            message_num: response.message.message_num,
-                            sent_at: response.message.sent_at,
-                            unread_count: response.message.unread_count || 0,
-                            message_id: Date.now().toString()
-                        };
-                        
-                        // 정확한 시간 정보가 포함된 메시지를 WebSocket으로 전송
-                        if (chat.socket && chat.socket.readyState === WebSocket.OPEN) {
-                            chat.socket.send(JSON.stringify(websocketMessage));
-                        }
-                    }
-                    
+                    // 서버에서 자동으로 WebSocket 브로드캐스트하므로 클라이언트 전송 제거
                     messageInput.val('');
                 } else {
                     console.error('메시지 DB 저장 실패:', response);
@@ -209,7 +189,6 @@ $(function(){
             },
             error: function(xhr) {
                 console.error('메시지 저장 중 오류 발생:', xhr);
-                // DB 저장 실패해도 WebSocket으로는 전송되었으므로 입력창은 비우기
                 messageInput.val('');
             }
         });
@@ -224,9 +203,15 @@ $(function(){
             message.message_id = 'msg_' + message.message_num;
         }
 
-        // message_id가 있는 경우에만 중복 체크
+        // message_id 또는 message_num으로 중복 체크
         if (message.message_id && chat.messages.displayed.has(message.message_id)) {
-            console.log('중복 메시지 무시:', message.message_id);
+            console.log('중복 메시지 무시 (message_id):', message.message_id);
+            return;
+        }
+        
+        // 이미 화면에 표시된 message_num인지 확인
+        if (message.message_num && $(`[data-message-num="${message.message_num}"]`).length > 0) {
+            console.log('중복 메시지 무시 (message_num):', message.message_num);
             return;
         }
 
@@ -281,11 +266,18 @@ $(function(){
                 .addClass('chat-bubble')
                 .text(message.content);
             
-            // 메타 정보 컨테이너 (시간만 표시)
+            // 메타 정보 컨테이너 (안 읽은 수 + 시간)
             const metaContainer = $('<div>').addClass('message-meta-container');
             
-            // 받은 메시지에는 안 읽은 수를 표시하지 않음 (내가 보낸 메시지에만 표시)
-            // 시간만 표시
+            // 안 읽은 수 (받은 메시지에도 표시)
+            if (message.unread_count > 0) {
+                const unreadDiv = $('<div>')
+                    .addClass('unread-count')
+                    .text(message.unread_count);
+                metaContainer.append(unreadDiv);
+            }
+            
+            // 시간
             const timeDiv = $('<div>')
                 .addClass('message-time')
                 .text(formatDate(message.sent_at || ''));
@@ -317,11 +309,8 @@ $(function(){
      *============================*/
     function markMessageAsRead(messageNum) {
         $.ajax({
-            url: contextPath + 'chat/messages/' + messageNum + '/read',
+            url: contextPath + 'chat/messages/' + messageNum + '/read?room_num=' + chat.room.id,
             type: 'POST',
-            data: {
-                room_num: chat.room.id
-            },
             beforeSend: function(xhr) {
                 xhr.setRequestHeader($('meta[name="csrf-header"]').attr('content'),
                                      $('meta[name="csrf-token"]').attr('content'));
@@ -329,17 +318,7 @@ $(function(){
             success: function(response) {
                 if (response.result === 'success') {
                     console.log('메시지 읽음 처리 성공:', messageNum, '업데이트된 안 읽은 수:', response.unread_count);
-                    // WebSocket을 통해 다른 사용자들에게 읽음 상태 업데이트 알림
-                    if (chat.socket && chat.socket.readyState === WebSocket.OPEN) {
-                        const readMessage = {
-                            type: 'READ',
-                            message_num: messageNum,
-                            user_num: chat.user.id,
-                            room_num: chat.room.id,
-                            unread_count: response.unread_count
-                        };
-                        chat.socket.send(JSON.stringify(readMessage));
-                    }
+                    // 서버에서 자동으로 WebSocket 브로드캐스트하므로 클라이언트 전송 제거
                 }
             },
             error: function(xhr) {
@@ -351,7 +330,7 @@ $(function(){
     function updateUnreadCount(messageNum, newUnreadCount) {
         // 해당 메시지의 안 읽은 수를 정확한 값으로 업데이트
         const messageRow = $(`[data-message-num="${messageNum}"]`);
-        if (messageRow.length && messageRow.hasClass('me')) {
+        if (messageRow.length) {  // 'me' 클래스 체크 제거
             const unreadSpan = messageRow.find('.unread-count');
             
             if (newUnreadCount > 0) {
@@ -513,6 +492,10 @@ $(function(){
                                 <div class="message-info">
                                     <div class="chat-bubble">${message.content}</div>
                                     <div class="message-meta-container">
+                                        ${message.unread_count > 0 ? 
+                                            `<div class="unread-count">${message.unread_count}</div>` : 
+                                            ''
+                                        }
                                         <div class="message-time">${formatDate(message.sent_at)}</div>
                                     </div>
                                 </div>

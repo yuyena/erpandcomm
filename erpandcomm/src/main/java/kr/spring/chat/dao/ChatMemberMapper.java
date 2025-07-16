@@ -19,7 +19,7 @@ public interface ChatMemberMapper {
 	public void deleteMember(ChatMemberVO chatMember);
 	
 	// 퇴사 시 삭제
-	public void deleteMemberByUserNum(Long user_num);
-	public void deleteMemberByRoomNum(Long room_num);
+	public void deleteMemberByUserNum(long user_num);
+	public void deleteMemberByRoomNum(long room_num);
 
 }

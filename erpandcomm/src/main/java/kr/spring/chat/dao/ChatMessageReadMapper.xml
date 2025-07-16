@@ -48,6 +48,7 @@
         SELECT m.message_num, #{user_num}, SYSDATE
         FROM chat_message m
         WHERE m.room_num = #{room_num}
+        AND m.sender_num != #{user_num}  <!-- 자신이 보낸 메시지는 제외 -->
         AND m.message_num NOT IN (
             SELECT mr.message_num 
             FROM chat_message_read mr 
