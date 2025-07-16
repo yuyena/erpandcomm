@@ -71,4 +71,25 @@ public class SocketHandler extends TextWebSocketHandler {
 		}
 		users.remove(session.getId());
 	}
+	
+	/**
+	 * 외부에서 WebSocket 메시지를 브로드캐스트할 수 있는 메서드
+	 * @param messageText 전송할 메시지 텍스트
+	 */
+	public void broadcastMessage(String messageText) {
+		TextMessage message = new TextMessage(messageText);
+		log.debug("브로드캐스트 메시지: {}", messageText);
+		log.debug("현재 연결된 세션 수: {}", users.size());
+		
+		for (WebSocketSession session : users.values()) {
+			if (session.isOpen()) {
+				try {
+					session.sendMessage(message);
+					log.debug("메시지 전송 to {}: {}", session.getId(), messageText);
+				} catch (IOException e) {
+					log.error("메시지 전송 실패 to {}: {}", session.getId(), e.getMessage());
+				}
+			}
+		}
+	}
 }

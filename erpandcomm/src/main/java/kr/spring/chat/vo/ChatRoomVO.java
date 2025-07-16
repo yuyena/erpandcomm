@@ -24,5 +24,7 @@ public class ChatRoomVO {
 	private MemberVO memberVO;
 	private boolean isOwner; // 현재 로그인한 사용자가 방장인지 여부
 	private String role; // 채팅멤버의 역할(방장/멤버)
-
+	
+	// 안읽은 메시지 존재 여부 (채팅방 목록에서 빨간 점 표시용)
+	private boolean hasUnreadMessages;
 }
