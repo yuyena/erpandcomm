@@ -1,6 +1,7 @@
 package kr.spring.attendance.controller;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,7 +21,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import kr.spring.attendance.service.AttendanceService;
 import kr.spring.attendance.vo.AttendanceVO;
+import kr.spring.member.vo.MemberVO;
 import kr.spring.member.vo.PrincipalDetails;
+import kr.spring.util.ValidationUtil;
 import lombok.extern.slf4j.Slf4j;
 
 
@@ -45,20 +48,23 @@ public class AttendanceController {
 		Map<String, Object> map = new HashMap<>();
 		map.put("empId", empId); // 이 empId로 해당 직원의 근태 목록만 조회
 		
-		List<AttendanceVO> list = attendanceService.selectList(map);
-		model.addAttribute("list", list);
+		MemberVO memberVO = attendanceService.selectList(map);
+		model.addAttribute("memberVO", memberVO);
 		return "views/personnel/attendanceList"; //리스트 보여줄 뷰
 	}
-	
-	
 	
 	// 근태 등록 폼
 	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/Form")
 	public String form(@AuthenticationPrincipal PrincipalDetails principal,
 			            Model model) {
+		MemberVO member = principal.getMemberVO();
+		
+		log.debug("MemberVO:{}", member);
+		
 		// 로그인 사용자 정보를 모델에 추가
-		model.addAttribute("memberVO", principal.getMemberVO());
+		model.addAttribute("memberVO", member);
+		model.addAttribute("today", new Date());
 		
 		return "views/personnel/attendanceForm";
 	}
@@ -71,20 +77,26 @@ public class AttendanceController {
 			             HttpServletRequest request,
 			             @AuthenticationPrincipal PrincipalDetails principal,
 						 Model model) throws IllegalStateException, IOException{
+		
 		log.debug("<<근태등록>> : {}", attendanceVO);
 		
 		// 유효성 검사 실패 시 다시
 		if(result.hasErrors()) {
-			return "views/personnel/attendanceForm";
+			
+			ValidationUtil.printErrorFields(result);
+			
+			return form(principal,model);
 		}
 		
-		// 1. employee_code는 로그인한 사용자 정보에서 가져오기
-		String employeeCode = principal.getMemberVO().getEmployee_code();
-		// 2. employee_code -> user_num 조회
-		Long userNum = attendanceService.selectUserNumByEmployeeCode(employeeCode);
-		//Long userNum = principal.getMemberVO().getUser_num(); // 바로가져오면 됨
-		// 3. 조회한 user_num을 attendanceVO.empID에 세팅
-		attendanceVO.setEmpId(userNum);
+		Long userNum = principal.getUserNum();
+		attendanceVO.setEmpId(userNum); // empId 셋팅
+		//String employeeCode = principal.getMemberVO().getEmployee_code(); // 또는 principal.getUsername()
+		
+		String employeeCode = principal.getUsername();
+		attendanceVO.setEmployeeCode(employeeCode);
+		
+		String userName = principal.getMemberVO().getUser_name(); // 이렇게 꺼내면 됨
+		attendanceVO.setEmpName(userName);
 		
 		// 근태 등록
 		attendanceService.insertAttendance(attendanceVO);

@@ -17,44 +17,17 @@
 		created_at,
 		updated_at)
 	VALUES (
-		ATTENDANCE_SEQ.NEXTVAL,
+		attendance_seq.nextval,
 		#{empId},
 		#{workDate},
-		TO_DATE('09:00', 'HH24:MI'),
-        TO_DATE('18:00', 'HH24:MI'),
+		TO_CHAR(SYSDATE, 'YYYY-MM-DD') || ' 09:00',
+        TO_CHAR(SYSDATE, 'YYYY-MM-DD') || ' 18:00',
 		#{status},
 		#{workType},
-		#{checkIntime,jdbcType=DATE},
-		#{checkOuttime,jdbcType=DATE},
+		#{checkIntime},
+		#{checkOuttime},
 		#{notes},
 		SYSDATE,
 		SYSDATE)
 	</insert>
-	<!-- user_num 을 employeecode와 매핑-->
-	<select id = "selectUserNumByEmployeeCode" parameterType="string" resultType="int">
-		SELECT 
-			user_num
-		FROM euser
-		WHERE employee_code = #{employeeCode}
-	</select>
-   
-	<!-- 근태 목록 검색 -->
-	<select id = "selectList" parameterType="map" resultType="kr.spring.attendance.vo.AttendanceVO">
-	<!-- 날짜 직원번호 이름 상태 출근시간 퇴근시간 관리 -->
-	SELECT
-		a.work_date,
-		a.emp_id,
-		u.user_name,
-		a.status,
-		a.check_in_time,
-		a.check_out_time,
-		a.notes,
-		a.created_at,
-		a.updated_at
-	FROM attendance a
-	JOIN EUSER_DETAIL u ON a.emp_id = u.emp_id
-	WHERE a.emp_id = #{empId} <!-- 사원번호 -->
-	</select>
-	
-	
 </mapper>

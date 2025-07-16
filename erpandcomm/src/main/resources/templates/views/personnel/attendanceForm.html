@@ -25,18 +25,20 @@
 						<input type="date" id="workDate" name="workDate" required
 							th:value="${#dates.format(today, 'yyyy-MM-dd')}" />
 					</div>
+					 
 					<div class="form-group">
 						<label for="employee_code">직원번호</label>
-						<input type="text" id="empId" name="employee_code" required
+						<input type="text" id="employee_code" name="employeeCode" required
 							th:value="${memberVO.employee_code}" readonly />
 					</div>
-
+					 
 					<div class="form-group">
 						<label for="empName">이름</label>
-						<input type="text" id="empName" name="user_name" required
+						<input type="text" id="user_name" name="empName" required
 							th:value="${memberVO.user_name}" readonly />
 					</div>
-
+					
+					
 					<div class="form-group">
 						<label for="status">상태</label>
 						<select id="status" name="status" required>
@@ -50,8 +52,8 @@
 					</div>
 
 						<div class="form-group">
-							<label for="workType">근무 유형</label> <select id="workType"
-								name="workType" required>
+							<label for="workType">근무 유형</label> 
+							<select id="workType" name="workType" required>
 								<option value="">근무 유형 선택</option>
 								<option value="normal">정상 근무</option>
 								<option value="overtime">초과 근무</option>
@@ -62,12 +64,12 @@
 
 						<div class="form-group">
 						<label for="inTime">출근시간</label>
-						<input type="time" id="inTime" name="inTime" />
+						<input type="time" id="checkIntime" name="checkIntime" />
 					</div>
 
 					<div class="form-group">
 						<label for="outTime">퇴근시간</label>
-						<input type="time" id="outTime" name="outTime" />
+						<input type="time" id="checkOuttime" name="checkOuttime" />
 					</div>
 
 					<div class="form-group">

@@ -1,8 +1,8 @@
 package kr.spring.attendance.vo;
 
-import java.sql.Date;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.Date;
+
+import org.springframework.format.annotation.DateTimeFormat;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -21,22 +21,23 @@ public class AttendanceVO {
 	 * 출근유형 : 출근, 결근, 지각, 휴가,조퇴
 	 */
 	private Long attendanceId; //출퇴근 id
-	private Date workDate; // 일자
-	private Date scheduledInTime; // 출근 예정
-	private Date scheduledOutTime; // 퇴근 예정
-	private Long empId; // empUser
-	private String employeeCode; //사원번호
 	@NotBlank
-	private String empName; // 사원 이름
+	private String workDate; // 일자
+	private String scheduledInTime; // 출근 예정
+	
+	private String scheduledOutTime; // 퇴근 예정
+	private Long empId; // 실제 DB에서는 attendance.emp_id = euser_detail.user_num
+	private String employeeCode; //사원번호 조회용 - employee_code from euser
+	private String empName; // 사원이름 조회용 - user_name from euser_detail
 	@NotBlank
 	private String workType; // 근무 형태 (
-	@NotNull
-	private Date checkIntime; // 출근시간
-	@NotNull
-	private Date checkOuttime; // 퇴근시간
+	@NotBlank
+	private String checkIntime; // 출근시간
+	private String checkOuttime; // 퇴근시간
 	private String notes; // 비고
 	private Date createdAt;
 	private Date updatedAt;
+	@NotBlank
 	private String status; // 출근 형태(출근, 결근, 지각, 휴가,조퇴) 
 	
 	// 숫자 형태의 workType 값을 문자열로 변환

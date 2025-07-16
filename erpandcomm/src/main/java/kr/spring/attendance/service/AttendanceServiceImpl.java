@@ -10,9 +10,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import kr.spring.attendance.dao.AttendanceMapper;
 import kr.spring.attendance.vo.AttendanceVO;
+import kr.spring.member.vo.MemberVO;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Transactional
+@Slf4j
 public class AttendanceServiceImpl implements AttendanceService {
 	
 	@Autowired
@@ -29,11 +32,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 		return attendanceMapper.selectAttendance(empId);
 	}
 
-	@Override
-	public List<AttendanceVO> selectList(Map<String, Object> map) {
-		return attendanceMapper.selectList(map);
-	}
-
+	
 	@Override
 	public Integer selectRowCount(Map<String, Object> map) {
 		// TODO Auto-generated method stub
@@ -52,21 +51,8 @@ public class AttendanceServiceImpl implements AttendanceService {
 		
 	}
 
-	/*
-	public Long selectUserNumByEmployeeCode(String employeeCode) {
-		return attendanceMapper.selectUserNumByEmployeeCode(employeeCode);
-	}
-	 */
 	@Override
-	public Long selectUserNumByEmployeeCode(String employeeCode) {
-	    Integer userNum = attendanceMapper.selectUserNumByEmployeeCode(employeeCode);
-	    return userNum != null ? userNum.longValue() : null;
+	public MemberVO selectList(Map<String, Object> map) {
+		return attendanceMapper.selectList(map);
 	}
-
-
-
-	
-	
-	
-
 }
