@@ -16,9 +16,6 @@ public class MainController {
 	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/")
 	public String dashboard(@AuthenticationPrincipal PrincipalDetails principal) {
-		String user_name = principal.getMemberVO().getUser_name();
-		
-		System.out.println(user_name);
 		return "views/main/main";
 	}
 	
