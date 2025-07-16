@@ -28,17 +28,16 @@ public interface ChatService {
 	public void deleteMember(ChatMemberVO chatMember);
 	
 	// ChatMessage
-	public List<ChatMessageVO> selectMessage(Long chat_room);
+	public List<ChatMessageVO> selectMessage(Long room_num, Long current_user_num);
 	public void insertMessage(ChatMessageVO chatMessage);
 	public List<ChatMessageVO> selectNewMessages(Long room_num, Long lastMessageId);
 	
 	// ChatMessageRead
 	public List<ChatMessageReadVO> selectMessageRead(Long message_num);
-	public void insertMessageRead(ChatMessageReadVO messageRead);
-	public int countUnreadMessage(Long message_num);
+	public void markMessageAsRead(Long message_num, Long user_num);
+	public int countUnreadMessage(Map<String, Object> map);
 	
 	// 메시지 읽음 처리
 	public void markAllMessagesAsRead(Long room_num, Long user_num);
-	public void markMessageAsRead(Long message_num, Long user_num);
 
 }

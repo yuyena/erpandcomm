@@ -96,8 +96,11 @@ public class ChatServiceImpl implements ChatService {
 	}
 
 	@Override
-	public List<ChatMessageVO> selectMessage(Long chat_room) {
-		return chatMessageMapper.selectMessage(chat_room);
+	public List<ChatMessageVO> selectMessage(Long room_num, Long current_user_num) {
+		Map<String, Object> map = new HashMap<>();
+		map.put("room_num", room_num);
+		map.put("current_user_num", current_user_num);
+		return chatMessageMapper.selectMessage(map);
 	}
 
 	@Override
@@ -110,6 +113,7 @@ public class ChatServiceImpl implements ChatService {
 		Map<String, Object> map = new HashMap<>();
 		map.put("room_num", room_num);
 		map.put("lastMessageId", lastMessageId);
+		map.put("current_user_num", 0L); // 임시로 0 설정 (필요시 파라미터 추가)
 		return chatMessageMapper.selectNewMessages(map);
 	}
 
@@ -119,30 +123,49 @@ public class ChatServiceImpl implements ChatService {
 	}
 
 	@Override
-	public void insertMessageRead(ChatMessageReadVO messageRead) {
-		chatMessageReadMapper.insertMessageRead(messageRead);
+	public int countUnreadMessage(Map<String, Object> map) {
+		return chatMessageReadMapper.countUnreadMessage(map);
 	}
 
 	@Override
-	public int countUnreadMessage(Long message_num) {
-		// 이 메서드는 더 이상 사용하지 않음 (쿼리에서 직접 계산)
-		return 0;
+	public void markMessageAsRead(Long message_num, Long user_num) {
+		// 이미 읽음 처리된 메시지인지 확인
+		List<ChatMessageReadVO> readList = chatMessageReadMapper.selectMessageRead(message_num);
+		boolean alreadyRead = false;
+		
+		for (ChatMessageReadVO read : readList) {
+			if (read.getUser_num() == user_num) {
+				alreadyRead = true;
+				break;
+			}
+		}
+		
+		// 아직 읽지 않은 메시지인 경우에만 읽음 처리
+		if (!alreadyRead) {
+			ChatMessageReadVO messageRead = new ChatMessageReadVO();
+			messageRead.setMessage_num(message_num);
+			messageRead.setUser_num(user_num);
+			chatMessageReadMapper.insertMessageRead(messageRead);
+		}
 	}
-	
+
 	// 채팅방 입장 시 모든 메시지를 읽음 처리
 	public void markAllMessagesAsRead(Long room_num, Long user_num) {
+		if (room_num == null || user_num == null) {
+			return; // null 체크
+		}
+		
 		Map<String, Object> map = new HashMap<>();
 		map.put("room_num", room_num);
 		map.put("user_num", user_num);
-		chatMessageReadMapper.insertMessageReadBatch(map);
-	}
-	
-	// 특정 메시지를 읽음 처리
-	public void markMessageAsRead(Long message_num, Long user_num) {
-		ChatMessageReadVO messageRead = new ChatMessageReadVO();
-		messageRead.setMessage_num(message_num);
-		messageRead.setUser_num(user_num);
-		chatMessageReadMapper.insertMessageRead(messageRead);
+		
+		try {
+			// 배치로 모든 메시지 읽음 처리 (더 효율적)
+			chatMessageReadMapper.insertMessageReadBatch(map);
+		} catch (Exception e) {
+			// 로그 출력 후 계속 진행 (읽음 처리 실패해도 채팅방 입장은 가능해야 함)
+			System.err.println("메시지 읽음 처리 중 오류 발생: " + e.getMessage());
+		}
 	}
 
 

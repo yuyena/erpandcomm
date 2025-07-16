@@ -10,7 +10,7 @@ import kr.spring.chat.vo.ChatMessageVO;
 @Mapper
 public interface ChatMessageMapper {
 	
-	public List<ChatMessageVO> selectMessage(Long chat_room);
+	public List<ChatMessageVO> selectMessage(Map<String, Object> map);
 	public void insertMessage(ChatMessageVO chatMessage);
 	public List<ChatMessageVO> selectNewMessages(Map<String, Object> map);
 	

@@ -120,10 +120,11 @@ $(function(){
     /*============================
      * 채팅방 관련 함수
      *============================*/
-    function initChat(roomNum, userNum) {
-        console.log('채팅 초기화:', roomNum, userNum);
+    function initChat(roomNum, userNum, userName) {
+        console.log('채팅 초기화:', roomNum, userNum, userName);
         chat.room.id = roomNum;
         chat.user.id = userNum;
+        chat.user.name = userName || '';
         chat.messages.displayed.clear();
         
         connectWebSocket();
@@ -191,6 +192,7 @@ $(function(){
                             sender_name: response.message.sender_name,
                             message_num: response.message.message_num,
                             sent_at: response.message.sent_at,
+                            unread_count: response.message.unread_count || 0,
                             message_id: Date.now().toString()
                         };
                         
@@ -217,7 +219,14 @@ $(function(){
         const chatMessages = $('#chatMessages');
         if (!chatMessages.length) return;
 
-        if (chat.messages.displayed.has(message.message_id)) {
+        // message_id가 없으면 message_num을 사용하여 생성
+        if (!message.message_id && message.message_num) {
+            message.message_id = 'msg_' + message.message_num;
+        }
+
+        // message_id가 있는 경우에만 중복 체크
+        if (message.message_id && chat.messages.displayed.has(message.message_id)) {
+            console.log('중복 메시지 무시:', message.message_id);
             return;
         }
 
@@ -272,8 +281,11 @@ $(function(){
                 .addClass('chat-bubble')
                 .text(message.content);
             
-            // 메타 정보 컨테이너 (시간)
+            // 메타 정보 컨테이너 (시간만 표시)
             const metaContainer = $('<div>').addClass('message-meta-container');
+            
+            // 받은 메시지에는 안 읽은 수를 표시하지 않음 (내가 보낸 메시지에만 표시)
+            // 시간만 표시
             const timeDiv = $('<div>')
                 .addClass('message-time')
                 .text(formatDate(message.sent_at || ''));
@@ -286,7 +298,11 @@ $(function(){
         
         messageDiv.append(messageContent);
         chatMessages.append(messageDiv);
-        chat.messages.displayed.add(message.message_id);
+        
+        // message_id가 있는 경우에만 중복 방지 세트에 추가
+        if (message.message_id) {
+            chat.messages.displayed.add(message.message_id);
+        }
         
         // 다른 사용자의 메시지인 경우 읽음 처리
         if (message.sender_num != chat.user.id && message.message_num) {
@@ -294,7 +310,7 @@ $(function(){
         }
         
         chatMessages.scrollTop(chatMessages[0].scrollHeight);
-}
+    }
 
     /*============================
      * 메시지 읽음 처리
@@ -303,6 +319,9 @@ $(function(){
         $.ajax({
             url: contextPath + 'chat/messages/' + messageNum + '/read',
             type: 'POST',
+            data: {
+                room_num: chat.room.id
+            },
             beforeSend: function(xhr) {
                 xhr.setRequestHeader($('meta[name="csrf-header"]').attr('content'),
                                      $('meta[name="csrf-token"]').attr('content'));
@@ -538,14 +557,23 @@ $(function(){
                 if (response.result === 'success') {
                     console.log('채팅방 입장 성공:', response);
                     
+                    // 먼저 채팅방 UI를 렌더링
+                    renderChatRoom(response, $btn);
+                    
+                    // WebSocket 연결 초기화
+                    initChat(response.room.room_num, response.currentUserNum, response.currentUserName);
+                    
+                    // 초기 메시지들을 화면에 표시
                     if (response.messageList && response.messageList.length > 0) {
+                        console.log('초기 메시지 개수:', response.messageList.length);
                         response.messageList.forEach(msg => {
-                            chat.messages.displayed.add(msg.message_num);
+                            // 초기 메시지에는 message_id가 없으므로 message_num을 사용
+                            if (!msg.message_id) {
+                                msg.message_id = 'init_' + msg.message_num;
+                            }
+                            displayMessage(msg);
                         });
                     }
-                    
-                    renderChatRoom(response, $btn);
-                    initChat(response.room.room_num, response.currentUserNum);
                     
                 } else {
                     console.error('채팅방 입장 실패:', response);
@@ -597,7 +625,7 @@ $(function(){
                 </div>
                 
                 <div class="chat-messages" id="chatMessages">
-                    ${renderMessagesWithDateHeaders(response.messageList, response.currentUserNum)}
+                    <!-- 메시지는 displayMessage 함수로 동적 추가 -->
                 </div>
                 
                 <div class="chat-input-area">
