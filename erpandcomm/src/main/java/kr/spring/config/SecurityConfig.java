@@ -94,11 +94,11 @@ public class SecurityConfig {
 						.accessDeniedHandler(customAccessDeniedHandler)
 				)
                // 자동 로그인
-               .rememberMe(me -> me
-                     .key(rememberme_key) // 쿠키에 사용되는 값을 암호화 하기 위한 키(key) 값
-                     .tokenRepository(persistentTokenRepository()) // 토큰은 데이터베이스에 저장
-                     .tokenValiditySeconds(60*60*24*7)
-                     .userDetailsService(userSecurityService))
+//               .rememberMe(me -> me
+//                     .key(rememberme_key) // 쿠키에 사용되는 값을 암호화 하기 위한 키(key) 값
+//                     .tokenRepository(persistentTokenRepository()) // 토큰은 데이터베이스에 저장
+//                     .tokenValiditySeconds(60*60*24*7)
+//                     .userDetailsService(userSecurityService))
                // CSRF(Cross-Site Request Forgery)는 인증된 사용자의 권한을 악용하여
                // 사용자가 의도하지 않은 요청을 웹 서버에 보내게 하는 공격
                // GET방식을 제외한 상태를 변경하는 요청(POST, PUT, DELETE, PATCH)에만 CSRF 검사
