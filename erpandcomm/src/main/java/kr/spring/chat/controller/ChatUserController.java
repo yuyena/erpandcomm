@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -29,6 +30,9 @@ import kr.spring.member.vo.MemberVO;
 import kr.spring.member.vo.PrincipalDetails;
 import kr.spring.util.ValidationUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
 
 @Controller
 @Slf4j
@@ -185,6 +189,7 @@ public class ChatUserController {
 		
 	    // 로그인한 사용자의 user_num 가져오기
 	    long user_num = principal.getMemberVO().getUser_num();
+	    String user_name = principal.getMemberVO().getUser_name();
 	    Map<String, Object> map = new HashMap<String, Object>();
 	    map.put("member_num", user_num);
 
@@ -195,6 +200,8 @@ public class ChatUserController {
 	    model.addAttribute("userList", userList);
 	    model.addAttribute("accessBtn", "목록으로");
 	    model.addAttribute("chatRoomList", chatRoomList);
+	    model.addAttribute("currentUserNum", user_num);
+	    model.addAttribute("currentUserName", user_name);
 	    
 //	    log.debug("<<회원 목록>> : " + userList);
 	    log.debug("<<현재 로그인한 사용자 번호>> : " + user_num);
@@ -267,44 +274,62 @@ public class ChatUserController {
 //		return "views/chat/chatView";
 //	}
 
-	// 채팅방 삭제(비활성화) ajax 통신으로 하기 위해 일단 주석처리 해놨음 안되면 다시 풀거임
-//	@PreAuthorize("isAuthenticated()")
-//	@PostMapping("/deleteRoom")
-//	public String deleteRoom(@AuthenticationPrincipal PrincipalDetails principal, long room_num, BindingResult result ,HttpServletRequest request, Model model) {
-//	    long myUserNum = principal.getMemberVO().getUser_num(); // 테스트용으로 항상 1로 고정
-//	    
-//	    // 1. 전체 멤버 조회
-//	    Map<String, Object> param = new HashMap<>();
-//	    param.put("room_num", room_num);
-//
-//	    List<ChatMemberVO> memberList = chatService.selectMember(param);
-//
-//	    if (memberList == null) memberList = new java.util.ArrayList<>();
-//
-//	    // 2. 방장 찾기
-//	    ChatMemberVO owner = null;
-//	    for (ChatMemberVO member : memberList) {
-//	        if (member.getRole().equals("방장")) {
-//	            owner = member;
-//	            break;
-//	        }
-//	    }
-//	    
-//	    log.debug("<<memberList>> : " + memberList);
-//	    log.debug("<<owner>> : " + owner);
-//	    log.debug("<<userNum>> : " + myUserNum);
-//	    log.debug("<<roomNum>> : " + room_num);
-//
-//	    // 3. 권한 체크 및 삭제(비활성화)
-//	    if (owner != null && myUserNum == owner.getUser_num()) {
-//	        chatService.notActive(room_num);
-//	        model.addAttribute("accessMsg", "채팅방이 삭제(비활성화)되었습니다.");
-//	    } else {
-//	        model.addAttribute("accessMsg", "방장만 삭제할 수 있습니다.");
-//	    }
-//	    model.addAttribute("accessUrl", request.getContextPath() + "/chat/roomList");
-//	    return "views/common/resultView";
-//	}
+	// 채팅방 삭제(비활성화) - AJAX 처리
+	@PreAuthorize("isAuthenticated()")
+	@PostMapping("/notActiveRoom")
+	@ResponseBody
+	public ResponseEntity<Map<String, Object>> notActiveRoom(
+			@RequestParam(value = "room_num") long room_num,
+			@AuthenticationPrincipal PrincipalDetails principal) {
+		
+		Map<String, Object> mapAjax = new HashMap<>();
+		
+		try {
+			long myUserNum = principal.getMemberVO().getUser_num();
+			
+			// 1. 전체 멤버 조회
+			Map<String, Object> param = new HashMap<>();
+			param.put("room_num", room_num);
+			
+			List<ChatMemberVO> memberList = chatService.selectMember(param);
+			
+			if (memberList == null) {
+				memberList = new ArrayList<>();
+			}
+			
+			// 2. 방장 찾기
+			ChatMemberVO owner = null;
+			for (ChatMemberVO member : memberList) {
+				if ("방장".equals(member.getRole())) {
+					owner = member;
+					break;
+				}
+			}
+			
+			log.debug("<<memberList>> : " + memberList);
+			log.debug("<<owner>> : " + owner);
+			log.debug("<<userNum>> : " + myUserNum);
+			log.debug("<<roomNum>> : " + room_num);
+			
+			// 3. 권한 체크 및 삭제(비활성화)
+			if (owner != null && myUserNum == owner.getUser_num()) {
+				chatService.notActive(room_num);
+				mapAjax.put("result", "success");
+				mapAjax.put("message", "채팅방이 삭제(비활성화)되었습니다.");
+			} else {
+				mapAjax.put("result", "wrongAccess");
+				mapAjax.put("message", "방장만 삭제할 수 있습니다.");
+			}
+			
+			return new ResponseEntity<Map<String,Object>>(mapAjax, HttpStatus.OK);
+			
+		} catch (Exception e) {
+			log.error("채팅방 삭제 중 오류 발생", e);
+			mapAjax.put("result", "error");
+			mapAjax.put("message", "서버 오류가 발생했습니다: " + e.getMessage());
+			return new ResponseEntity<Map<String,Object>>(mapAjax, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 
 }
 

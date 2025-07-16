@@ -1,18 +1,49 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layouts/layout_basic}">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/layout_basic}">
 <head>
     <meta charset="UTF-8">
     <title>거래처 목록</title>
     <link rel="stylesheet" th:href="@{/assets/css/main.css}">
     <link rel="stylesheet" th:href="@{/assets/css/sh.css}">
+    <style>
+    .page-main .page-header {
+      display: flex !important;
+      justify-content: space-between !important;
+      align-items: center !important;
+      margin-bottom: 60px !important;
+      padding: 40px 40px 30px 40px !important;
+      border-bottom: 2px solid #e0e0e0 !important;
+    }
+    .page-main .page-title {
+      font-size: 1.5rem !important;
+      font-weight: bold !important;
+      color: #3b6fd6 !important;
+      margin: 0 !important;
+    }
+    .page-main .total-count {
+      font-size: 1rem !important;
+      color: #666 !important;
+      background-color: #fff !important;
+      padding: 8px 16px !important;
+      border-radius: 20px !important;
+      box-shadow: 0 2px 6px rgba(90,150,255,0.08) !important;
+    }
+    .page-main .total-count strong {
+      color: #3b6fd6 !important;
+      font-weight: bold !important;
+    }
+    </style>
 </head>
 <body>
 <div layout:fragment="content" class="page-main">
     <div class="dashboard-wrapper">
         <th:block th:replace="fragments/nav_sidebar :: sidebar"></th:block>
         <main class="main-content">
-            <div class="main-header">
-                <h2>ERP 관리 - 거래처 관리</h2>
+            <div class="page-header">
+                <h2 class="page-title">거래처 관리</h2>
+                <div>
+                    <span class="total-count">총 <strong th:text="${list.size()}">0</strong>개 거래처</span>
+                </div>
             </div>
             
             <div class="card" style="width: 800px; padding: 0; margin: 0 auto 24px auto; background: #fff; border-radius: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08);">
@@ -20,35 +51,35 @@
                 <canvas id="clientPieChart" style="display: inline-block; width: 400px; height: 400px; box-sizing: border-box;" width="400" height="400"></canvas>
               </div>
             </div>
-            
-            <div class="list-header">
-              <span class="list-title">거래처 목록</span>
-              <a th:href="@{/client/form}" class="btn-write">거래처 등록</a>
-            </div>
+
+                <div class="list-header">
+                    <span class="list-title">거래처 목록</span>
+                    <a th:href="@{/client/form}" class="btn-write">거래처 등록</a>
+                </div>
             <div class="sh-box">
               <!-- 고객 목록, 공급업체 목록 테이블 flex row -->
-                <!-- 고객 목록 -->
-                <div class="table-container" style="flex: 1; min-width:0; width:100%;">
-                    <h3 style="margin-bottom: 15px; color: #333; font-size: 1.1rem;">고객 목록</h3>
+                    <!-- 고객 목록 -->
+                <div class="table-container" style="width: 600px; margin-right: 20px;">
+                    <h3 style="margin-bottom: 15px; color: #3b6fd6; font-size: 1.1rem;">고객 목록</h3>
                     <form id="clientListForm" method="post" th:action="@{/client/deleteSelected}">
                       <table class="custom-table" style="width:85%">
-                        <thead>
-                          <tr>
+                                                    <thead>
+                            <tr>
                             <th style="width:5%"><input type="checkbox" id="allChk" onclick="toggleAll(this)"></th>
                             <th style="width:9%">이름</th>
                             <th style="width:9%">담당자</th>
                             <th style="width:10%">연락처</th>
                             <th style="width:13%">상세보기</th>
                             <th style="width:18%">수정/삭제</th>
-                          </tr>
+                            </tr>
                         </thead>
                         <tbody>
                           <th:block th:each="client, stat : ${list}">
                             <tr th:if="${client.client_type == 1}">
                               <td><input type="checkbox" name="clientChk" th:value="${client.client_num}"></td>
-                              <td th:text="${client.client_name}"></td>
+                                <td th:text="${client.client_name}"></td>
                               <td th:text="${client.contact_person}"></td>
-                              <td th:text="${client.phone}"></td>
+                                <td th:text="${client.phone}"></td>
                               <td>
                                 <button type="button" class="btn-detail" th:attr="data-idx=${stat.index}" onclick="toggleDetail(this)">상세보기</button>
                               </td>
@@ -62,11 +93,11 @@
                                 <b>주소:</b> <span th:text="${client.address1} + ' ' + ${client.address2}"></span>
                                 &nbsp;|&nbsp;
                                 <b>연락처:</b> <span th:text="${client.phone}"></span>
-                              </td>
+                                </td>
                             </tr>
                           </th:block>
                         </tbody>
-                      </table>
+                        </table>
                       <div style="margin-top:10px; text-align:right;">
                         <button type="button" onclick="deleteSelected()" style="background:#e74c3c; color:#fff; border:none; border-radius:5px; padding:6px 16px; font-weight:600; cursor:pointer;">선택 삭제</button>
                       </div>
@@ -88,11 +119,11 @@
                       }
                     }
                     </script>
-                </div>
-                
-                <!-- 공급업체 목록 -->
-                <div class="table-container" style="flex: 1; min-width:0; width:100%;">
-                    <h3 style="margin-bottom: 15px; color: #333; font-size: 1.1rem;">공급업체 목록</h3>
+                    </div>
+                    
+                    <!-- 공급업체 목록 -->
+                <div class="table-container" style="width: 600px;">
+                    <h3 style="margin-bottom: 15px; color: #3b6fd6; font-size: 1.1rem;">공급업체 목록</h3>
                     <form id="supplierListForm" method="post" th:action="@{/client/deleteSelected}">
                         <table class="custom-table" style="width:85%">
                             <thead>
@@ -109,9 +140,9 @@
                                 <th:block th:each="client, stat : ${list}">
                                     <tr th:if="${client.client_type == 0}">
                                         <td><input type="checkbox" name="supplierChk" th:value="${client.client_num}"></td>
-                                        <td th:text="${client.client_name}"></td>
-                                        <td th:text="${client.contact_person}"></td>
-                                        <td th:text="${client.phone}"></td>
+                                    <td th:text="${client.client_name}"></td>
+                                    <td th:text="${client.contact_person}"></td>
+                                    <td th:text="${client.phone}"></td>
                                         <td>
                                             <button type="button" class="btn-detail" th:attr="data-idx=${stat.index}" onclick="toggleSupplierDetail(this)">상세보기</button>
                                         </td>
@@ -127,14 +158,14 @@
                                             <b>연락처:</b> <span th:text="${client.phone}"></span>
                                             &nbsp;|&nbsp;
                                             <b>이메일:</b> <span th:text="${client.email}"></span>
-                                        </td>
-                                    </tr>
+                                    </td>
+                                </tr>
                                 </th:block>
                             </tbody>
                         </table>
                         <div style="margin-top:10px; text-align:right;">
                             <button type="button" onclick="deleteSelectedSupplier()" style="background:#e74c3c; color:#fff; border:none; border-radius:5px; padding:6px 16px; font-weight:600; cursor:pointer;">선택 삭제</button>
-                        </div>
+                    </div>
                     </form>
                 </div>
             </div>
@@ -195,8 +226,8 @@
                   }]
                 },
                 options: {
-                  responsive: true,
-                  maintainAspectRatio: true,
+                  responsive: false,
+                  maintainAspectRatio: false,
                   plugins: {
                     legend: { display: true }
                   }
@@ -219,6 +250,7 @@
 .list-title {
     font-size: 1.2rem;
     font-weight: bold;
+    color: #3b6fd6;
 }
 .btn-write {
     background: #528eff;
@@ -246,6 +278,7 @@
     height: 38px;
     padding: 8px 8px;
     font-size: 1.1em;
+    color: #3b6fd6;
 }
 .btn-detail {
     background: #528eff;
@@ -255,7 +288,7 @@
     padding: 4px 11px;
     text-decoration: none;
     font-size: 0.67rem;
-    font-weight: 500;
+    font-weight: 600;
     margin: 0 1px;
 }
 /* 상세정보 행만 별도 스타일 */
@@ -273,21 +306,65 @@
     height: 1.5em;
 }
 .table-container {
-  flex: 1 1 auto;
-  min-width: 0;
-  width: 100%;
-  max-width: 100%;
+  width: 600px;
 }
 .sh-box {
   display: flex;
-  gap: 10px;
-  width: 100%;
+  gap: 20px;
+  width: 1220px;
+  margin: 0 auto;
 }
 .page-main, .dashboard-wrapper, .main-content, .card {
   padding: 0 !important;
   margin: 0 !important;
-  width: 100vw !important;
-  max-width: 100vw !important;
+  width: 100% !important;
   box-sizing: border-box;
+}
+
+/* 페이지 헤더 스타일 */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 60px;
+    padding: 40px 40px 30px 40px;
+    border-bottom: 2px solid #e0e0e0;
+}
+
+.page-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #3b6fd6;
+    margin: 0;
+}
+
+.total-count {
+    font-size: 1rem;
+    color: #666;
+    background-color: #fff;
+    padding: 8px 16px;
+    border-radius: 20px;
+    box-shadow: 0 2px 6px rgba(90,150,255,0.08);
+}
+
+.total-count strong {
+    color: #3b6fd6;
+    font-weight: bold;
+}
+.btn-write, .btn-main, .btn-detail, .search-btn, .btn-individual-search {
+    font-weight: 600 !important;
+}
+.btn-individual-search, .search-btn {
+    background: #007aff !important;
+    color: #fff !important;
+    border: none !important;
+    border-radius: 6px !important;
+    padding: 5px 10px !important;
+    font-size: 0.89rem !important;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+.btn-individual-search:hover, .search-btn:hover {
+    background: #0056b3 !important;
 }
 </style> 

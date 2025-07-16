@@ -7,11 +7,14 @@
 <head>
     <meta charset="UTF-8">
     <title>채팅방 목록</title>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <link rel="stylesheet" th:href="@{/assets/css/main.css}">
     <link rel="stylesheet" th:href="@{/assets/css/jm/chatRoomList.css}">
     <link rel="stylesheet" th:href="@{/assets/css/jm/chatView.css}">
     <script type="text/javascript" th:src="@{/assets/js/jquery-3.7.1.min.js}"></script>
     <script type="text/javascript" th:src="@{/assets/js/chat.delete.js}"></script>
+    <script type="text/javascript" th:src="@{/assets/js/chat.js}"></script>
 </head>
 <body>
 <div layout:fragment="content" class="page-main">
@@ -28,22 +31,30 @@
                 <table class="chat-room-table">
                     <thead>
                         <tr>
-                            <th>방 번호</th>
+                            <th>번호</th>
                             <th>방 이름</th>
                             <th>타입</th>
                             <th>설명</th>
-                            <th>최대 인원</th>
+                            <th>인원</th>
                             <th>생성일</th>
-                            <th>입장</th>
+                            <th>관리</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr th:each="room : ${chatRoomList}">
+                        <tr th:each="room : ${chatRoomList}" th:data-room-num="${room.room_num}">
                             <td th:text="${room.room_num}"></td>
-                            <td th:text="${room.room_name}"></td>
+                            <td class="room-name-cell">
+                                <span th:text="${room.room_name}"></span>
+                                <span th:if="${room.hasUnreadMessages}" class="unread-indicator"></span>
+                            </td>
                             <td th:text="${room.room_type}"></td>
-                            <td class="description-cell" th:text="${room.description != null ? (room.description.length() > 20 ? room.description.substring(0, 20) + '...' : room.description) : ''}" th:title="${room.description}"></td>
-                            <td th:text="${room.max_members}"></td>
+                            <td class="description-cell" 
+                                th:text="${room.description != null ? (room.description.length() > 20 ? room.description.substring(0, 20) + '...' : room.description) : ''}" 
+                                th:title="${room.description}"></td>
+                            <td>
+                                <span th:if="${room.room_type == '1:1'}">2</span>
+                                <span th:if="${room.room_type == 'group'}" th:text="${room.max_members}"></span>
+                            </td>
                             <td th:text="${#dates.format(room.created_at, 'yyyy-MM-dd')}"></td>
 							<td>
 								<button class="enter-btn" th:data-room-id="${room.room_num}">입장</button>
@@ -53,7 +64,7 @@
 							</td>
 							</tr>
                         <tr th:if="${#lists.isEmpty(chatRoomList)}">
-                            <td colspan="8" class="no-chat-room">참여중인 채팅이 없습니다.</td>
+                            <td colspan="7" class="no-chat-room">참여중인 채팅이 없습니다.</td>
                         </tr>
                     </tbody>
                 </table>
@@ -71,126 +82,188 @@
 </div>
 <div layout:fragment="pageScript">
 <script th:inline="javascript">
-// Thymeleaf 변수 선언
+// CSRF 토큰 설정
+const token = $("meta[name='_csrf']").attr("content");
+const header = $("meta[name='_csrf_header']").attr("content");
+
+// contextPath 설정
 const contextPath = /*[[@{/}]]*/ '';
 
-// 입장 버튼 클릭 시 AJAX로 채팅방 입장
-$(document).on('click', '.enter-btn', function() {
-    var roomId = $(this).attr('data-room-id');  // data() 대신 attr() 사용
-    var $btn = $(this);
+// 현재 사용자 정보
+const currentUserNum = /*[[${currentUserNum}]]*/ 0;
+const currentUserName = /*[[${currentUserName}]]*/ '';
+
+// WebSocket 연결 객체
+let chatListSocket = null;
+
+// 채팅방 목록 페이지용 WebSocket 연결
+function connectChatListWebSocket() {
+    if (chatListSocket && chatListSocket.readyState === WebSocket.OPEN) {
+        console.log('채팅방 목록 WebSocket이 이미 연결되어 있습니다.');
+        return;
+    }
     
-    // 버튼 비활성화
-    $btn.prop('disabled', true).text('입장중...');
+    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const host = window.location.host;
+    const wsUrl = protocol + '//' + host + '/message-ws';
     
-    // 먼저 채팅방 입장 처리
+    console.log('채팅방 목록 WebSocket 연결 시도:', wsUrl);
+    
+    try {
+        chatListSocket = new WebSocket(wsUrl);
+        
+        chatListSocket.onopen = function() {
+            console.log('채팅방 목록 WebSocket 연결 성공');
+            
+            // 채팅방 목록 구독 메시지 전송
+            const subscribeMessage = {
+                type: 'SUBSCRIBE_ROOM_LIST',
+                user_num: currentUserNum,
+                user_name: currentUserName
+            };
+            chatListSocket.send(JSON.stringify(subscribeMessage));
+        };
+        
+        chatListSocket.onmessage = function(event) {
+            try {
+                console.log('채팅방 목록 메시지 수신:', event.data);
+                const message = JSON.parse(event.data);
+                
+                if (!message || !message.type) {
+                    console.warn('잘못된 메시지 형식:', message);
+                    return;
+                }
+                
+                switch(message.type) {
+                    case 'CHAT':
+                        // 새 메시지 수신 시 해당 채팅방에 빨간 점 표시
+                        if (message.sender_num !== currentUserNum) {
+                            showUnreadIndicator(message.room_num);
+                        }
+                        break;
+                    case 'READ':
+                        // 메시지 읽음 처리 시 빨간 점 업데이트
+                        // 해당 채팅방의 모든 메시지가 읽혔는지 확인
+                        checkAndUpdateUnreadIndicator(message.room_num);
+                        break;
+                    case 'ROOM_ENTERED':
+                        // 사용자가 채팅방에 입장했을 때 빨간 점 제거
+                        if (message.user_num === currentUserNum) {
+                            hideUnreadIndicator(message.room_num);
+                        }
+                        break;
+                    default:
+                        console.warn('알 수 없는 메시지 타입:', message.type);
+                }
+            } catch(e) {
+                console.error('채팅방 목록 메시지 처리 중 오류:', e);
+            }
+        };
+        
+        chatListSocket.onclose = function(event) {
+            console.log('채팅방 목록 WebSocket 연결 종료 - 코드:', event.code, '사유:', event.reason);
+            chatListSocket = null;
+            
+            // 3초 후 재연결 시도
+            setTimeout(connectChatListWebSocket, 3000);
+        };
+        
+        chatListSocket.onerror = function(error) {
+            console.error('채팅방 목록 WebSocket 오류:', error);
+        };
+        
+    } catch(e) {
+        console.error('채팅방 목록 WebSocket 연결 실패:', e);
+        setTimeout(connectChatListWebSocket, 3000);
+    }
+}
+
+// 특정 채팅방에 빨간 점 표시
+function showUnreadIndicator(roomNum) {
+    const roomRow = $(`tr[data-room-num="${roomNum}"]`);
+    if (roomRow.length > 0) {
+        const roomNameCell = roomRow.find('.room-name-cell');
+        if (roomNameCell.find('.unread-indicator').length === 0) {
+            roomNameCell.append('<span class="unread-indicator"></span>');
+        }
+    }
+}
+
+// 특정 채팅방의 빨간 점 제거
+function hideUnreadIndicator(roomNum) {
+    const roomRow = $(`tr[data-room-num="${roomNum}"]`);
+    if (roomRow.length > 0) {
+        roomRow.find('.unread-indicator').remove();
+    }
+}
+
+// 채팅방의 안읽은 메시지 상태 확인 후 빨간 점 업데이트
+function checkAndUpdateUnreadIndicator(roomNum) {
+    // AJAX로 해당 채팅방의 안읽은 메시지 존재 여부 확인
     $.ajax({
-        url: contextPath + 'chat/enter/' + roomId,
+        url: contextPath + 'chat/checkUnreadMessages',
         type: 'GET',
+        data: {
+            room_num: roomNum
+        },
+        beforeSend: function(xhr) {
+            xhr.setRequestHeader(header, token);
+        },
         success: function(response) {
             if (response.result === 'success') {
-                // 채팅방 뷰 컨테이너에 채팅 UI 구성
-                var chatHtml = `
-                    <div class="chat-view-wrapper">
-                        <div class="chat-header">
-                            <div class="chat-header-title">
-                                <span>${response.room.room_name}</span>
-                            </div>
-                            <div class="chat-header-actions">
-                                <button class="chat-header-btn" title="멤버 목록" onclick="toggleMemberList()"><span>👥</span></button>
-                                <button class="chat-header-btn" title="파일첨부"><span>📎</span></button>
-                                <button class="chat-header-btn" title="설정"><span>⚙️</span></button>
-                            </div>
-                        </div>
-                        
-                        <div class="chat-member-list" id="memberList" style="display: none;">
-                            <div class="member-list-header">
-                                <h4>멤버 목록</h4>
-                                <button onclick="toggleMemberList()" class="close-btn">×</button>
-                            </div>
-                            <div class="member-list-content">
-                                ${response.memberList.map(member => `
-                                    <div class="member-item">
-                                        <span class="member-name">${member.user_name}</span>
-                                        <span class="member-role">${member.role}</span>
-                                    </div>
-                                `).join('')}
-                            </div>
-                        </div>
-                        
-                        <div class="chat-messages" id="chatMessages">
-                            ${response.messageList && response.messageList.length > 0 ? 
-                                response.messageList.map(message => `
-                                    <div class="chat-message-row ${message.sender_num == response.currentUserNum ? 'me' : ''}">
-                                        <div class="chat-bubble">${message.content}</div>
-                                        <div class="chat-message-meta">${message.sent_at}</div>
-                                    </div>
-                                `).join('') : 
-                                `<div class="no-message">
-                                    <p>아직 메시지가 없습니다.</p>
-                                    <p>첫 번째 메시지를 보내보세요!</p>
-                                </div>`
-                            }
-                        </div>
-                        
-                        <form class="chat-input-area" id="chatSendForm" autocomplete="off">
-                            <input type="hidden" name="room_num" value="${response.room.room_num}">
-                            <input type="text" class="chat-input" name="message" id="chatMessageInput" 
-                                   placeholder="메시지를 입력하세요..." autocomplete="off" required>
-                            <button type="submit" class="chat-send-btn">보내기</button>
-                        </form>
-                    </div>
-                `;
-                
-                $('#chatRoomViewContainer').html(chatHtml);
-                
-                // 모든 입장 버튼에서 active 클래스 제거
-                $('.enter-btn').removeClass('active');
-                // 클릭된 버튼에 active 클래스 추가
-                $btn.addClass('active');
-                
-                // WebSocket 연결 초기화
-                if (typeof connectWebSocket === 'function') {
-                    connectWebSocket();
+                if (response.hasUnreadMessages) {
+                    showUnreadIndicator(roomNum);
+                } else {
+                    hideUnreadIndicator(roomNum);
                 }
-                
-                // 스크롤을 최하단으로 이동
-                var chatMessages = document.getElementById('chatMessages');
-                if (chatMessages) {
-                    chatMessages.scrollTop = chatMessages.scrollHeight;
-                }
-            } else {
-                alert(response.message || '채팅방 입장에 실패했습니다.');
             }
         },
         error: function(xhr) {
-            var errorMsg = '채팅방을 불러오지 못했습니다.';
-            if (xhr.responseJSON && xhr.responseJSON.message) {
-                errorMsg = xhr.responseJSON.message;
-            }
-            alert(errorMsg);
-            $('#chatRoomViewContainer').html(`
-                <div class="chat-room-error">
-                    <p>${errorMsg}</p>
-                    <p>다시 시도해주세요.</p>
-                </div>
-            `);
-        },
-        complete: function() {
-            // 버튼 다시 활성화
-            $btn.prop('disabled', false).text('입장');
+            console.error('안읽은 메시지 확인 실패:', xhr);
         }
     });
+}
+
+// 입장 버튼 클릭 시 AJAX로 채팅방 입장
+$(document).on('click', '.enter-btn', function() {
+    var roomId = $(this).attr('data-room-id');
+    
+    // 채팅방 입장 시 빨간 점 제거
+    hideUnreadIndicator(roomId);
+    
+    // WebSocket으로 채팅방 입장 알림
+    if (chatListSocket && chatListSocket.readyState === WebSocket.OPEN) {
+        const enterMessage = {
+            type: 'ROOM_ENTERED',
+            room_num: parseInt(roomId),
+            user_num: currentUserNum,
+            user_name: currentUserName
+        };
+        chatListSocket.send(JSON.stringify(enterMessage));
+    }
+    
+    enterChatRoom(roomId, $(this));
 });
 
 // 멤버 목록 토글 함수
 function toggleMemberList() {
     var memberList = document.getElementById('memberList');
-    if (memberList.style.display === 'none') {
-        memberList.style.display = 'block';
-    } else {
-        memberList.style.display = 'none';
+    if (memberList) {
+        memberList.style.display = memberList.style.display === 'none' ? 'block' : 'none';
     }
 }
+
+// 페이지 로드 시 WebSocket 연결
+$(document).ready(function() {
+    connectChatListWebSocket();
+});
+
+// 페이지 언로드 시 WebSocket 연결 해제
+$(window).on('beforeunload', function() {
+    if (chatListSocket) {
+        chatListSocket.close();
+    }
+});
 </script>
 </div>
 </body>

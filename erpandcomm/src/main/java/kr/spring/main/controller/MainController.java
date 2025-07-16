@@ -7,7 +7,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import kr.spring.member.vo.PrincipalDetails;
-import kr.spring.member.vo.UserRole;
 import lombok.extern.slf4j.Slf4j;
 
 @Controller

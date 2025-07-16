@@ -58,7 +58,7 @@ public class ChatServiceImpl implements ChatService {
 	}
 
 	@Override
-	public void deleteRoom(Long room_num) {
+	public void deleteRoom(long room_num) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -69,7 +69,7 @@ public class ChatServiceImpl implements ChatService {
 	}
 	
 	@Override
-	public void notActive(Long room_num) {
+	public void notActive(long room_num) {
 		chatRoomMapper.notActive(room_num);
 	}
 
@@ -96,8 +96,11 @@ public class ChatServiceImpl implements ChatService {
 	}
 
 	@Override
-	public List<ChatMessageVO> selectMessage(Long chat_room) {
-		return chatMessageMapper.selectMessage(chat_room);
+	public List<ChatMessageVO> selectMessage(long room_num, long current_user_num) {
+		Map<String, Object> map = new HashMap<>();
+		map.put("room_num", room_num);
+		map.put("current_user_num", current_user_num);
+		return chatMessageMapper.selectMessage(map);
 	}
 
 	@Override
@@ -106,29 +109,59 @@ public class ChatServiceImpl implements ChatService {
 	}
 	
 	@Override
-	public List<ChatMessageVO> selectNewMessages(Long room_num, Long lastMessageId) {
+	public List<ChatMessageVO> selectNewMessages(long room_num, long lastMessageId) {
 		Map<String, Object> map = new HashMap<>();
 		map.put("room_num", room_num);
 		map.put("lastMessageId", lastMessageId);
+		map.put("current_user_num", 0L); // 임시로 0 설정 (필요시 파라미터 추가)
 		return chatMessageMapper.selectNewMessages(map);
 	}
 
 	@Override
-	public List<ChatMessageReadVO> selectMessageRead(Long message_num) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<ChatMessageReadVO> selectMessageRead(long message_num) {
+		return chatMessageReadMapper.selectMessageRead(message_num);
 	}
 
 	@Override
-	public void insertMessageRead(ChatMessageReadVO messageRead) {
-		// TODO Auto-generated method stub
+	public int countUnreadMessage(Map<String, Object> map) {
+		return chatMessageReadMapper.countUnreadMessage(map);
+	}
+
+	@Override
+	public void markMessageAsRead(long message_num, long user_num) {
+		// 이미 읽음 처리된 메시지인지 확인
+		List<ChatMessageReadVO> readList = chatMessageReadMapper.selectMessageRead(message_num);
+		boolean alreadyRead = false;
 		
+		for (ChatMessageReadVO read : readList) {
+			if (read.getUser_num() == user_num) {
+				alreadyRead = true;
+				break;
+			}
+		}
+		
+		// 아직 읽지 않은 메시지인 경우에만 읽음 처리
+		if (!alreadyRead) {
+			ChatMessageReadVO messageRead = new ChatMessageReadVO();
+			messageRead.setMessage_num(message_num);
+			messageRead.setUser_num(user_num);
+			chatMessageReadMapper.insertMessageRead(messageRead);
+		}
 	}
 
-	@Override
-	public int countUnreadMessage(Long message_num) {
-		// TODO Auto-generated method stub
-		return 0;
+	// 채팅방 입장 시 모든 메시지를 읽음 처리
+	public void markAllMessagesAsRead(long room_num, long user_num) {
+		Map<String, Object> map = new HashMap<>();
+		map.put("room_num", room_num);
+		map.put("user_num", user_num);
+		
+		try {
+			// 배치로 모든 메시지 읽음 처리 (더 효율적)
+			chatMessageReadMapper.insertMessageReadBatch(map);
+		} catch (Exception e) {
+			// 로그 출력 후 계속 진행 (읽음 처리 실패해도 채팅방 입장은 가능해야 함)
+			System.err.println("메시지 읽음 처리 중 오류 발생: " + e.getMessage());
+		}
 	}
 
 

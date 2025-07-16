@@ -75,6 +75,32 @@
     background: #f5faff;
 }
 
+.description-cell {
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    position: relative;
+}
+
+.description-cell:hover::after {
+    content: attr(title);
+    position: absolute;
+    left: 0;
+    top: -30px;
+    background: #333;
+    color: white;
+    padding: 5px 8px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    z-index: 1000;
+    white-space: normal;
+    max-width: 200px;
+    word-wrap: break-word;
+}
+
+
+
 .enter-btn {
     display: inline-block;
     padding: 6px 18px;
@@ -102,8 +128,6 @@
     box-shadow: none;
 }
 
-
-
 .delete-btn {
     display: inline-block;
     padding: 6px 18px;
@@ -120,30 +144,6 @@
 }
 .delete-btn:hover {
     background: #b71c1c;
-}
-
-.description-cell {
-    max-width: 150px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    position: relative;
-}
-
-.description-cell:hover::after {
-    content: attr(title);
-    position: absolute;
-    left: 0;
-    top: -30px;
-    background: #333;
-    color: white;
-    padding: 5px 8px;
-    border-radius: 4px;
-    font-size: 0.9rem;
-    z-index: 1000;
-    white-space: normal;
-    max-width: 200px;
-    word-wrap: break-word;
 }
 
 .no-chat-room {
@@ -195,6 +195,37 @@
     text-align: center;
     padding: 60px 0;
     font-size: 1.1rem;
+}
+
+/* 안읽은 메시지 표시 (빨간 점) */
+.room-name-cell {
+    position: relative;
+}
+
+.unread-indicator {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background: #ef4444;
+    border-radius: 50%;
+    margin-left: 8px;
+    vertical-align: middle;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.2);
+        opacity: 0.7;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
 }
 
 @media (max-width: 1100px) {

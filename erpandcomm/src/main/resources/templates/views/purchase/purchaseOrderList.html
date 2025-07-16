@@ -13,39 +13,159 @@
     <th:block th:if="${error}">
       <script>alert('[[${error}]]');</script>
     </th:block>
+    <style>
+    .page-main .page-header {
+      display: flex !important;
+      justify-content: space-between !important;
+      align-items: center !important;
+      margin-bottom: 60px !important;
+      padding: 40px 40px 30px 40px !important;
+      border-bottom: 2px solid #e0e0e0 !important;
+    }
+    .page-main .page-title {
+      font-size: 1.5rem !important;
+      font-weight: bold !important;
+      color: #3b6fd6 !important;
+      margin: 0 !important;
+    }
+    .page-main .total-count {
+      font-size: 1rem !important;
+      color: #666 !important;
+      background-color: #fff !important;
+      padding: 8px 16px !important;
+      border-radius: 20px !important;
+      box-shadow: 0 2px 6px rgba(90,150,255,0.08) !important;
+    }
+    .page-main .total-count strong {
+      color: #3b6fd6 !important;
+      font-weight: bold !important;
+    }
+    .btn-write, .btn-main, .btn-detail, .search-btn, .btn-individual-search {
+        font-weight: 600 !important;
+    }
+    .btn-individual-search, .search-btn {
+        background: #007aff !important;
+        color: #fff !important;
+        border: none !important;
+        border-radius: 6px !important;
+        padding: 5px 10px !important;
+        font-size: 0.89rem !important;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+    }
+    .btn-individual-search:hover, .search-btn:hover {
+        background: #0056b3 !important;
+    }
+    .search-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .search-row label, .search-row .search-label {
+      min-width: 110px;
+      text-align: right;
+      margin-right: 8px;
+      color: #3b6fd6 !important;
+      font-weight: 700 !important;
+      letter-spacing: 0.01em;
+    }
+    .search-row .search-input {
+      flex: 1 1 0;
+      min-width: 120px;
+      margin-right: 0;
+    }
+    .search-row .search-btn, .search-row .btn-individual-search {
+      min-width: 70px;
+      height: 36px;
+      margin-left: 8px;
+      padding: 0 16px;
+    }
+    .search-row .search-date {
+      min-width: 110px;
+      font-size: 0.95em;
+      height: 32px;
+      padding: 2px 6px;
+    }
+    .search-actions {
+      display: flex !important;
+      justify-content: flex-end !important;
+      width: 100% !important;
+      margin-top: 16px !important;
+      padding-right: 0 !important;
+    }
+    .search-actions .search-btn {
+      min-width: 120px;
+      height: 40px;
+      font-size: 1rem;
+      padding: 0 24px;
+    }
+    .write-link {
+      margin-right: 20px !important;
+      color: #3b6fd6 !important;
+      font-weight: 900 !important;
+      font-size: 1.08rem;
+      text-decoration: none !important;
+      background: none !important;
+      border: none !important;
+      padding: 0 !important;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+    .write-link:hover {
+      color: #0056b3 !important;
+      text-decoration: underline !important;
+    }
+    .write-link,
+    .search-row label,
+    .search-row .search-label,
+    .list-title {
+      font-weight: 900 !important;
+    }
+    .list-header {
+      padding-right: 35px !important;
+    }
+    </style>
 </head>
 <body>
 <div layout:fragment="content" class="page-main">
     <div class="dashboard-wrapper">
         <th:block th:replace="fragments/nav_sidebar :: sidebar"></th:block>
         <main class="main-content">
-            <div class="main-header">
-                <h2>ERP관리 - 발주 목록</h2>
+            <div class="page-header">
+                <h2 class="page-title">구매주문 관리</h2>
+                <div>
+                    <span class="total-count">총 <strong th:text="${list.size()}">0</strong>개 주문</span>
+                </div>
             </div>
             <!-- 검색조건+차트 한 행 배치 (각각 별도 박스) -->
-            <div class="dashboard-flex-row" style="display: flex; gap: 32px; margin-bottom: 24px;">
-                <div class="card" style="padding: 24px 24px 16px 24px; background: #fff; border-radius: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); flex:1 1 0; min-width:340px; max-width:480px;">
+            <div class="dashboard-flex-row" style="display: flex; gap: 32px; margin-bottom: 24px; padding-left: 60px;">
+                <div class="card" style="padding: 24px 24px 16px 24px; background: #fff; border-radius: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); flex:1 1 0; min-width:340px; max-width:600px;">
                     <form class="search-form" th:action="@{/purchase/orderList}" method="get">
                         <div class="search-row">
                             <label class="search-label">주문 번호</label>
                             <input type="text" name="orderNum" th:value="${param.orderNum}" placeholder="주문번호" class="search-input">
+                            <button type="button" class="btn-individual-search search-btn" onclick="singleSearch('orderNum')">검색</button>
                         </div>
                         <div class="search-row">
                             <label class="search-label">공급처</label>
                             <input type="text" name="supplier" th:value="${param.supplier}" placeholder="공급처명" class="search-input">
+                            <button type="button" class="btn-individual-search search-btn" onclick="singleSearch('supplier')">검색</button>
                         </div>
                         <div class="search-row">
                             <label class="search-label">담당 직원</label>
                             <input type="text" name="emp" th:value="${param.emp}" placeholder="직원명" class="search-input">
+                            <button type="button" class="btn-individual-search search-btn" onclick="singleSearch('emp')">검색</button>
                         </div>
                         <div class="search-row">
                             <label class="search-label">주문일</label>
-                            <input type="date" name="startDate" th:value="${param.startDate}" class="search-input" style="width: 48%; display: inline-block;">
+                            <input type="date" name="startDate" th:value="${param.startDate}" class="search-input search-date">
                             <span style="color:#888;">~</span>
-                            <input type="date" name="endDate" th:value="${param.endDate}" class="search-input" style="width: 48%; display: inline-block;">
+                            <input type="date" name="endDate" th:value="${param.endDate}" class="search-input search-date">
+                            <button type="button" class="btn-individual-search search-btn" onclick="singleDateSearch()">검색</button>
                         </div>
-                        <div style="display: flex; justify-content: flex-end; margin-top: 8px;">
-                            <button type="submit" class="search-btn" style="background:#888;">전체 검색</button>
+                        <div class="search-actions">
+                            <button type="submit" class="search-btn">전체 검색</button>
                         </div>
                     </form>
                 </div>
@@ -53,22 +173,22 @@
                     <canvas id="purchaseMonthlyChart" width="400" height="200" style="display:block;"></canvas>
                 </div>
             </div>
-            <section class="card-section" style="border: none !important;">
+            <section class="card-section" style="border: none !important; padding-left: 60px;">
                 <div class="list-header">
-                    <span class="list-title">구매주문 목록</span>
-                    <a th:href="@{/purchase/orderForm}" class="btn-write btn-main">구매주문 작성</a>
+                    <span class="list-title" style="color: #3b6fd6;">구매주문 목록</span>
+                    <a th:href="@{/purchase/orderForm}" class="write-link">+ 구매주문 작성</a>
                 </div>
                 <div class="table-container">
                     <table class="custom-table">
                         <thead>
                             <tr>
-                                <th><input type="checkbox" /></th>
-                                <th>주문 번호</th>
-                                <th>공급 업체</th>
-                                <th>주문일</th>
-                                <th>주문 금액</th>
-                                <th>담당 직원</th>
-                                <th>관리</th>
+                                <th style="color: #3b6fd6;"><input type="checkbox" /></th>
+                                <th style="color: #3b6fd6;">주문 번호</th>
+                                <th style="color: #3b6fd6;">공급 업체</th>
+                                <th style="color: #3b6fd6;">주문일</th>
+                                <th style="color: #3b6fd6;">주문 금액</th>
+                                <th style="color: #3b6fd6;">담당 직원</th>
+                                <th style="color: #3b6fd6;">관리</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -132,6 +252,48 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 });
+function singleSearch(field) {
+  const form = document.createElement('form');
+  form.method = 'get';
+  form.action = window.location.pathname;
+  const value = document.querySelector(`[name="${field}"]`).value;
+  if (value) {
+    const input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = field;
+    input.value = value;
+    form.appendChild(input);
+    document.body.appendChild(form);
+    form.submit();
+  } else {
+    alert('검색어를 입력하세요.');
+  }
+}
+function singleDateSearch() {
+  const start = document.querySelector('[name="startDate"]').value;
+  const end = document.querySelector('[name="endDate"]').value;
+  if (!start && !end) {
+    alert('날짜를 입력하세요.');
+    return;
+  }
+  const form = document.createElement('form');
+  form.method = 'get';
+  form.action = window.location.pathname;
+  if (start) {
+    const input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = 'startDate';
+    input.value = start;
+    form.appendChild(input);
+  }
+  if (end) {
+    const input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = 'endDate';
+    input.value = end;
+    form.appendChild(input);
+  }
+  document.body.appendChild(form);
+  form.submit();
+}
 </script>
-</body>
-</html> 

@@ -8,6 +8,7 @@ INSERT INTO client VALUES (6, '두산중공업', 0, '윤미래', '010-6789-0123'
 INSERT INTO client VALUES (7, '롯데기공', 0, '장동건', '010-7890-1234', 'dgjang@lotte.com', '경기도 수원시', '영통구 대학로 3');
 INSERT INTO client VALUES (8, '포스코엔지니어링', 0, '한예슬', '010-8901-2345', 'yshan@posco.com', '포항시 남구', '철강로 98');
 INSERT INTO client VALUES (9, '(주)동서테크', 0, '서지석', '010-9012-3456', 'jsseo@dstech.com', '광주시 북구', '첨단과기로 77');
+
 INSERT INTO client VALUES (10, 'CJ대한통운', 0, '오지호', '010-0123-4567', 'jhoo@cjlogis.com', '서울시 송파구', '문정로 12');
 
 -- 🔹 고객 20명 (client_type = 1)

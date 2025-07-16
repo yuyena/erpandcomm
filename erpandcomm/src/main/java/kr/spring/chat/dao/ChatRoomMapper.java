@@ -17,7 +17,7 @@ public interface ChatRoomMapper {
 	
 	// 채팅방 비활성화
 	@Update("UPDATE chat_room SET is_active = 'N' WHERE room_num=#{room_num}")
-	public void notActive(Long room_num);
+	public void notActive(long room_num);
 	
 }
 
