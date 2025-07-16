@@ -88,9 +88,8 @@ public class AttendanceController {
 			return form(principal,model);
 		}
 		
-		Long userNum = principal.getUserNum();
+		Long userNum = principal.getMemberVO().getUser_num();
 		attendanceVO.setEmpId(userNum); // empId 셋팅
-		//String employeeCode = principal.getMemberVO().getEmployee_code(); // 또는 principal.getUsername()
 		
 		String employeeCode = principal.getUsername();
 		attendanceVO.setEmployeeCode(employeeCode);
