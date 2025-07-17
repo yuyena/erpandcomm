@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout_basic}">
+<head>
+    <meta charset="UTF-8">
+    <title>Office ERP - 개인휴가현황</title>
+    <link rel="stylesheet" th:href="@{/assets/css/main.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/jm/memberInfo.css}">
+</head>
+<body>
+<div layout:fragment="content" class="page-main">
+    <div class="dashboard-wrapper">
+        <!-- 사이드바 -->
+        <th:block th:replace="fragments/nav_sidebar :: sidebar"></th:block>
+
+        <!-- 메인 컨텐츠 -->
+        <main class="main-content">
+            <div class="page-title">
+                <h1 style="color: #1976D2; font-weight: bold; font-size: 1.5rem; margin-bottom: 24px; text-align: left;">마이페이지 - 개인휴가현황</h1>
+            </div>
+
+            <!-- 개인 정보 카드 -->
+            <section class="card-section" style="margin-bottom: 24px;">
+                <div class="card" style="border-radius: 12px; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.06); padding: 24px;">
+                    <div class="card-header" style="font-weight: bold; font-size: 1.1rem; margin-bottom: 18px;">사원 정보</div>
+                    <div class="member-info-row" style="display: flex; align-items: center; gap: 24px;">
+                        <div class="member-photo" style="width: 80px; height: 80px; border-radius: 50%; overflow: hidden; background: #f8f9fa; display: flex; align-items: center; justify-content: center;">
+                            <img th:src="${loginMember != null && loginMember.photo_name != null ? '/uploads/' + loginMember.photo_name : '/assets/image_bundle/face.png'}" 
+                                 alt="프로필" style="width: 100%; height: 100%; object-fit: cover;" />
+                        </div>
+                        <div class="member-details">
+                            <div style="margin-bottom: 8px;">
+                                <span style="font-size: 1.2rem; font-weight: bold; color: #222;" th:text="${loginMember != null ? loginMember.user_name : ''}">이름</span>
+                                <span style="margin-left: 12px; padding: 4px 8px; background: #e3f2fd; color: #1976d2; border-radius: 4px; font-size: 0.9rem;" th:text="${loginMember != null ? loginMember.department_name : ''}">부서명</span>
+                            </div>
+                            <div style="color: #666; font-size: 0.95rem;">
+                                <span>사번: </span><span th:text="${loginMember != null ? loginMember.employee_code : ''}">사번</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 휴가 현황 요약 카드 -->
+            <section class="card-section" style="margin-bottom: 24px;">
+                <div class="card" style="border-radius: 12px; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.06); padding: 24px;">
+                    <div class="card-header" style="font-weight: bold; font-size: 1.1rem; margin-bottom: 18px;">2024년 휴가 현황</div>
+                    <div class="vacation-summary" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+                        <div class="summary-item" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 12px; text-align: center;">
+                            <div style="font-size: 0.9rem; opacity: 0.9; margin-bottom: 8px;">총 연차</div>
+                            <div style="font-size: 2rem; font-weight: bold;">15일</div>
+                        </div>
+                        <div class="summary-item" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 20px; border-radius: 12px; text-align: center;">
+                            <div style="font-size: 0.9rem; opacity: 0.9; margin-bottom: 8px;">사용 연차</div>
+                            <div style="font-size: 2rem; font-weight: bold;">8일</div>
+                        </div>
+                        <div class="summary-item" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; padding: 20px; border-radius: 12px; text-align: center;">
+                            <div style="font-size: 0.9rem; opacity: 0.9; margin-bottom: 8px;">잔여 연차</div>
+                            <div style="font-size: 2rem; font-weight: bold;">7일</div>
+                        </div>
+                        <div class="summary-item" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); color: white; padding: 20px; border-radius: 12px; text-align: center;">
+                            <div style="font-size: 0.9rem; opacity: 0.9; margin-bottom: 8px;">사용 반차</div>
+                            <div style="font-size: 2rem; font-weight: bold;">3일</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 조회 조건 카드 -->
+            <section class="card-section" style="margin-bottom: 24px;">
+                <div class="card" style="border-radius: 12px; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.06); padding: 24px;">
+                    <div class="card-header" style="font-weight: bold; font-size: 1.1rem; margin-bottom: 18px;">조회 조건</div>
+                    <form class="search-form" style="display: flex; align-items: center; gap: 16px; background: none;">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <label style="color: #222; font-weight: 600;">기간</label>
+                            <input type="date" name="startDate" style="width: 140px; background: #f1f3f6; border: none; border-radius: 6px; padding: 8px 12px;">
+                            <span style="margin: 0 4px; color: #888;">~</span>
+                            <input type="date" name="endDate" style="width: 140px; background: #f1f3f6; border: none; border-radius: 6px; padding: 8px 12px;">
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <label style="color: #222; font-weight: 600;">휴가유형</label>
+                            <select name="vacationType" style="width: 120px; background: #f1f3f6; border: none; border-radius: 6px; padding: 8px 12px;">
+                                <option value="">전체</option>
+                                <option value="annual">연차</option>
+                                <option value="half">반차</option>
+                                <option value="sick">병가</option>
+                                <option value="special">특별휴가</option>
+                            </select>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <label style="color: #222; font-weight: 600;">상태</label>
+                            <select name="status" style="width: 100px; background: #f1f3f6; border: none; border-radius: 6px; padding: 8px 12px;">
+                                <option value="">전체</option>
+                                <option value="approved">승인</option>
+                                <option value="pending">대기</option>
+                                <option value="rejected">반려</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="margin-left: 8px;">검색</button>
+                    </form>
+                </div>
+            </section>
+
+            <!-- 휴가 신청 내역 카드 -->
+            <section class="card-section">
+                <div class="card" style="border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); padding: 24px;">
+                    <div class="card-header" style="font-weight: bold; font-size: 1.1rem; margin-bottom: 18px; display: flex; justify-content: space-between; align-items: center;">
+                        <span>휴가 신청 내역</span>
+                        <button class="btn btn-primary" style="background: #1976d2; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer;">휴가 신청</button>
+                    </div>
+                    <div class="table-container" style="overflow-x: auto;">
+                        <table class="vacation-table" style="width: 100%; border-collapse: collapse; margin-top: 16px;">
+                            <thead>
+                                <tr style="background: #f8f9fa;">
+                                    <th style="padding: 12px; text-align: left; border-bottom: 1px solid #dee2e6; font-weight: 600;">신청일</th>
+                                    <th style="padding: 12px; text-align: left; border-bottom: 1px solid #dee2e6; font-weight: 600;">휴가유형</th>
+                                    <th style="padding: 12px; text-align: left; border-bottom: 1px solid #dee2e6; font-weight: 600;">휴가기간</th>
+                                    <th style="padding: 12px; text-align: left; border-bottom: 1px solid #dee2e6; font-weight: 600;">일수</th>
+                                    <th style="padding: 12px; text-align: left; border-bottom: 1px solid #dee2e6; font-weight: 600;">사유</th>
+                                    <th style="padding: 12px; text-align: left; border-bottom: 1px solid #dee2e6; font-weight: 600;">상태</th>
+                                    <th style="padding: 12px; text-align: left; border-bottom: 1px solid #dee2e6; font-weight: 600;">승인자</th>
+                                    <th style="padding: 12px; text-align: left; border-bottom: 1px solid #dee2e6; font-weight: 600;">관리</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- 샘플 데이터 -->
+                                <tr>
+                                    <td style="padding: 12px; border-bottom: 1px solid #dee2e6;">2024-01-15</td>
+                                    <td style="padding: 12px; border-bottom: 1px solid #dee2e6;">연차</td>
+                                    <td style="padding: 12px; border-bottom: 1px solid #dee2e6;">2024-01-20 ~ 2024-01-21</td>
+                                    <td style="padding: 12px; border-bottom: 1px solid #dee2e6;">2일</td>
+                                    <td style="padding: 12px; border-bottom: 1px solid #dee2e6;">개인사유</td>
+                                    <td style="padding: 12px; border-bottom: 1px solid #dee2e6;">
+                                        <span style="padding: 4px 8px; background: #e8f5e8; color: #4caf50; border-radius: 4px; font-size: 0.9rem;">승인</span>
+                                    </td>
+                                    <td style="padding: 12px; border-bottom: 1px solid #dee2e6;">김부장</td>
+                                    <td style="padding: 12px; border-bottom: 1px solid #dee2e6;">
+                                        <button class="btn-sm" style="background: #f44336; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem;">취소</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 12px; border-bottom: 1px solid #dee2e6;">2024-02-10</td>
+                                    <td style="padding: 12px; border-bottom: 1px solid #dee2e6;">반차</td>
+                                    <td style="padding: 12px; border-bottom: 1px solid #dee2e6;">2024-02-15 (오후)</td>
+                                    <td style="padding: 12px; border-bottom: 1px solid #dee2e6;">0.5일</td>
+                                    <td style="padding: 12px; border-bottom: 1px solid #dee2e6;">병원진료</td>
+                                    <td style="padding: 12px; border-bottom: 1px solid #dee2e6;">
+                                        <span style="padding: 4px 8px; background: #e8f5e8; color: #4caf50; border-radius: 4px; font-size: 0.9rem;">승인</span>
+                                    </td>
+                                    <td style="padding: 12px; border-bottom: 1px solid #dee2e6;">김부장</td>
+                                    <td style="padding: 12px; border-bottom: 1px solid #dee2e6;">-</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 12px; border-bottom: 1px solid #dee2e6;">2024-03-05</td>
+                                    <td style="padding: 12px; border-bottom: 1px solid #dee2e6;">연차</td>
+                                    <td style="padding: 12px; border-bottom: 1px solid #dee2e6;">2024-03-10 ~ 2024-03-12</td>
+                                    <td style="padding: 12px; border-bottom: 1px solid #dee2e6;">3일</td>
+                                    <td style="padding: 12px; border-bottom: 1px solid #dee2e6;">여행</td>
+                                    <td style="padding: 12px; border-bottom: 1px solid #dee2e6;">
+                                        <span style="padding: 4px 8px; background: #fff3cd; color: #856404; border-radius: 4px; font-size: 0.9rem;">대기</span>
+                                    </td>
+                                    <td style="padding: 12px; border-bottom: 1px solid #dee2e6;">-</td>
+                                    <td style="padding: 12px; border-bottom: 1px solid #dee2e6;">
+                                        <button class="btn-sm" style="background: #ffc107; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem;">수정</button>
+                                        <button class="btn-sm" style="background: #f44336; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 4px;">취소</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 12px; border-bottom: 1px solid #dee2e6;">2024-04-01</td>
+                                    <td style="padding: 12px; border-bottom: 1px solid #dee2e6;">병가</td>
+                                    <td style="padding: 12px; border-bottom: 1px solid #dee2e6;">2024-04-05</td>
+                                    <td style="padding: 12px; border-bottom: 1px solid #dee2e6;">1일</td>
+                                    <td style="padding: 12px; border-bottom: 1px solid #dee2e6;">몸살감기</td>
+                                    <td style="padding: 12px; border-bottom: 1px solid #dee2e6;">
+                                        <span style="padding: 4px 8px; background: #f8d7da; color: #721c24; border-radius: 4px; font-size: 0.9rem;">반려</span>
+                                    </td>
+                                    <td style="padding: 12px; border-bottom: 1px solid #dee2e6;">김부장</td>
+                                    <td style="padding: 12px; border-bottom: 1px solid #dee2e6;">
+                                        <button class="btn-sm" style="background: #6c757d; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem;">재신청</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 월별 휴가 사용 현황 차트 (선택사항) -->
+            <section class="card-section" style="margin-top: 24px;">
+                <div class="card" style="border-radius: 12px; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.06); padding: 24px;">
+                    <div class="card-header" style="font-weight: bold; font-size: 1.1rem; margin-bottom: 18px;">월별 휴가 사용 현황</div>
+                    <div class="chart-placeholder" style="height: 200px; background: #f8f9fa; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #666;">
+                        <div style="text-align: center;">
+                            <div style="font-size: 1.2rem; margin-bottom: 8px;">📊</div>
+                            <div>차트 영역 (향후 구현 예정)</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+</div>
+
+<div layout:fragment="pageScript">
+    <script>
+        // 페이지 로드 시 현재 날짜 기준으로 기간 설정
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date();
+            const startOfYear = new Date(today.getFullYear(), 0, 1);
+            const endOfYear = new Date(today.getFullYear(), 11, 31);
+            
+            // 날짜 형식 변환 (YYYY-MM-DD)
+            const formatDate = (date) => {
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                return `${year}-${month}-${day}`;
+            };
+            
+            // 기본 조회 기간 설정
+            document.querySelector('input[name="startDate"]').value = formatDate(startOfYear);
+            document.querySelector('input[name="endDate"]').value = formatDate(endOfYear);
+        });
+    </script>
+</div>
+</body>
+</html> 
