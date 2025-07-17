@@ -48,15 +48,17 @@ public class ProductServiceImpl implements ProductService {
 	    productMapper.insertProduct(product);
 	    productMapper.insertCurrentStock(product); 
 	}
-	
-	
-	
-	
-	
+	@Override
+	public void updateProduct(ProductVO product) {
+		productMapper.updateProduct(product);
+	}
+
 	@Override
 	public List<ProductVO> selectProductList() {
 		return productMapper.selectProductList();
 	}
+
+
 
 	
 

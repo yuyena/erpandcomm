@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout_basic}">
+<head>
+    <meta charset="UTF-8">
+    <title>상품 수정</title>
+    <link rel="stylesheet" th:href="@{/assets/css/yn/register.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/main.css}">
+</head>
+<body>
+<div layout:fragment="content" class="page-main">
+    <div class="dashboard-wrapper">
+        <th:block th:replace="fragments/nav_sidebar :: sidebar"></th:block>
+        <main class="main-content">
+            <div class="header">
+                <h1>ERP 시스템</h1>
+            </div>
+
+            <div class="container">
+                <div class="form-header">
+                    <h2>상품 수정</h2>
+                </div>
+
+                <form th:action="@{/product/update}" method="post" class="form-body">
+                    <!-- 숨겨진 상품 번호 필드 -->
+                    <input type="hidden" name="product_num" th:value="${productVO.product_num}">
+                    
+                    <!-- 기본 정보 -->
+                    <div class="form-section">
+                        <div class="section-title">기본 정보</div>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="product_name">상품명 <span class="required">*</span></label>
+                                <input type="text" id="product_name" name="product_name" 
+                                       th:value="${productVO.product_name}" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="category_num">카테고리 <span class="required">*</span></label>
+                                <select id="category_num" name="category_num" required>
+                                    <option value="">카테고리를 선택하세요</option>
+                                    <!-- 카테고리 목록은 Controller에서 전달 받아야 함 -->
+                                    <option th:each="category : ${categoryList}" 
+                                            th:value="${category['CATEGORY_NUM']}" 
+                                            th:text="${category['CATEGORY_NAME']}"
+                                            th:selected="${category['CATEGORY_NUM']== productVO.category_num}">
+                                        카테고리명
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="status">상품 상태</label>
+                                <select id="status" name="status">
+                                    <option value="1" th:selected="${productVO.status == 1}">활성</option>
+                                    <option value="0" th:selected="${productVO.status == 0}">비활성</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 가격 및 단위 정보 -->
+                    <div class="form-section">
+                        <div class="section-title">가격 및 단위 정보</div>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="unit_price">단가 <span class="required">*</span></label>
+                                <input type="number" id="unit_price" name="unit_price" 
+                                       th:value="${productVO.unit_price}" step="0.01" min="0" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="unit">단위</label>
+                                <input type="text" id="unit" name="unit" 
+                                       th:value="${productVO.unit}" placeholder="예: 개, kg, L">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 재고 정보 -->
+                    <div class="form-section">
+                        <div class="section-title">재고 정보</div>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="current_quantity">현재 재고</label>
+                                <input type="number" id="current_quantity" name="current_quantity" 
+                                       th:value="${productVO.current_quantity}" min="0" readonly>
+                                <small class="form-text">재고는 입출고를 통해 관리됩니다.</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="min_stock">최소 재고량</label>
+                                <input type="number" id="min_stock" name="min_stock" 
+                                       th:value="${productVO.min_stock}" min="0" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="max_stock">최대 재고량</label>
+                                <input type="number" id="max_stock" name="max_stock" 
+                                       th:value="${productVO.max_stock}" min="0" readonly>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 버튼 그룹 -->
+                    <div class="button-group">
+                        <button type="submit" class="btn btn-primary">수정 완료</button>
+                        <a th:href="@{/product/detail(product_num=${productVO.product_num})}" 
+                           class="btn btn-secondary">취소</a>
+                        <a th:href="@{/product/list}" class="btn btn-outline">목록</a>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+</div>
+
+</body>
+</html>

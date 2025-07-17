@@ -139,20 +139,23 @@
 	
 	
 	<!-- 제품 상세 정보 -->
-	<select id="selectProduct" parameterType="integer" resultType="kr.spring.product.vo.ProductVO">
+	<select id="selectProduct" parameterType="long" resultType="kr.spring.product.vo.ProductVO">
 	    SELECT 
-	        p.product_num,
-	        p.category_num,
-	        pc.category_name,
-	        p.product_name,
-	        p.status,
-	        p.unit_price,
-	        p.unit,
-	        p.product_date,
-	        cs.current_quantity
+	        *
 	    FROM product p
 	    JOIN product_category pc ON p.category_num = pc.category_num
 	    LEFT JOIN current_stock cs ON p.product_num = cs.product_num
 	    WHERE p.product_num = #{product_num}
 	</select>
+		<!-- 제품 정보 수정 -->
+	<update id="updateProduct" parameterType="productVO">
+		UPDATE product SET
+			product_name=#{product_name},
+	        category_num=#{category_num},
+	        status=#{status},
+	        unit_price=#{unit_price},
+	        unit=#{unit}
+		WHERE product_num=#{product_num}
+	</update>
+	
 </mapper>
