@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout_basic}">
+<head>
+    <meta charset="UTF-8">
+    <title>재고 히스토리</title>
+     <script type="text/javascript" th:src="@{/assets/js/jquery-3.7.1.min.js}"></script>
+    <link rel="stylesheet" th:href="@{/assets/css/main.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/yn/stockHistory.css}">
+</head>
+<body>
+<div layout:fragment="content" class="page-main">
+    <div class="dashboard-wrapper">
+        <!-- 사이드바 -->
+        <th:block th:replace="fragments/nav_sidebar :: sidebar"></th:block>
+   <main class="main-content">
+    <div class="container">
+        <div class="header">
+            <h1>재고 히스토리</h1>
+            <div class="product-info">
+                <div class="product-details">
+                    <div class="product-name">노트북 A1</div>
+                    <div class="product-status status-active">판매중</div>
+                </div>
+                <div class="current-stock">
+                    <h3>현재 재고</h3>
+                    <div class="stock-amount">152 개</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="summary-cards">
+                <div class="summary-card">
+                    <h3>총 입고량</h3>
+                    <div class="value">1,250</div>
+                </div>
+                <div class="summary-card">
+                    <h3>총 출고량</h3>
+                    <div class="value">1,098</div>
+                </div>
+                <div class="summary-card">
+                    <h3>총 이동 횟수</h3>
+                    <div class="value">47</div>
+                </div>
+                <div class="summary-card">
+                    <h3>최근 업데이트</h3>
+                    <div class="value" style="font-size: 1.2em;">07-15</div>
+                </div>
+            </div>
+
+            <div class="filters">
+                <div class="filter-group">
+                    <label>이동 유형</label>
+                    <select id="movementType">
+                        <option value="">전체</option>
+                        <option value="1">입고</option>
+                        <option value="2">출고</option>
+                        <option value="3">조정</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>시작 날짜</label>
+                    <input type="date" id="startDate">
+                </div>
+                <div class="filter-group">
+                    <label>종료 날짜</label>
+                    <input type="date" id="endDate">
+                </div>
+                <div class="filter-group">
+                    <label>담당자</label>
+                    <select id="employee">
+                        <option value="">전체</option>
+                        <option value="1">김재고</option>
+                        <option value="2">박물류</option>
+                        <option value="3">이창고</option>
+                    </select>
+                </div>
+            </div>
+
+            <table class="history-table">
+                <thead>
+                    <tr>
+                        <th>이동번호</th>
+                        <th>이동유형</th>
+                        <th>수량</th>
+                        <th>이동일자</th>
+                        <th>담당자</th>
+                        <th>비고</th>
+                    </tr>
+                </thead>
+                <tbody id="historyTableBody">
+                    <tr>
+                        <td>MOV-2025-0145</td>
+                        <td class="movement-in">입고</td>
+                        <td><span class="quantity-badge quantity-in">+50</span></td>
+                        <td>2025-07-15 14:30</td>
+                        <td>김재고</td>
+                        <td class="note-cell">신규 입고 - 공급업체 A</td>
+                    </tr>
+                    <tr>
+                        <td>MOV-2025-0144</td>
+                        <td class="movement-out">출고</td>
+                        <td><span class="quantity-badge quantity-out">-25</span></td>
+                        <td>2025-07-14 16:45</td>
+                        <td>박물류</td>
+                        <td class="note-cell">온라인 주문 출고</td>
+                    </tr>
+                    <tr>
+                        <td>MOV-2025-0143</td>
+                        <td class="movement-out">출고</td>
+                        <td><span class="quantity-badge quantity-out">-15</span></td>
+                        <td>2025-07-14 11:20</td>
+                        <td>이창고</td>
+                        <td class="note-cell">매장 이동</td>
+                    </tr>
+                    <tr>
+                        <td>MOV-2025-0142</td>
+                        <td class="movement-adjust">조정</td>
+                        <td><span class="quantity-badge quantity-adjust">-2</span></td>
+                        <td>2025-07-13 09:15</td>
+                        <td>김재고</td>
+                        <td class="note-cell">재고 조정 - 파손품</td>
+                    </tr>
+                    <tr>
+                        <td>MOV-2025-0141</td>
+                        <td class="movement-in">입고</td>
+                        <td><span class="quantity-badge quantity-in">+100</span></td>
+                        <td>2025-07-12 13:00</td>
+                        <td>박물류</td>
+                        
+                        <td class="note-cell">정기 입고</td>
+                    </tr>
+                    <tr>
+                        <td>MOV-2025-0140</td>
+                        <td class="movement-out">출고</td>
+                        <td><span class="quantity-badge quantity-out">-30</span></td>
+                        <td>2025-07-11 15:30</td>
+                        <td>이창고</td>
+                        <td class="note-cell">대량 주문 출고</td>
+                    </tr>
+                    <tr>
+                        <td>MOV-2025-0139</td>
+                        <td class="movement-out">출고</td>
+                        <td><span class="quantity-badge quantity-out">-8</span></td>
+                        <td>2025-07-10 10:45</td>
+                        <td>김재고</td>
+                        <td class="note-cell">소매 판매</td>
+                    </tr>
+                    <tr>
+                        <td>MOV-2025-0138</td>
+                        <td class="movement-in">입고</td>
+                        <td><span class="quantity-badge quantity-in">+75</span></td>
+                        <td>2025-07-09 14:20</td>
+                        <td>박물류</td>
+                        <td class="note-cell">긴급 입고</td>
+                    </tr>
+                    <tr>
+                        <td>MOV-2025-0137</td>
+                        <td class="movement-adjust">조정</td>
+                        <td><span class="quantity-badge quantity-adjust">+5</span></td>
+                        <td>2025-07-08 16:00</td>
+                        <td>이창고</td>
+                        <td class="note-cell">재고 실사 조정</td>
+                    </tr>
+                    <tr>
+                        <td>MOV-2025-0136</td>
+                        <td class="movement-out">출고</td>
+                        <td><span class="quantity-badge quantity-out">-20</span></td>
+                        <td>2025-07-07 11:30</td>
+                        <td>김재고</td>
+                        <td class="note-cell">온라인 주문 출고</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="pagination">
+                <button onclick="changePage(-1)">이전</button>
+                <button class="active" onclick="changePage(1)">1</button>
+                <button onclick="changePage(2)">2</button>
+                <button onclick="changePage(3)">3</button>
+                <button onclick="changePage(4)">4</button>
+                <button onclick="changePage(5)">5</button>
+                <button onclick="changePage(1)">다음</button>
+            </div>
+        </div>
+    </div></main></div></div>
+</body>
+</html>
