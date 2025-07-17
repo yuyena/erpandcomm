@@ -139,28 +139,75 @@ public class ProductController {
 		return "views/common/resultAlert";
 	}
 	
-	//게시판 상세
-//	@GetMapping("/detail")
-//	public String getDetail(long board_num, Model model) {
-//		
-//		log.debug("<<상품 상세>> board_num : {}",board_num);
-//		
-//		//해당 글의 조회수 증가
-//		Service.updateHit(board_num);
-//		
-//		BoardVO board = boardService.selectBoard(board_num);
-//		
-//		//제목에 태그를 허용하지 않음
-//		board.setTitle(
-//				StringUtil.useNoHtml(board.getTitle()));
-//		
-//		//내용에 태그를 허용하지 않으면서 줄바꿈 처리
-//		//(summernote 사용시 주석 처리)
-//		//board.setContent(StringUtil.useBrNoHtml(board.getContent()));
-//		
-//		model.addAttribute("board", board);
-//		
-//		return "views/board/boardView";
-//	}
+	//상품 상세
+	@GetMapping("/detail")
+	public String getDetail(@RequestParam("product_num") long product_num, Model model) {
+		
+		log.debug("<<상품 상세>> product_num : {}",product_num);
 	
+		ProductVO productVO = productService.selectProduct(product_num);
+		model.addAttribute("productVO", productVO);
+		
+		return "views/product/productDetail";
+	}
+	//게시판 수정 폼
+	@PreAuthorize("isAuthenticated()")
+	@GetMapping("/update")
+	public String formUpdate(@RequestParam("product_num") long product_num,
+			                 Model model,
+			       @AuthenticationPrincipal
+			       PrincipalDetails principal) {
+		
+		ProductVO productVO = productService.selectProduct(product_num);
+		//
+//		if(principal.getMemberVO().getMem_num() != 
+//				               boardVO.getMem_num()) {
+//			//로그인한 회원번호와 작성자 회원번호 불일치
+//			return "views/common/accessDenied";
+//		}
+		List<Map<String, Object>> categoryList = productService.selectCategoryList();
+		
+		model.addAttribute("productVO", productVO);		
+		model.addAttribute("categoryList", categoryList);
+		return "views/product/productUpdate";
+	}
+	
+	//글 수정
+	@PreAuthorize("isAuthenticated()")
+	@PostMapping("/update")
+	public String submitUpdate(@Valid ProductVO productVO,
+			        BindingResult result,
+			        HttpServletRequest request,
+			        Model model,
+			        @AuthenticationPrincipal
+			        PrincipalDetails principal) 
+			        		throws IllegalStateException, IOException {
+		log.debug("<<상품 수정>> : {}", productVO);
+		
+		ProductVO db_board = productService.selectProduct(productVO.getProduct_num());
+		//로그인한 회원번호와 작성자 회원번호 일치 여부 체크
+//		if(principal.getMemberVO().getMem_num() != 
+//				             db_board.getMem_num()) {
+//			return "views/common/accessDenied";
+//		}
+		
+		//유효성 체크 결과 오류가 있으면 폼 호출
+//		if(result.hasErrors()) {
+//			//유효성 체크 결과 오류 필드 출력
+//			ValidationUtil.printErrorFields(result);
+//			//title또는 content가 입력되지 않아 유효성 체크에
+//			//걸리면 파일 정보를 잃어버리기 때문에 폼을 호출할 때
+//			//파일을 다시 셋팅
+//			boardVO.setFilename(db_board.getFilename());
+//			return "views/board/boardModify";
+//		}
+		//상품 수정
+		productService.updateProduct(productVO);
+		
+		model.addAttribute("message", "상품 정보 수정이 완료되었습니다.");
+		model.addAttribute("url", request.getContextPath()+"/product/detail?product_num="
+						             +productVO.getProduct_num());
+		
+		return "views/common/resultAlert";
+	}
 }

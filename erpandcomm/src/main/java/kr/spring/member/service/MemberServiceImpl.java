@@ -45,7 +45,7 @@ public class MemberServiceImpl implements MemberService {
 	public void updatePassword(MemberVO member) {
 		memberMapper.updatePassword(member);
 		// 설정되어 있는 자동 로그인 해제(모든 브라우저에 설정된 자동로그인 해제)
-		memberMapper.deleteRememberMe(member);
+//		memberMapper.deleteRememberMe(member);
 	}
 
 	@Override

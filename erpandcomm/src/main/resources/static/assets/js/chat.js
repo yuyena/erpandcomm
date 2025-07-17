@@ -294,8 +294,8 @@ $(function(){
         // message_id가 있는 경우에만 중복 방지 세트에 추가
         if (message.message_id) {
             chat.messages.displayed.add(message.message_id);
-        }
-        
+}
+
         // 다른 사용자의 메시지인 경우 읽음 처리
         if (message.sender_num != chat.user.id && message.message_num) {
             markMessageAsRead(message.message_num);

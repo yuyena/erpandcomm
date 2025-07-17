@@ -13,6 +13,7 @@ public interface ProductService {
 	public ProductVO selectProduct(Long product_num);
 	public List<Map<String, Object>> selectCategoryList();
 	public void insertProduct(ProductVO product);
+	public void updateProduct(ProductVO product); 
 	// 상품 전체 목록 조회
 	List<ProductVO> selectProductList();
 

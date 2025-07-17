@@ -30,7 +30,10 @@ public interface ProductMapper {
     public void insertProduct(ProductVO product);
     @Insert("INSERT INTO current_stock (product_num, current_quantity,min_stock,max_stock) VALUES (#{product_num}, #{current_quantity}, #{min_stock},#{max_stock})")
     public void insertCurrentStock(ProductVO stock);
-	
+	//상품 수정
+    public void updateProduct(ProductVO product); 
+    //상품 삭제
+    
 	
 	
 	
