@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-import kr.spring.member.security.CustomAccessDeniedHandler;
 import kr.spring.member.service.MemberService;
 import kr.spring.member.vo.PrincipalDetails;
 import kr.spring.util.FileUtil;
@@ -26,19 +25,12 @@ import kr.spring.member.vo.MemberVO;
 @Slf4j
 @RequestMapping("/member")
 public class MemberUserController {
-
-	
-    private final CustomAccessDeniedHandler customAccessDeniedHandler;
 	
 	@Autowired
 	private MemberService memberService;
 	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
-
-    MemberUserController(CustomAccessDeniedHandler customAccessDeniedHandler) {
-        this.customAccessDeniedHandler = customAccessDeniedHandler;
-    }
 	
 	// 자바빈(VO) 초기화
 	@ModelAttribute
@@ -260,8 +252,8 @@ public class MemberUserController {
 		memberService.updatePassword(memberVO);
 		
 		//View에 표시할 메시지
-		model.addAttribute("message", "비밀번호 변경 완료(*재접속시 설정되어 있는 자동로그인 기능 해제)");
-		model.addAttribute("url", request.getContextPath()+"/member/myPage");
+		model.addAttribute("message", "비밀번호 변경 완료");
+		model.addAttribute("url", request.getContextPath()+"/member/logout");
 		
 		return "views/common/resultAlert";
 	}

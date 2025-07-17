@@ -12,7 +12,32 @@
 	let url = /*[[${url}]]*/ '';
 	
 	alert(message);
-	location.href = url;
+	
+	if(url.includes('/logout')) {
+		document.addEventListener('DOMContentLoaded', function() {
+			const form = document.createElement('form');
+			form.method = 'POST';
+			form.action = url;
+			
+	        // 기존 meta 태그에서 CSRF 토큰 가져오기
+	        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+	        const csrfHeader = document.querySelector('meta[name="csrf-header"]')?.getAttribute('content');
+	        
+	        // CSRF 토큰 추가
+	        if(csrfToken) {
+	            const csrfInput = document.createElement('input');
+	            csrfInput.type = 'hidden';
+	            csrfInput.name = '_csrf';  // Spring Security 기본 parameter name
+	            csrfInput.value = csrfToken;
+	            form.appendChild(csrfInput);
+	        }
+	        
+	        document.body.appendChild(form);
+	        form.submit();
+	    });
+	} else {
+		location.href = url;
+	}
 </script>
 </head>
 <body>

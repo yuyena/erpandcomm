@@ -66,7 +66,7 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
 			
 			// 동작 상에서는 토큰이 없어졌는데 로그아웃 눌렀을때 로그인페이지로 이동되게
 			if (request.getRequestURI().equals("/member/logout")) {
-				response.sendRedirect("/memeber/login");
+				response.sendRedirect("/member/login");
 				return;
 			} // if
 			
