@@ -260,8 +260,8 @@ public class MemberUserController {
 		memberService.updatePassword(memberVO);
 		
 		//View에 표시할 메시지
-		model.addAttribute("message", "비밀번호 변경 완료(*재접속시 설정되어 있는 자동로그인 기능 해제)");
-		model.addAttribute("url", request.getContextPath()+"/member/myPage");
+		model.addAttribute("message", "비밀번호 변경 완료");
+		model.addAttribute("url", request.getContextPath()+"/member/logout");
 		
 		return "views/common/resultAlert";
 	}
