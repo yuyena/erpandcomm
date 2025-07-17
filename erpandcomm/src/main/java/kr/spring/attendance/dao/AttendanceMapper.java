@@ -27,7 +27,9 @@ public interface AttendanceMapper {
 	public MemberVO selectList(Map<String,Object> map);
 	public Integer selectRowCount(Map<String,Object> map);
 	// update(출,퇴근 수정)
-	public void updateAttendance(AttendanceVO attendence);
+	//public void updateAttendance(Long empId);
+	public void updateAttendance(AttendanceVO attendance);
+	
 	// delete (출,퇴근 삭제) 
 	public void deleteAttendance(Long empId);
 	

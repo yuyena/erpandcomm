@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/layout_basic}">
+
+<head>
+<meta charset="UTF-8">
+<title>근태수정 폼</title>
+<link rel="stylesheet" th:href="@{/assets/css/main.css}">
+<link rel="stylesheet" th:href="@{/assets/css/yj/attendanceForm.css}">
+<script th:src="@{/assets/js/sidebar.js}"></script>
+</head>
+<body>
+	<div layout:fragment="content" class="page-main">
+	<div class="dashboard-wrapper">
+		<th:block th:replace="fragments/nav_sidebar :: sidebar"></th:block>
+		<main class="main-content">
+			<div class="main-header">
+				<h2>근태 수정</h2>
+			</div>
+			<section class="card-section">
+				<form th:action="@{/personnel/updateForm}" method="post">
+					<!-- PK: attendanceId를 hidden으로 전달 -->
+					<input type="hidden" name="attendanceId" th:value="${attendance.attendanceId}"/>
+					<!-- 날짜 -->
+					<div class="form-group">
+						<label for="workDate">날짜</label>
+						<input type="date" id="workDate" name="workDate" th:value="${attendance.workDate}" readonly />
+					</div>
+					<!-- 직원번호  -->					 
+					<div class="form-group">
+						<label for="employee_code">직원번호</label>
+						<input type="text" id="employee_code" name="employeeCode" th:value="${attendance.employeeCode}" readonly />
+					</div>
+					<!-- 이름 -->				 
+					<div class="form-group">
+						<label for="empName">이름</label>
+						<input type="text" id="user_name" name="empName" th:value="${attendance.empName}" readonly />
+					</div>
+					<!-- 상태 -->
+					<div class="form-group">
+						<label for="status">상태</label>
+						<select id="status" name="status" required>
+							<option value="">상태 선택</option>
+							<option value="present">출근</option>
+							<option value="late">지각</option>
+							<option value="early_leave">조퇴</option>
+							<option value="absent">결근</option>
+							<option value="holiday">휴가</option>
+						</select>
+					</div>
+
+						<div class="form-group">
+							<label for="workType">근무 유형</label> 
+							<select id="workType" name="workType" required>
+								<option value="">근무 유형 선택</option>
+								<option value="normal">정상 근무</option>
+								<option value="overtime">초과 근무</option>
+								<option value="night">야간 근무</option>
+								<option value="holiday">휴일 근무</option>
+							</select>
+						</div>
+						
+						<div class="form-group">
+						<label for="inTime">출근시간</label>
+						<input type="time" id="checkIntime" name="checkIntime" th:value="${attedance.checkIntime}" readonly/>
+					</div>
+
+					<div class="form-group">
+						<label for="outTime">퇴근시간</label>
+						<input type="time" id="checkOuttime" name="checkOuttime" />
+					</div>
+
+					<div class="form-group">
+						<label for="notes">메모 (선택)</label>
+						<textarea id="notes" name="notes" rows="3"
+							placeholder="지각/조퇴 사유 등 자유롭게 입력하세요."></textarea>
+					</div>
+
+					<div class="button-group">
+						<button type="submit" class="btn btn-primary">저장</button>
+						<button type="button" onclick="location.href='/personnel/attendanceList'" class="btn btn-secondary">취소</button>
+					</div>
+				</form>
+			</section>
+		</main>
+	</div>
+</div>
+
+<!-- 페이지 전용 스크립트 -->
+<div layout:fragment="pageScript"></div>
+</body>
+</html>

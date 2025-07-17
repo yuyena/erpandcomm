@@ -23,6 +23,7 @@ import kr.spring.attendance.service.AttendanceService;
 import kr.spring.attendance.vo.AttendanceVO;
 import kr.spring.member.vo.MemberVO;
 import kr.spring.member.vo.PrincipalDetails;
+import kr.spring.util.PagingUtil;
 import kr.spring.util.ValidationUtil;
 import lombok.extern.slf4j.Slf4j;
 
@@ -102,10 +103,51 @@ public class AttendanceController {
 			
 			// empId 하나만 넘기기
 			List<AttendanceVO> list = attendanceService.selectAttedanceList(empId);
-			
 			model.addAttribute("list", list);
+			
+			// 페이지 처리
 			return "views/personnel/attendanceList"; //리스트 보여줄 뷰
 		}
-	
+		
+		// 목록 보기 (오늘 근태 등록 전에도 볼 수 있는 목록)
+		@GetMapping("/List")
+		public String showList(@AuthenticationPrincipal PrincipalDetails principal,
+				Model model) {
+			Long empId = principal.getMemberVO().getUser_num();
+			
+			List<AttendanceVO> list = attendanceService.selectAttedanceList(empId);
+			model.addAttribute("list",list);
+			return "views/personnel/attendanceList";
+		}
+		
+		// 근태 목록 수정 폼
+		@PreAuthorize("isAuthenticated()")
+		@GetMapping("/updateForm")
+		public String formUpdate(@Valid AttendanceVO attendanceVO,
+				BindingResult result,
+				HttpServletRequest request,
+				Model model,
+				@AuthenticationPrincipal 
+				PrincipalDetails principal) throws IllegalStateException, IOException{
+			
+			log.debug("<<근태 수정>> : {}", attendanceVO);
+			
+			//유효성 검사 
+			if(result.hasErrors()) {
+				ValidationUtil.printErrorFields(result);
+				return form(principal,model);
+			}
+			// attendance_id 하나 수정?
+			// emp_id수정?
+			AttendanceVO attendance = attendanceService.selectAttendance(attendanceVO.getAttendanceId());
+			// 수정 처리
+			attendanceService.updateAttendance(attendanceVO);
+			
+			model.addAttribute("message", "근태 정보가 수정되었습니다.");
+			model.addAttribute("url", request.getContextPath()+"/personnel/attendanceList");
+			
+			return "views/common/resultAlert";
+		}
+		
 	
 }

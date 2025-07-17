@@ -168,7 +168,44 @@
 .time-early {
     color: #5C93FF;
 }
+/**/
+.btn {
+  display: inline-block;
+  padding: 6px 12px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+  min-width: 90px;
+  text-align: center;
+  border: none;
+}
+/* 주요 버튼 - 파란색 계열 */
+.btn-primary {
+  background: #1976D2;
+  color: #fff;
+  box-shadow: 0 2px 6px rgba(25, 118, 210, 0.3);
+}
 
+.btn-primary:hover {
+  background: #1565C0;
+  box-shadow: 0 4px 10px rgba(25, 118, 210, 0.4);
+}
+
+/* 보조 버튼 - 연한 파랑 배경 */
+.btn-secondary {
+  background: #f8fbff;
+  color: #1976D2;
+  border: 1px solid #e0e8f0;
+}
+
+.btn-secondary:hover {
+  background: #e3f2fd;
+  border-color: #1976D2;
+}
+
+/**/
 /* 관리 버튼 스타일 */
 .manage-btn {
     background: #5C93FF;

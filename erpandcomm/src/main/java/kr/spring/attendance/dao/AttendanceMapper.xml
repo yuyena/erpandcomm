@@ -12,17 +12,6 @@
 		<result property="empName" column="user_name"/>	
 	</resultMap>
 	
-	<!-- 근태 목록 -->
-	<select id ="selectAttendanceList" parameterType = "long" resultMap = "attendanceMap">
-	  SELECT 
-        d.user_name, 
-        a.*
-    FROM attendance a
-    JOIN euser_detail d ON d.user_num = a.emp_id
-    WHERE a.emp_id = #{empId}
-    ORDER BY a.attendance_id ASC
-	</select>
-	
 	<!-- 근태 등록 -->
 <insert id="insertAttendance" parameterType="kr.spring.attendance.vo.AttendanceVO">	
 	INSERT INTO attendance(
@@ -53,9 +42,27 @@
 		SYSDATE)
 	</insert>
 	
+	<!-- 근태 목록 -->
+	<select id ="selectAttendanceList" parameterType = "long" resultMap = "attendanceMap">
+	  SELECT 
+        d.user_name, 
+        a.*
+    FROM attendance a
+    JOIN euser_detail d ON d.user_num = a.emp_id
+    WHERE a.emp_id = #{empId}
+    ORDER BY a.attendance_id ASC
+	</select>
 	
-	
-	
+	<!-- 근태 목록 수정 -->
+	<update id="updateAttendance" parameterType="attendanceVO">
+		UPDATE attendance 
+		SET
+			check_out_time=#{checkOuttime},
+			status=#{status},
+			notes=#{notes}
+		WHERE
+			attendance_id=#{attendanceId}	
+	</update>
 	
 	
 	
