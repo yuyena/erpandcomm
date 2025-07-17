@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-import kr.spring.member.security.CustomAccessDeniedHandler;
 import kr.spring.member.service.MemberService;
 import kr.spring.member.vo.PrincipalDetails;
 import kr.spring.util.FileUtil;
@@ -26,19 +25,12 @@ import kr.spring.member.vo.MemberVO;
 @Slf4j
 @RequestMapping("/member")
 public class MemberUserController {
-
-	
-    private final CustomAccessDeniedHandler customAccessDeniedHandler;
 	
 	@Autowired
 	private MemberService memberService;
 	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
-
-    MemberUserController(CustomAccessDeniedHandler customAccessDeniedHandler) {
-        this.customAccessDeniedHandler = customAccessDeniedHandler;
-    }
 	
 	// 자바빈(VO) 초기화
 	@ModelAttribute
