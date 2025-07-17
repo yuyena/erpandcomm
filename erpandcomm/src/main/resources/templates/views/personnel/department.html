@@ -45,9 +45,9 @@
                     <div class="card-header" style="font-weight: bold; font-size: 1.1rem; margin-bottom: 18px; display: flex; justify-content: space-between; align-items: center;">
                         <span>부서 관리</span>
                         <div style="display: flex; gap: 8px;">
-                            <button class="btn btn-primary" onclick="location.href='/personnel/department/register'">부서 등록</button>
-                            <button class="btn-secondary" onclick="modifyDepartment()">부서 수정</button>
-                            <button class="btn-danger" onclick="deleteDepartment()">부서 삭제</button>
+                            <button class="btn btn-primary">부서 등록</button>
+                            <button class="btn-secondary">부서 수정</button>
+                            <button class="btn-danger">부서 삭제</button>
                         </div>
                     </div>
                     <div class="table-container">
@@ -83,98 +83,6 @@
     </div>
 </div>
 
-<div layout:fragment="pageScript">
-    <script>
-        // 부서 수정
-        function modifyDepartment() {
-            const selected = document.querySelector('input[type="checkbox"]:checked');
-            if (!selected) {
-                alert('수정할 부서를 선택해주세요.');
-                return;
-            }
-            
-            const departmentNum = selected.closest('tr').dataset.departmentNum;
-            location.href = `/personnel/department/modify/${departmentNum}`;
-        }
-
-        // 부서 삭제
-        function deleteDepartment() {
-            const selected = document.querySelector('input[type="checkbox"]:checked');
-            if (!selected) {
-                alert('삭제할 부서를 선택해주세요.');
-                return;
-            }
-            
-            if (!confirm('정말로 부서를 삭제하시겠습니까?')) {
-                return;
-            }
-            
-            const departmentNum = selected.closest('tr').dataset.departmentNum;
-            fetch(`/personnel/department/delete`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ departmentNum: departmentNum })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.result === 'success') {
-                    alert(data.message);
-                    location.reload();
-                } else {
-                    alert(data.message);
-                }
-            })
-            .catch(error => {
-                alert('부서 삭제 중 오류가 발생했습니다.');
-            });
-        }
-
-        // 부서 목록 불러오기
-        function loadDepartmentList() {
-            fetch('/personnel/department/list')
-                .then(response => response.json())
-                .then(data => {
-                    const tbody = document.querySelector('.dept-table tbody');
-                    tbody.innerHTML = '';
-                    
-                    data.list.forEach(dept => {
-                        const tr = document.createElement('tr');
-                        tr.dataset.departmentNum = dept.department_num;
-                        tr.innerHTML = `
-                            <td><input type="checkbox"></td>
-                            <td>${dept.department_code}</td>
-                            <td>${dept.department_name}</td>
-                            <td>${dept.department_head}</td>
-                            <td>${dept.employee_count}</td>
-                            <td>
-                                <button class="btn btn-sm btn-secondary" 
-                                        onclick="location.href='/personnel/department/modify/${dept.department_num}'">
-                                    수정
-                                </button>
-                            </td>
-                        `;
-                        tbody.appendChild(tr);
-                    });
-                })
-                .catch(error => {
-                    console.error('부서 목록 로드 실패:', error);
-                });
-        }
-
-        // 페이지 로드 시 부서 목록 불러오기
-        document.addEventListener('DOMContentLoaded', loadDepartmentList);
-
-        // 체크박스 선택 시 수정/삭제 버튼 활성화
-        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-            checkbox.addEventListener('change', function() {
-                const selected = document.querySelector('input[type="checkbox"]:checked');
-                document.querySelector('.btn-secondary').disabled = !selected;
-                document.querySelector('.btn-danger').disabled = !selected;
-            });
-        });
-    </script>
-</div>
+<div layout:fragment="pageScript"></div>
 </body>
 </html>

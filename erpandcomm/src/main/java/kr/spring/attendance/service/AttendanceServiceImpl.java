@@ -22,11 +22,11 @@ public class AttendanceServiceImpl implements AttendanceService {
 	private AttendanceMapper attendanceMapper;
 	
 	@Override
-	public void insertAttendance(AttendanceVO attendence) {
-		attendanceMapper.insertAttendance(attendence);
+	public void insertAttendance(AttendanceVO attendance) {
+		attendanceMapper.insertAttendance(attendance);
 		
 	}
-
+	// 개별
 	@Override
 	public AttendanceVO selectAttendance(Long empId) {
 		return attendanceMapper.selectAttendance(empId);
@@ -40,7 +40,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 	}
 
 	@Override
-	public void updateAttendance(AttendanceVO attendence) {
+	public void updateAttendance(AttendanceVO attendance) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -54,5 +54,11 @@ public class AttendanceServiceImpl implements AttendanceService {
 	@Override
 	public MemberVO selectList(Map<String, Object> map) {
 		return attendanceMapper.selectList(map);
+	}
+	
+	// 여러개
+	@Override
+	public List<AttendanceVO> selectAttedanceList(Long empId) {
+		return attendanceMapper.selectAttendanceList(empId);
 	}
 }

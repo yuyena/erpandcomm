@@ -24,7 +24,6 @@ public class AttendanceVO {
 	@NotBlank
 	private String workDate; // 일자
 	private String scheduledInTime; // 출근 예정
-	
 	private String scheduledOutTime; // 퇴근 예정
 	private Long empId; // 실제 DB에서는 attendance.emp_id = euser_detail.user_num
 	private String employeeCode; //사원번호 조회용 - employee_code from euser

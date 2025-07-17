@@ -40,18 +40,6 @@ public class AttendanceController {
 	public AttendanceVO initCommand() {
 		return new AttendanceVO();
 	}
-	// 근태 목록 조회
-	@GetMapping("/attendanceList")
-	public String getAttendanceListByEmpId(@AuthenticationPrincipal PrincipalDetails principal,
-			                               Model model) {
-		Long empId = principal.getMemberVO().getUser_num(); // 로그인 한 사용자의 empId
-		Map<String, Object> map = new HashMap<>();
-		map.put("empId", empId); // 이 empId로 해당 직원의 근태 목록만 조회
-		
-		MemberVO memberVO = attendanceService.selectList(map);
-		model.addAttribute("memberVO", memberVO);
-		return "views/personnel/attendanceList"; //리스트 보여줄 뷰
-	}
 	
 	// 근태 등록 폼
 	@PreAuthorize("isAuthenticated()")
@@ -105,4 +93,19 @@ public class AttendanceController {
 		
 		return "views/common/resultAlert";
 	}
+	
+	// 근태 목록 조회
+		@GetMapping("/attendanceList")
+		public String getAttendanceListByEmpId(@AuthenticationPrincipal PrincipalDetails principal,
+				                               Model model) {
+			Long empId = principal.getMemberVO().getUser_num(); // 로그인 한 사용자의 empId
+			
+			// empId 하나만 넘기기
+			List<AttendanceVO> list = attendanceService.selectAttedanceList(empId);
+			
+			model.addAttribute("list", list);
+			return "views/personnel/attendanceList"; //리스트 보여줄 뷰
+		}
+	
+	
 }

@@ -6,6 +6,8 @@
 <meta charset="UTF-8">
 <title>Office ERP - 근태관리</title>
 <link rel="stylesheet" th:href="@{/assets/css/main.css}">
+<link rel="stylesheet" th:href="@{/assets/css/yj/attendanceList.css}">
+
 <script th:src="@{/assets/js/sidebar.js}"></script>
 </head>
 <body>
@@ -66,8 +68,6 @@
 							<span>근태 관리</span>
 							<div style="display: flex; gap: 8px;">
 								<button class="btn btn-primary" onclick="location.href='/personnel/Form'">근태 등록</button>
-								<button class="btn-secondary">근태 수정</button>
-								<button class="btn-danger">근태 삭제</button>
 							</div>
 						</div>
 						<div class="table-container">
@@ -85,7 +85,20 @@
 									</tr>
 								</thead>
 								<tbody>
-									<!-- 데이터가 동적으로 로드될 예정 -->
+									<tr th:each="attendance : ${list}">
+										<td><input type="checkbox"></td>
+										<td th:text="${attendance.workDate}"></td>
+										<td th:text="${attendance.empId}"></td>
+										<td th:text="${attendance.empName}"></td>
+										<td th:text="${attendance.status}"></td>
+										<td th:text="${attendance.checkIntime}"></td>
+										<td th:text="${attendance.checkOuttime}"></td>
+										<td th:text="${attendance.notes}"></td>
+										<td>
+											<button class="manage-btn edit">수정</button>
+											<button class="manage-btn delete">삭제</button>
+										</td>
+									</tr>
 								</tbody>
 							</table>
 						</div>

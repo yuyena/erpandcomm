@@ -15,14 +15,15 @@ import kr.spring.member.vo.MemberVO;
 public interface AttendanceMapper {
 	// 개별 작성
 	// 날짜, 직원번호, 이름, 상태, 출근시간, 퇴근시간
-	public void insertAttendance(AttendanceVO attendence); // 수동 등록
+	public void insertAttendance(AttendanceVO attendance); // 수동 등록
 	public void autoInsertAttendance(String empId); // 출근 버튼용
 	//@Update("UPDATE attendance SET CHECK_OUT_TIME = now(), UPDATE_AT = NOW() WHERE EMP_ID = #{empId} AND WORK_DATE = now() AND CHECK_OUT_TIME IS NULL")
 	public void autoUpdateCheckout(String empId);; // 퇴근 버튼용
 	// 출근 개별 조회
-	//@Select("SELECT fROM attendance WHERE EMP_ID = #{empId}")
 	public AttendanceVO selectAttendance(Long empId);
-	// 전체 데이터 조회
+	// empId에 따른 전체 근태 목록
+	public List<AttendanceVO> selectAttendanceList(Long empId);
+	// 전체 데이터 조회(1개)
 	public MemberVO selectList(Map<String,Object> map);
 	public Integer selectRowCount(Map<String,Object> map);
 	// update(출,퇴근 수정)
