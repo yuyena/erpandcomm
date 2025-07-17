@@ -222,6 +222,39 @@ div#loading img{
 	width: 110px;
 }
 
+/* 테이블 내 인라인 수정 입력 필드
+--------------------------------*/
+.member-info-table td .table-input {
+	width: 280px !important;
+	min-width: 280px !important;
+	max-width: 280px !important;
+	height: 36px !important;
+	min-height: 36px !important;
+	max-height: 36px !important;
+	padding: 6px 10px !important;
+	border: 1px solid #ddd !important;
+	border-radius: 4px !important;
+	font-family: inherit !important;
+	font-size: 14px !important;
+	background: #fff !important;
+	box-sizing: border-box !important;
+	transition: border-color 0.2s ease !important;
+	display: block !important;
+	margin: 0 !important;
+}
+
+.member-info-table td .table-input:focus {
+	outline: none !important;
+	border-color: #2176e8 !important;
+	box-shadow: 0 0 0 2px rgba(33, 118, 232, 0.1) !important;
+}
+
+/* td 크기도 고정 */
+.member-info-table td {
+	width: 300px !important;
+	min-width: 300px !important;
+}
+
 
 
 
