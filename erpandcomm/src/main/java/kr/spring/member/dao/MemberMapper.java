@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import kr.spring.member.vo.MemberVO;
 
@@ -18,6 +19,7 @@ public interface MemberMapper {
 	public MemberVO selectMember(Long mem_num);
 	public void updateMember(MemberVO member);
 	public void updateMemberDetail(MemberVO member);
+	@Update("UPDATE euser_detail SET passwd=#{passwod} WHERE user_num=#{user_um}")
 	public void updatePassword(MemberVO member);
 	public void deleteRememberMe(MemberVO member);
 	public void deleteMember(Long mem_num);

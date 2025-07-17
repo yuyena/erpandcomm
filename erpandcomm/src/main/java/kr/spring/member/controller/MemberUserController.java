@@ -17,7 +17,6 @@ import jakarta.validation.Valid;
 import kr.spring.member.security.CustomAccessDeniedHandler;
 import kr.spring.member.service.MemberService;
 import kr.spring.member.vo.PrincipalDetails;
-import kr.spring.product.vo.ProductVO;
 import kr.spring.util.FileUtil;
 import kr.spring.util.ValidationUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -43,8 +42,8 @@ public class MemberUserController {
 	
 	// 자바빈(VO) 초기화
 	@ModelAttribute
-	public ProductVO initCommand() {
-		return new ProductVO();
+	public MemberVO initCommand() {
+		return new MemberVO();
 	}
 	
 //	// 회원가입 폼 호출
@@ -134,7 +133,7 @@ public class MemberUserController {
 //	public String formUpdate(@AuthenticationPrincipal PrincipalDetails principal, Model model) {
 //		
 //		// 회원정보
-//		MemberVO memberVO = memberService.selectMember(principal.getMemberVO().getMem_num());
+//		MemberVO memberVO = memberService.selectMember(principal.getMemberVO().getUser_num());
 //		model.addAttribute("memberVO", memberVO);
 //		
 //		return "views/member/memberModify";
@@ -220,32 +219,52 @@ public class MemberUserController {
 //		return "views/member/memberFindPassword";
 //	}
 //	
-//	// 비밀번호 변경 폼
-//	@PreAuthorize("isAuthenticated()")
-//	@GetMapping("/changePassword")
-//	public String formChangePassword() {
-//		return "views/member/memberChangePassword";
-//	}
-//	
-//	// 비밀번호 변경
-//	@PreAuthorize("isAuthenticated()")
-//	@PostMapping("/changePassword")
-//	public String submitChangePassword(@Valid MemberVO memberVO, BindingResult result, 
-//									   HttpServletRequest request, @AuthenticationPrincipal PrincipalDetails principal) {
-//		
-//		log.debug("<<비밀번호 변경>> : {}", memberVO);
-//		
-//		if (result.hasFieldErrors("now_passwd") || result.hasFieldErrors("passwd")) {
-//			ValidationUtil.printErrorFields(result);
-//			return formChangePassword();
-//		}
-//		
-//		// 회원번호 저장
-//		memberVO.setMem_num(principal.getMemberVO().getMem_num());
-//		
-//		
-//		return "views/common/resultAlert";
-//	}
+	// 비밀번호 변경 폼
+	@PreAuthorize("isAuthenticated()")
+	@GetMapping("/changePassword")
+	public String formChangePassword() {
+		return "views/member/memberChangePassword";
+	}
+	
+	// 비밀번호 변경
+	@PreAuthorize("isAuthenticated()")
+	@PostMapping("/changePassword")
+	public String submitChangePassword(@Valid MemberVO memberVO, BindingResult result, 
+			   HttpServletRequest request, @AuthenticationPrincipal PrincipalDetails principal,
+			   Model model) {
+
+		log.debug("<<비밀번호 변경>> : {}", memberVO);
+		
+		if (result.hasFieldErrors("now_passwd") || result.hasFieldErrors("passwd")) {
+		ValidationUtil.printErrorFields(result);
+		return formChangePassword();
+		}
+		
+		// 회원번호 저장
+		memberVO.setUser_num(principal.getMemberVO().getUser_num());
+		
+		MemberVO db_member = memberService.selectMember(memberVO.getUser_num());
+		// 폼에서 저농한 현재 비밀번호와 DB에서 읽어온 비밀번호 일치 여부 체크
+		if (!passwordEncoder.matches(memberVO.getNow_passwd(), db_member.getPasswd())) {
+		result.rejectValue("now_passwd", "invalidPassword");
+		return formChangePassword();
+		} // if
+		
+		//새비밀번호 암호화
+		memberVO.setPasswd(passwordEncoder.encode(
+		    memberVO.getPasswd()));
+		//자동 로그인 해제를 위해 id가 필요
+//		memberVO.setId(db_member.getId());
+		
+		//비밀번호수정
+		memberService.updatePassword(memberVO);
+		
+		//View에 표시할 메시지
+		model.addAttribute("message", "비밀번호 변경 완료(*재접속시 설정되어 있는 자동로그인 기능 해제)");
+		model.addAttribute("url", request.getContextPath()+"/member/myPage");
+		
+		return "views/common/resultAlert";
+	}
 
 }
 
