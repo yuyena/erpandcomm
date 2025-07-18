@@ -99,9 +99,11 @@ CREATE TABLE event_attendee (
 
 CREATE TABLE notice (
     noti_num      NUMBER          PRIMARY KEY,
+    user_num      NUMBER          NOT NULL,
     noti_title    VARCHAR2(100)   NOT NULL,
     noti_content  VARCHAR2(2000)  NOT NULL,
-    noti_date     DATE            DEFAULT SYSDATE NOT NULL
+    noti_date     DATE            DEFAULT SYSDATE NOT NULL,
+    CONSTRAINT fk_userNum_noti FOREIGN KEY (user_num) REFERENCES euser(user_num)
 );
 
 
