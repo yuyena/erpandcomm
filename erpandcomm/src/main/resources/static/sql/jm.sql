@@ -97,6 +97,20 @@ CREATE TABLE event_attendee (
     CONSTRAINT fk_attendee_user FOREIGN KEY (employee_code) REFERENCES euser(employee_code)
 );
 
+-- 기본 구조만 만들고 필요시 컬럼 추가 당장 구현 안할거임
+CREATE TABLE task_attachment (
+    attachment_id   NUMBER          PRIMARY KEY,
+    event_id        NUMBER          NOT NULL,
+    file_name       VARCHAR2(200)   NOT NULL,
+    file_path       VARCHAR2(500)   NOT NULL,
+    uploaded_by     NUMBER          NOT NULL,
+    uploaded_at     DATE            DEFAULT SYSDATE,
+    CONSTRAINT fk_attachment_event FOREIGN KEY (event_id) REFERENCES event(event_id),
+    CONSTRAINT fk_attachment_user FOREIGN KEY (uploaded_by) REFERENCES euser(user_num)
+);
+
+CREATE SEQUENCE task_attachment_seq;
+
 CREATE TABLE notice (
     noti_num      NUMBER          PRIMARY KEY,
     user_num      NUMBER          NOT NULL,
