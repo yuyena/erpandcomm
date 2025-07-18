@@ -75,11 +75,6 @@ $(function(){
 	function displayNoticeContent(param, content){
 		let output = `
 			<div class="notice-detail">
-				<div class="notice-meta">
-					<span class="notice-date">
-						<i class="fa fa-calendar"></i> ${param.noti_date}
-					</span>
-				</div>
 				<div class="notice-content-body">
 					${param.noti_content}
 				</div>

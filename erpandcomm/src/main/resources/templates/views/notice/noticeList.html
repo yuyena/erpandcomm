@@ -7,9 +7,9 @@
     <meta charset="UTF-8">
     <title>Office ERP - 공지사항</title>
     <link rel="stylesheet" th:href="@{/assets/css/main.css}">
-    <link rel="stylesheet" th:href="@{/assets/css/notice.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/jm/notice.css}">
     <script type="text/javascript" th:src="@{/assets/js/jquery-3.7.1.min.js}"></script>
-    <script type="text/javascript" th:src="@{/assets/js/jm/notice.js}"></script>
+    <script type="text/javascript" th:src="@{/assets/js/notice.js}"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
@@ -32,6 +32,12 @@
                 </div>
             </div>
             
+            <!-- 성공 메시지 -->
+            <div th:if="${message}" class="alert alert-success">
+                <i class="fa fa-check-circle"></i>
+                <span th:text="${message}">성공 메시지</span>
+            </div>
+            
             <!-- 검색 섹션 -->
             <div class="search-section">
                 <form action="noticeList" id="search_form" method="get" class="search-form">
@@ -40,7 +46,6 @@
                     <div class="search-group">
                         <label for="keyfield">검색 유형:</label>
                         <select name="keyfield" id="keyfield">
-                            <option value="">전체</option>
                             <option value="1" th:selected="${keyfield=='1'}">제목</option>
                             <option value="2" th:selected="${keyfield=='2'}">내용</option>
                             <option value="3" th:selected="${keyfield=='3'}">제목+내용</option>
@@ -56,18 +61,28 @@
                         <button type="submit" class="btn">
                             <i class="fa fa-search"></i> 검색
                         </button>
+                        <a href="/notice/noticeList" class="btn btn-outline">
+                            <i class="fa fa-list"></i> 전체목록 보기
+                        </a>
                     </div>
                 </form>
             </div>
             
             <!-- 컨트롤 버튼 -->
             <div class="notice-controls">
-                <button type="button" id="btn-expand-all" class="btn">
-                    <i class="fa fa-plus-circle"></i> 전체 열기
-                </button>
-                <button type="button" id="btn-collapse-all" class="btn">
-                    <i class="fa fa-minus-circle"></i> 전체 닫기
-                </button>
+                <div class="control-left">
+                    <button type="button" id="btn-expand-all" class="btn">
+                        <i class="fa fa-plus-circle"></i> 전체 열기
+                    </button>
+                    <button type="button" id="btn-collapse-all" class="btn">
+                        <i class="fa fa-minus-circle"></i> 전체 닫기
+                    </button>
+                </div>
+                <div class="control-right" sec:authorize="hasAuthority('MANAGER')">
+                    <a href="/notice/write" class="btn btn-primary">
+                        <i class="fa fa-edit"></i> 공지사항 작성
+                    </a>
+                </div>
             </div>
             
             <!-- 공지사항 목록 -->
@@ -79,6 +94,10 @@
                             <div class="notice-info">
                                 <h3 class="notice-title" th:text="${notice.noti_title}">공지사항 제목</h3>
                                 <div class="notice-summary">
+                                    <span class="notice-author">
+                                        <i class="fa fa-user"></i>
+                                        <span th:text="${notice.memberVO?.user_name ?: '작성자 없음'}">작성자</span>
+                                    </span>
                                     <span class="notice-date-header">
                                         <i class="fa fa-calendar-alt"></i>
                                         <span th:text="${#dates.format(notice.noti_date, 'yyyy-MM-dd')}">2025-07-21</span>

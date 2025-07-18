@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+      layout:decorate="~{layouts/layout_basic}">
+<head>
+    <meta charset="UTF-8">
+    <title>Office ERP - 공지사항 작성</title>
+    <link rel="stylesheet" th:href="@{/assets/css/main.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/jm/notice.css}">
+    <script type="text/javascript" th:src="@{/assets/js/jquery-3.7.1.min.js}"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+<div layout:fragment="content" class="page-main">
+    <div class="dashboard-wrapper">
+        <!-- 사이드바 -->
+        <th:block th:replace="fragments/nav_sidebar :: sidebar"></th:block>
+        
+        <!-- 메인 컨텐츠 -->
+        <main class="main-content">
+            <!-- 페이지 헤더 -->
+            <div class="page-header">
+                <h2 class="page-title">
+                    <i class="fa fa-edit"></i> 공지사항 작성
+                </h2>
+                <div>
+                    <a href="/notice/noticeList" class="btn btn-secondary">
+                        <i class="fa fa-list"></i> 목록으로
+                    </a>
+                </div>
+            </div>
+            
+            <!-- 공지사항 작성 폼 -->
+            <div class="notice-form-container">
+                <form th:action="@{/notice/write}" method="post" id="noticeForm">
+                    
+                    <div class="form-group">
+                        <label for="noti_title">제목</label>
+                        <input type="text" id="noti_title" name="noti_title" class="form-control" 
+                               placeholder="공지사항 제목을 입력하세요" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="noti_content">내용</label>
+                        <textarea id="noti_content" name="noti_content" class="form-control" rows="15" 
+                                  placeholder="공지사항 내용을 입력하세요" required></textarea>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fa fa-save"></i> 저장
+                        </button>
+                        <button type="button" class="btn btn-cancel" onclick="history.back()">
+                            <i class="fa fa-times"></i> 취소
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+</div>
+</body>
+</html> 

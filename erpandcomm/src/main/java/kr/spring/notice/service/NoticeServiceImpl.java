@@ -9,7 +9,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import kr.spring.notice.dao.NoticeMapper;
 import kr.spring.notice.vo.NoticeVO;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @Transactional
 public class NoticeServiceImpl implements NoticeService {
@@ -23,8 +25,10 @@ public class NoticeServiceImpl implements NoticeService {
 	}
 
 	@Override
-	public Integer selectRowCount(Map<String, Object> map) {
-		return noticeMapper.selectRowCount(map);
+	public Integer selectRowCount(String keyfield, String keyword) {
+		Integer result = noticeMapper.selectRowCount(keyfield, keyword);
+		log.debug("<<NoticeServiceImpl>> selectRowCount 결과: {}", result);
+		return result;
 	}
 
 	@Override
