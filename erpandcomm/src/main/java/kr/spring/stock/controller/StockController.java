@@ -15,8 +15,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import jakarta.servlet.http.HttpServletRequest;
+import kr.spring.product.dao.ProductMapper;
 import kr.spring.product.vo.ProductVO;
 import kr.spring.stock.dao.StockMapper;
+import kr.spring.stock.dao.StockTransactionMapper;
+import kr.spring.stock.vo.StockMovementVO;
 import kr.spring.util.PagingUtil;
 import lombok.extern.slf4j.Slf4j;
 
@@ -27,12 +30,19 @@ public class StockController {
     
     @Autowired
     private StockMapper stockMapper;
+    @Autowired
+    private ProductMapper productMapper;
     
     // 자바빈(VO) 초기화
     @ModelAttribute
     public ProductVO initCommand() {
         return new ProductVO();
     }
+    @ModelAttribute
+    public StockMovementVO initCommand2() {
+        return new StockMovementVO();
+    }
+    
     
     // 재고 목록 페이지
     @GetMapping("/stock")
@@ -70,7 +80,46 @@ public class StockController {
         return "views/stock/stockList";
     }
     
-    // 대시보드 페이지 (수정됨)
+    // Ajax - 재고 입출고 이력 조회
+//  @GetMapping("/stock/history")
+//  @ResponseBody
+//  public Map<String, Object> getStockHistory(@RequestParam("product_num") int product_num) {
+//      
+//      Map<String, Object> result = new HashMap<String, Object>();
+//      
+//      try {
+//          // 재고 입출고 이력 조회 (실제 구현에서는 별도 테이블 필요)
+//          List<Map<String, Object>> history = stockMapper.selectStockHistory(product_num);
+//          
+//          result.put("result", "success");
+//          result.put("history", history);
+//          
+//      } catch(Exception e) {
+//          log.error("재고 이력 조회 오류", e);
+//          result.put("result", "failure");
+//          result.put("message", "재고 이력 조회 중 오류가 발생했습니다.");
+//      }
+//      a
+//      return result;
+//  }
+    
+    // 재고 상세 페이지
+    @GetMapping("/stock/history")
+    public String stockDetail(@RequestParam("product_num") long product_num, Model model) {
+        ProductVO product = productMapper.selectProduct(product_num);
+        StockMovementVO stockHistory = stockMapper.selectStockMovementHistory(product_num);
+        model.addAttribute("product", product);
+        model.addAttribute("stockHistory", stockHistory);
+        
+        return "views/stock/stockHistory";
+    }
+    
+    
+    
+    
+    
+    
+    // 대시보드 
     @GetMapping("/stock/dashboard")
     public String stockDashboard(@RequestParam(value="pageNum", defaultValue="1") int currentPage,
                                 @RequestParam(value="keyword", defaultValue="") String keyword,
@@ -118,22 +167,13 @@ public class StockController {
         return "stock/stockDashboard";
     }
     
-    // 재고 상세 페이지
-    @GetMapping("/stock/detail")
-    public String stockDetail(@RequestParam("product_num") int product_num, Model model) {
-        
-        ProductVO product = stockMapper.selectStockDetail(product_num);
-        model.addAttribute("product", product);
-        
-        return "stock/stockDetail";
-    }
-    
+
     // 재고 수정 페이지
     @GetMapping("/stock/update")
     public String stockUpdateForm(@RequestParam("product_num") int product_num, Model model) {
         
-        ProductVO product = stockMapper.selectStockDetail(product_num);
-        model.addAttribute("product", product);
+//        ProductVO product = stockMapper.selectStockDetail(product_num);
+//        model.addAttribute("product", product);
         
         return "stock/stockUpdateForm";
     }
@@ -335,26 +375,5 @@ public class StockController {
         return result;
     }
     
-    // Ajax - 재고 입출고 이력 조회
-//    @GetMapping("/stock/history")
-//    @ResponseBody
-//    public Map<String, Object> getStockHistory(@RequestParam("product_num") int product_num) {
-//        
-//        Map<String, Object> result = new HashMap<String, Object>();
-//        
-//        try {
-//            // 재고 입출고 이력 조회 (실제 구현에서는 별도 테이블 필요)
-//            List<Map<String, Object>> history = stockMapper.selectStockHistory(product_num);
-//            
-//            result.put("result", "success");
-//            result.put("history", history);
-//            
-//        } catch(Exception e) {
-//            log.error("재고 이력 조회 오류", e);
-//            result.put("result", "failure");
-//            result.put("message", "재고 이력 조회 중 오류가 발생했습니다.");
-//        }
-//        
-//        return result;
-//    }
+
 }

@@ -73,6 +73,18 @@
     WHERE rnum >= #{start} AND rnum <![CDATA[<=]]> #{end}
 </select>
 
+<!-- 재고 이동 이력 조회 -->
+<select id="selectStockMovementHistory" parameterType="long" resultType="kr.spring.stock.vo.StockMovementVO">
+    SELECT * FROM stock_movements 
+    WHERE product_num = #{product_num} 
+    ORDER BY movement_date DESC, movement_num DESC
+</select>
+
+
+
+
+
+
 
     <!-- 재고 상태별 개수 조회 (대시보드용) 
     <select id="selectStockStatusCount" resultType="map">

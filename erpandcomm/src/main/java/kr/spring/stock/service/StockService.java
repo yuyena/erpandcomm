@@ -1,6 +1,8 @@
 package kr.spring.stock.service;
 
 import kr.spring.product.vo.ProductVO;
+import kr.spring.stock.vo.StockMovementVO;
+
 import java.util.List;
 import java.util.Map;
 
@@ -12,4 +14,8 @@ public interface StockService {
 	public void updateStock(Map<String, Object> map);
 	public void insertStock(Map<String, Object> map);
 	public void updateMinMaxStock(Map<String, Object> map);
+	
+	public StockMovementVO selectStockMovementHistory(long product_num);
+
+	   
 } 
