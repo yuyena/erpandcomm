@@ -75,6 +75,7 @@ public class AttendanceController {
 		
 		// 유효성 검사 실패 시 다시
 		if(result.hasErrors()) {
+			model.addAttribute("memberVO", principal.getMemberVO());
 			return "views/personnel/attendanceForm";
 		}
 		
