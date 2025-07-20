@@ -12,12 +12,54 @@
     <div class="dashboard-wrapper">
         <!-- 사이드바 -->
         <th:block th:replace="fragments/nav_sidebar :: sidebar"></th:block>
-        <!-- 메인 컨텐츠(폼 없음) -->
+        <!-- 메인 컨텐츠(직원 등록 폼) -->
         <main class="main-content">
             <div class="page-title">
                 <h1 style="color: #1976D2; font-weight: bold; font-size: 1.5rem; margin-bottom: 24px; text-align: left;">인사관리 - 직원 등록</h1>
             </div>
-            <!-- 폼 없음: 사이드바와 타이틀만 표시 -->
+            <form class="employee-register-form" method="post" th:action="@{/personnel/employee/register}" enctype="multipart/form-data" style="max-width: 600px; margin: 0 auto; background: #fff; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); padding: 32px;">
+                <div style="display: flex; flex-direction: column; gap: 18px;">
+                    <!-- 직원 상세 정보만 입력 -->
+                    <h2 style="font-size: 1.1rem; color: #1976D2; margin-bottom: 12px;">직원 정보</h2>
+                    <label>이름 <input type="text" name="userName" required></label>
+                    <label>비밀번호 <input type="password" name="passwd" required></label>
+                    <label>전화번호 <input type="tel" name="phone"></label>
+                    <label>이메일 <input type="email" name="email"></label>
+                    <label>사진 <input type="file" name="photo" accept="image/*"></label>
+                    <label>입사일 <input type="date" name="hireDate"></label>
+                    <label>퇴사일 <input type="date" name="resignationDate"></label>
+                    <label>연봉 <input type="number" name="salary" min="0"></label>
+                    <label>부서
+    <select name="departmentNum" required>
+        <option value="">부서 선택</option>
+        <th:block th:each="dept : ${departmentList}">
+            <option th:value="${dept.department_num}" th:text="${dept.department_name} + ' (' + ${dept.department_num} + ')'" />
+        </th:block>
+    </select>
+</label>
+                    <label>직급
+    <select name="positionNum" required>
+        <option value="">직급 선택</option>
+        <th:block th:each="pos : ${positionList}">
+            <option th:value="${pos.position_num}" th:text="${pos.position_name} + ' (' + ${pos.position_num} + ', ' + ${pos.position_code} + ')'" />
+        </th:block>
+    </select>
+</label>
+                    <label>등급
+    <select name="gradeNum" required>
+        <option value="">등급 선택</option>
+        <th:block th:each="grade : ${gradeList}">
+            <option th:value="${grade.grade_num}" th:text="${grade.grade_name} + ' (' + ${grade.grade_num} + ', ' + ${grade.grade_code} + ')'" />
+        </th:block>
+    </select>
+</label>
+                    <label>내선번호 <input type="text" name="extensionNum"></label>
+                    <label>주민등록번호 <input type="text" name="residentRegNum"></label>
+                </div>
+                <div style="margin-top: 32px; text-align: right;">
+                    <button type="submit" class="btn btn-primary">직원 등록</button>
+                </div>
+            </form>
         </main>
     </div>
 </div>
