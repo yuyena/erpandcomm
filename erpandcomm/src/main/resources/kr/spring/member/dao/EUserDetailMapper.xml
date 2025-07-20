@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.spring.member.dao.EUserDetailMapper">
+    <insert id="insertEUserDetail" parameterType="kr.spring.member.dto.EUserDetailDTO">
+        INSERT INTO EUSER_DETAIL (
+            USER_NUM, USER_NAME, PASSWD, PHONE, EMAIL, PHOTO, HIRE_DATE, RESIGNATION_DATE, SALARY, DEPARTMENT_NUM, POSITION_NUM, GRADE_NUM, EXTENSION_NUM, RESIDENT_REG_NUM
+        ) VALUES (
+            #{userNum}, #{userName}, #{passwd}, #{phone}, #{email}, #{photo, jdbcType=VARCHAR}, #{hireDate}, #{resignationDate}, #{salary}, #{departmentNum}, #{positionNum}, #{gradeNum}, #{extensionNum}, #{residentRegNum}
+        )
+    </insert>
+</mapper>

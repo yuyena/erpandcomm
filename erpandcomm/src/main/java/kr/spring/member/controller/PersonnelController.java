@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import kr.spring.member.service.DepartmentService;
+import kr.spring.member.service.EUserService;
 import kr.spring.member.service.GradeService;
 import kr.spring.member.service.PositionService;
 import kr.spring.member.vo.DepartmentVO;
@@ -56,6 +57,9 @@ public class PersonnelController {
         return "views/personnel/employee_register";
     }
 
+    @Autowired
+    private EUserService eUserService;
+
     @PostMapping("/employee/register")
     public String registerEmployee(
             @RequestParam("userName") String userName,
@@ -73,26 +77,39 @@ public class PersonnelController {
             @RequestParam("residentRegNum") String residentRegNum,
             Model model
     ) throws Exception {
-        // 1. 사번, 사원코드, 권한 생성 (간단히 예시)
-        String employeeCode = "EMP" + System.currentTimeMillis();
+        // 사번(유저번호) 생성 예시 (실제 환경에 맞게 시퀀스 등으로 대체)
+        long userNum = System.currentTimeMillis();
+        // EMPLOYEE_CODE는 최대 12자, 앞 3자(EMP) + 9자리 숫자
+        String employeeCode = "EMP" + ("" + userNum).substring(("" + userNum).length() - 9);
         String authority = "ROLE_USER";
-
-        // 2. 사진 파일명 저장 (실제 파일 저장 생략, 파일명만 저장)
         String photoName = (photo != null && !photo.isEmpty()) ? photo.getOriginalFilename() : null;
 
-        // 3. EUSER 저장 (예시)
-        // 실제로는 서비스/DAO에서 DB에 저장해야 함
-        // EUserDTO euser = new EUserDTO();
-        // euser.setEmployeeCode(employeeCode);
-        // euser.setAuthority(authority);
-        // euserService.insertEUser(euser);
+        // EUSER DTO 생성
+        kr.spring.member.dto.EUserDTO euser = new kr.spring.member.dto.EUserDTO();
+        euser.setUserNum(userNum);
+        euser.setEmployeeCode(employeeCode);
+        euser.setAuthority(authority);
 
-        // 4. EUSER_DETAIL 저장 (예시)
-        // EUserDetailDTO detail = new EUserDetailDTO();
-        // detail.setUserName(userName); ... 등등
-        // euserDetailService.insertEUserDetail(detail);
+        // EUSER_DETAIL DTO 생성
+        kr.spring.member.dto.EUserDetailDTO detail = new kr.spring.member.dto.EUserDetailDTO();
+        detail.setUserNum(userNum);
+        detail.setUserName(userName);
+        detail.setPasswd(passwd);
+        detail.setPhone(phone);
+        detail.setEmail(email);
+        detail.setPhoto(photoName);
+        detail.setHireDate(hireDate);
+        detail.setResignationDate(resignationDate);
+        detail.setSalary(salary);
+        detail.setDepartmentNum(departmentNum);
+        detail.setPositionNum(positionNum);
+        detail.setGradeNum(gradeNum);
+        detail.setExtensionNum(extensionNum);
+        detail.setResidentRegNum(residentRegNum);
 
-        // 5. 완료 메시지 및 목록 리다이렉트
+        // 실제 DB 저장
+        eUserService.registerEmployee(euser, detail);
+
         model.addAttribute("message", "직원 등록이 완료되었습니다.");
         model.addAttribute("url", "/personnel/employee");
         return "views/common/resultAlert";

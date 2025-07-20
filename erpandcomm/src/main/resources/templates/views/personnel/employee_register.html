@@ -21,10 +21,10 @@
                 <div style="display: flex; flex-direction: column; gap: 18px;">
                     <!-- 직원 상세 정보만 입력 -->
                     <h2 style="font-size: 1.1rem; color: #1976D2; margin-bottom: 12px;">직원 정보</h2>
-                    <label>이름 <input type="text" name="userName" required></label>
-                    <label>비밀번호 <input type="password" name="passwd" required></label>
-                    <label>전화번호 <input type="tel" name="phone"></label>
-                    <label>이메일 <input type="email" name="email"></label>
+                    <label>이름 <input type="text" name="userName" maxlength="10" required></label>
+                    <label>비밀번호 <input type="password" name="passwd" maxlength="60" required></label>
+                    <label>전화번호 <input type="tel" name="phone" maxlength="15"></label>
+                    <label>이메일 <input type="email" name="email" maxlength="50"></label>
                     <label>사진 <input type="file" name="photo" accept="image/*"></label>
                     <label>입사일 <input type="date" name="hireDate"></label>
                     <label>퇴사일 <input type="date" name="resignationDate"></label>
@@ -53,8 +53,8 @@
         </th:block>
     </select>
 </label>
-                    <label>내선번호 <input type="text" name="extensionNum"></label>
-                    <label>주민등록번호 <input type="text" name="residentRegNum"></label>
+                    <label>내선번호 <input type="text" name="extensionNum" maxlength="4"></label>
+                    <label>주민등록번호 <input type="text" name="residentRegNum" maxlength="14"></label>
                 </div>
                 <div style="margin-top: 32px; text-align: right;">
                     <button type="submit" class="btn btn-primary">직원 등록</button>

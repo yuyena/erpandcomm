@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class EUserDetailDTO {
+    private Long userNum; // 사번(유저번호)
     private String userName; // 이름
     private String passwd;   // 비밀번호
     private String phone;    // 전화번호
