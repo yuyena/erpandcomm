@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout_basic}">
+<head>
+    <meta charset="UTF-8">
+    <title>Office ERP - 직원 등록</title>
+    <link rel="stylesheet" th:href="@{/assets/css/main.css}">
+</head>
+<body>
+<div layout:fragment="content" class="page-main">
+    <div class="dashboard-wrapper">
+        <!-- 사이드바 -->
+        <th:block th:replace="fragments/nav_sidebar :: sidebar"></th:block>
+        <!-- 메인 컨텐츠(폼 없음) -->
+        <main class="main-content">
+            <div class="page-title">
+                <h1 style="color: #1976D2; font-weight: bold; font-size: 1.5rem; margin-bottom: 24px; text-align: left;">인사관리 - 직원 등록</h1>
+            </div>
+            <!-- 폼 없음: 사이드바와 타이틀만 표시 -->
+        </main>
+    </div>
+</div>
+</body>
+</html>
