@@ -1,13 +1,11 @@
 <div th:fragment="sidebar">
-  <aside class="sidebar">
-    <!-- 로고 -->
+  <aside class="sidebar" style="position:relative;">
     <div class="sidebar-logo">
       <a th:href="@{/}" class="sidebar-logo-link">
         <img src="/assets/images/mainlogo.png" alt="Office ERP 로고" />
       </a>
     </div>
 
-    <!-- 사이드바 메뉴 -->
     <div class="sidebar-menu-wrap">
       <nav class="sidebar-menu">
         <ul>
@@ -57,8 +55,7 @@
               <span class="arrow">&#9654;</span>
             </a>
             <ul class="submenu">
-              <li><a href="#">공지사항</a></li>
-              <li><a href="#">자유게시판</a></li>
+              <li><a th:href="@{/notice/noticeList}">공지사항</a></li>
               <li><a th:href="@{/chat/roomList}">채팅</a></li>
             </ul>
           </li>
@@ -72,7 +69,7 @@
             <ul class="submenu">
               <li><a th:href="@{/member/info}">사원정보</a></li>
               <li><a href="#">개인근태정보</a></li>
-              <li><a href="#" class="active">개인휴가정보</a></li>
+              <li><a th:href="@{/personnel/myVacation}">개인휴가정보</a></li>
               <li><a href="#">급여정보</a></li>
             </ul>
           </li>
@@ -80,32 +77,50 @@
       </nav>
     </div>
 
-    <!-- 출퇴근 영역 -->
     <div class="sidebar-bottom">
       <div class="worktime-box">
         <div class="date-time" id="currentDateTime"></div>
         <div class="worktime-row">
           <span>출근</span>
-          <input type="time" id="checkInTimeInput" class="check-time" readonly />
+          <input type="time" id="displayCheckInTime" class="check-time" readonly />
         </div>
         <div class="worktime-row">
           <span>퇴근</span>
-          <input type="time" id="checkOutTimeInput" class="check-time" readonly />
+          <input type="time" id="displayCheckOutTime" class="check-time" readonly />
         </div>
       </div>
-
+	  
+	  <form id ="worktimeForm" th:action="@{/personnel/clockIn}" method="post">
+	  <input type="hidden" id="checkInTimeInput" name="checkIntime"/>
+	  <input type="hidden" id="checkOutTimeInput" name="checkOuttime"/>	  
+	  <input type="hidden" id="statusInput" name="status"/>	  
+	  
+	  </form>
+	  
       <div class="worktime-buttons">
         <button type="button" id="checkInBtn" onclick="handleCheckIn()">출근하기</button>
         <button type="button" id="checkOutBtn" onclick="handleCheckOut()" disabled>퇴근하기</button>
       </div>
 
       <div class="profile-box">
-        <img class="profile-img" th:src="@{/assets/image_bundle/face.png}" alt="프로필" />
+        <img class="profile-img"
+             th:src="${loginMember != null && loginMember.photo_name != null ? '/uploads/' + loginMember.photo_name : '/assets/image_bundle/face.png'}"
+             alt="프로필" />
+        
         <div class="profile-info">
-          <span class="profile-name">홍길동</span>
-          <span class="profile-dept">사원(물류)</span>
+          <span class="profile-name" th:text="${loginMember != null ? loginMember.user_name : ''}">이름</span>
+          <div class="profile-row">
+            <span>
+              <span class="profile-subinfo" th:text="${loginMember.department_name}">부서</span>
+              <span class="profile-subinfo" th:if="${positionMap[loginMember.position_num] != null}" th:text="|(${positionMap[loginMember.position_num]})|">(직책)</span>
+            </span>
+            <form method="post" th:action="@{/member/logout}" class="profile-logout-form">
+              <button type="submit" class="profile-btn" title="로그아웃">
+                <img src="/assets/images/logout1.png" alt="로그아웃" style="width:20px;height:20px;" />
+              </button>
+            </form>
+          </div>
         </div>
-        <button class="profile-btn">+</button>
       </div>
     </div>
   </aside>

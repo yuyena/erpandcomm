@@ -6,6 +6,8 @@
 <meta charset="UTF-8">
 <title>Office ERP - 근태관리</title>
 <link rel="stylesheet" th:href="@{/assets/css/main.css}">
+<link rel="stylesheet" th:href="@{/assets/css/yj/attendanceList.css}">
+
 <script th:src="@{/assets/js/sidebar.js}"></script>
 </head>
 <body>
@@ -65,9 +67,8 @@
 							style="font-weight: bold; font-size: 1.1rem; margin-bottom: 18px; display: flex; justify-content: space-between; align-items: center;">
 							<span>근태 관리</span>
 							<div style="display: flex; gap: 8px;">
+								<button class="btn btn-secondary" onclick="location.href='/personnel/List'">목록 보기</button>
 								<button class="btn btn-primary" onclick="location.href='/personnel/Form'">근태 등록</button>
-								<button class="btn-secondary">근태 수정</button>
-								<button class="btn-danger">근태 삭제</button>
 							</div>
 						</div>
 						<div class="table-container">
@@ -76,17 +77,41 @@
 									<tr>
 										<th><input type="checkbox"></th>
 										<th>날짜</th>
-										<th>직원번호</th>
 										<th>이름</th>
 										<th>상태</th>
 										<th>출근시간</th>
 										<th>퇴근시간</th>
+										<th>메모</th>
 										<th>관리</th>
 									</tr>
 								</thead>
 								<tbody>
-									<!-- 데이터가 동적으로 로드될 예정 -->
+									<tr th:each="attendance : ${list}">
+										<td><input type="checkbox"></td>
+										<td th:text="${attendance.workDate}"></td>
+										<!--<td th:text="${attendance.empId}"></td> -->
+										<td th:text="${attendance.empName}"></td>
+										<td th:text="${attendance.status}"></td>
+										<td th:text="${attendance.checkIntime}"></td>
+										<td th:text="${attendance.checkOuttime}"></td>
+										<td th:text="${attendance.notes}"></td>
+										<td>
+											<button class="manage-btn edit" th:onclick="|location.href='/personnel/updateForm?attendanceId=${attendance.attendanceId}'|">수정</button>
+											<button class="manage-btn delete" th:data-id="${attendance.attendanceId}"
+                                           	                               onclick="deleteAttendance(this)">삭제</button>
+										</td>
+									</tr>
 								</tbody>
+								<script type="text/javascript">
+									function deleteAttendance(btn) {
+										const attendanceId = btn
+												.getAttribute('data-id');
+										if (confirm('삭제하시겠습니까?')) {
+											location.href = '/personnel/delete?attendanceId='
+													+ attendanceId;
+										}
+									};
+								</script>
 							</table>
 						</div>
 					</div>

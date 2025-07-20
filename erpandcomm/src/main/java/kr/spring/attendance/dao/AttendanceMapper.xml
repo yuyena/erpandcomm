@@ -1,8 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="kr.spring.attendance.dao.AttendanceMapper">
+	<resultMap type="AttendanceVO" id ="attendanceMap" >
+		<result property="attendanceId" column="attendance_id"/>
+		<result property="empId" column="emp_id"/>
+		<result property="workDate" column="work_date"/>
+		<result property="checkIntime" column="check_in_time"/>
+		<result property="checkOuttime" column="check_out_time"/>
+		<result property="status" column="status"/>
+		<result property="notes" column="notes"/>
+		<result property="empName" column="user_name"/>	
+	</resultMap>
+	
 	<!-- 근태 등록 -->
-<insert id="insertAttendance" parameterType="kr.spring.attendance.vo.AttendanceVO">
+<insert id="insertAttendance" parameterType="kr.spring.attendance.vo.AttendanceVO">	
 	INSERT INTO attendance(
 		attendance_id, 
 		emp_id,
@@ -17,44 +28,49 @@
 		created_at,
 		updated_at)
 	VALUES (
-		ATTENDANCE_SEQ.NEXTVAL,
+		attendance_seq.nextval,
 		#{empId},
 		#{workDate},
-		TO_DATE('09:00', 'HH24:MI'),
-        TO_DATE('18:00', 'HH24:MI'),
+		TO_CHAR(SYSDATE, 'YYYY-MM-DD') || ' 09:00',
+        TO_CHAR(SYSDATE, 'YYYY-MM-DD') || ' 18:00',
 		#{status},
 		#{workType},
-		#{checkIntime,jdbcType=DATE},
-		#{checkOuttime,jdbcType=DATE},
-		#{notes},
+		#{checkIntime},
+		#{checkOuttime},
+		#{notes, jdbcType=VARCHAR},
 		SYSDATE,
 		SYSDATE)
 	</insert>
-	<!-- user_num 을 employeecode와 매핑-->
-	<select id = "selectUserNumByEmployeeCode" parameterType="string" resultType="int">
-		SELECT 
-			user_num
-		FROM euser
-		WHERE employee_code = #{employeeCode}
+	
+	<!-- 근태 목록 -->
+	<select id ="selectAttendanceList" parameterType = "long" resultMap = "attendanceMap">
+	  SELECT 
+        d.user_name, 
+        a.*
+    FROM attendance a
+    JOIN euser_detail d ON d.user_num = a.emp_id
+    WHERE a.emp_id = #{empId}
+    ORDER BY a.attendance_id ASC
 	</select>
-   
-	<!-- 근태 목록 검색 -->
-	<select id = "selectList" parameterType="map" resultType="kr.spring.attendance.vo.AttendanceVO">
-	<!-- 날짜 직원번호 이름 상태 출근시간 퇴근시간 관리 -->
-	SELECT
-		a.work_date,
-		a.emp_id,
-		u.user_name,
-		a.status,
-		a.check_in_time,
-		a.check_out_time,
-		a.notes,
-		a.created_at,
-		a.updated_at
-	FROM attendance a
-	JOIN EUSER_DETAIL u ON a.emp_id = u.emp_id
-	WHERE a.emp_id = #{empId} <!-- 사원번호 -->
+	
+	<!-- 근태 목록 상세 -->
+	<select id = "selectAttendance" parameterType="long" resultMap = "attendanceMap">
+	SELECT *
+	FROM attendance a 
+	JOIN euser e ON a.emp_id = e.user_num
+	WHERE attendance_id=#{attendanceId}
 	</select>
+	
+	<!-- 근태 목록 수정 -->
+	<update id="updateAttendance" parameterType="attendanceVO">
+		UPDATE attendance 
+		SET
+			check_out_time=#{checkOuttime},
+			status=#{status},
+			notes=#{notes}
+		WHERE
+			attendance_id=#{attendanceId}	
+	</update>
 	
 	
 </mapper>

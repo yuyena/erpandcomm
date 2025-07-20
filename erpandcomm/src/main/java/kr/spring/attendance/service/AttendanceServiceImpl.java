@@ -10,30 +10,29 @@ import org.springframework.transaction.annotation.Transactional;
 
 import kr.spring.attendance.dao.AttendanceMapper;
 import kr.spring.attendance.vo.AttendanceVO;
+import kr.spring.member.vo.MemberVO;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Transactional
+@Slf4j
 public class AttendanceServiceImpl implements AttendanceService {
 	
 	@Autowired
 	private AttendanceMapper attendanceMapper;
 	
 	@Override
-	public void insertAttendance(AttendanceVO attendence) {
-		attendanceMapper.insertAttendance(attendence);
+	public void insertAttendance(AttendanceVO attendance) {
+		attendanceMapper.insertAttendance(attendance);
 		
 	}
-
+	// 개별
 	@Override
 	public AttendanceVO selectAttendance(Long empId) {
 		return attendanceMapper.selectAttendance(empId);
 	}
 
-	@Override
-	public List<AttendanceVO> selectList(Map<String, Object> map) {
-		return attendanceMapper.selectList(map);
-	}
-
+	
 	@Override
 	public Integer selectRowCount(Map<String, Object> map) {
 		// TODO Auto-generated method stub
@@ -41,32 +40,25 @@ public class AttendanceServiceImpl implements AttendanceService {
 	}
 
 	@Override
-	public void updateAttendance(AttendanceVO attendence) {
+	public void updateAttendance(AttendanceVO attendance) {
 		// TODO Auto-generated method stub
-		
+		attendanceMapper.updateAttendance(attendance);
 	}
 
 	@Override
-	public void deleteAttendance(Long empId) {
+	public void deleteAttendance(Long attendanceId) {
 		// TODO Auto-generated method stub
-		
+		attendanceMapper.deleteAttendance(attendanceId);
 	}
 
-	/*
-	public Long selectUserNumByEmployeeCode(String employeeCode) {
-		return attendanceMapper.selectUserNumByEmployeeCode(employeeCode);
-	}
-	 */
 	@Override
-	public Long selectUserNumByEmployeeCode(String employeeCode) {
-	    Integer userNum = attendanceMapper.selectUserNumByEmployeeCode(employeeCode);
-	    return userNum != null ? userNum.longValue() : null;
+	public MemberVO selectList(Map<String, Object> map) {
+		return attendanceMapper.selectList(map);
 	}
-
-
-
 	
-	
-	
-
+	// 여러개
+	@Override
+	public List<AttendanceVO> selectAttedanceList(Long empId) {
+		return attendanceMapper.selectAttendanceList(empId);
+	}
 }
