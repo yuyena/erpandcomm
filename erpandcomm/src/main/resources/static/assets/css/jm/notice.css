@@ -10,7 +10,6 @@
 
 .main-content {
     flex: 1;
-    margin-left: 250px;
     padding: 20px;
     background: #f8f9fa;
 }
@@ -197,6 +196,21 @@
 
 .notice-header:hover {
     background-color: #f8f9fa;
+}
+
+/* 작은 버튼 (헤더용) */
+.btn-sm {
+    padding: 4px 12px;
+    font-size: 13px;
+    height: 32px;
+    line-height: 1.2;
+}
+
+.notice-header .btn {
+    margin-right: 4px;
+}
+.notice-header .toggle-btn {
+    margin-left: 8px;
 }
 
 .notice-info {
@@ -439,3 +453,49 @@
         padding: 20px;
     }
 } 
+
+/* 공지사항 수정 버튼 */
+.btn-edit {
+    background-color: #ffc107;
+    color: #333;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: background 0.18s, color 0.18s, box-shadow 0.18s;
+    margin-top: 0;
+}
+
+.btn-edit:hover {
+    background-color: #ffb300;
+    color: #222;
+    box-shadow: 0 2px 8px rgba(255,193,7,0.15);
+    text-decoration: none;
+}
+.notice-actions {
+    margin-top: 16px;
+    text-align: right;
+} 
+
+/* 헤더용 작은 버튼 스타일 통일 */
+.notice-header .btn-sm {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 14px;
+    font-size: 14px;
+    height: 32px;
+    line-height: 1.2;
+    border-radius: 4px;
+    vertical-align: middle;
+    box-sizing: border-box;
+    min-width: 48px;
+    border: none;
+    outline: none;
+    text-decoration: none;
+}

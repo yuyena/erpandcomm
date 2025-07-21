@@ -32,7 +32,7 @@ CREATE TABLE euser_detail (
     phone             VARCHAR2(15)     NOT NULL,
     email             VARCHAR2(50)     NOT NULL,
     extension_num     VARCHAR2(4),
-    photo             VARCHAR2(400),
+    photo_name        VARCHAR2(400),
     hire_date         DATE             DEFAULT SYSDATE NOT NULL,
     resignation_date  DATE,
     salary            NUMBER,

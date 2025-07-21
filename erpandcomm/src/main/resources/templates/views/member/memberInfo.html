@@ -20,7 +20,7 @@
                 <div class="mypage-section-title">사원 정보</div>
                 <div class="member-info-card">
                     <div class="member-photo">
-                        <img th:src="@{${member.photo_name}}" alt="증명사진" />
+                        <img th:src="${member.photo_name != null and !#strings.isEmpty(member.photo_name) ? '/assets/images/profile/' + member.photo_name : '/assets/image_bundle/face.png'}" alt="증명사진" />
                     </div>
                     <div class="member-main-info">
                         <div class="member-name">

@@ -74,7 +74,9 @@
     justify-content: center;
 }
 .info-edit-btn, .pw-edit-btn {
-    padding: 12px 40px;
+    height: 48px;
+    line-height: 48px;
+    padding: 0 40px;
     border-radius: 8px;
     background: #2176e8;
     color: #fff;
@@ -83,6 +85,9 @@
     border: none;
     cursor: pointer;
     transition: background 0.18s;
+    display: inline-block;
+    text-align: center;
+    vertical-align: middle;
 }
 .info-edit-btn:hover, .pw-edit-btn:hover {
     background: #125ea2;

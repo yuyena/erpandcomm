@@ -104,6 +104,10 @@
                                     </span>
                                 </div>
                             </div>
+                            <th:block th:if="${notice.user_num == loginMember.user_num}">
+                                <a th:href="@{/notice/update(noti_num=${notice.noti_num})}" class="btn btn-edit btn-sm">수정</a>
+                                <a th:href="@{/notice/delete(noti_num=${notice.noti_num})}" class="btn btn-cancel btn-sm">삭제</a>
+                            </th:block>
                             <span class="toggle-btn">+</span>
                         </div>
                         

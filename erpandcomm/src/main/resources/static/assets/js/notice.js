@@ -107,6 +107,14 @@ $(function(){
 				</div>
 			</div>
 		`;
+		if(param.user_num && param.login_user_num && param.user_num == param.login_user_num){
+			output += `
+			<div class="notice-actions">
+			    <a href="/notice/update?noti_num=${param.noti_num}" class="btn btn-edit">수정</a>
+			    <a href="/notice/delete?noti_num=${param.noti_num}" class="btn btn-cancel">삭제</a>
+			</div>
+			`;
+		}
 		content.html(output);
 	}
 	
@@ -138,6 +146,70 @@ $(function(){
 		$('.notice-header').removeClass('active');
 		$('.toggle-btn').text('+');
 		$('.notice-content').removeClass('loaded');
+	});
+	
+	// 아코디언 헤더에 버튼 추가 (작성자만)
+	$('.notice-header').each(function(){
+		const noti_num = $(this).attr('data-num');
+		const user_num = $(this).attr('data-user-num');
+		const login_user_num = $('meta[name="login-user-num"]').attr('content');
+		if(user_num && login_user_num && user_num === login_user_num){
+			const btns = `
+				<a href="/notice/update?noti_num=${noti_num}" class="btn btn-edit btn-sm">수정</a>
+				<button type="button" class="btn btn-cancel btn-sm btn-delete-notice" data-num="${noti_num}">삭제</button>
+			`;
+			$(this).prepend(btns);
+		}
+	});
+
+	// 상세 내용 아래 버튼 (작성자만)
+	function displayNoticeContent(param, content){
+		let output = `
+			<div class="notice-detail">
+				<div class="notice-content-body">
+					${param.noti_content}
+				</div>
+			</div>
+		`;
+		if(param.user_num && param.login_user_num && param.user_num == param.login_user_num){
+			output += `
+			<div class="notice-actions">
+			    <a href="/notice/update?noti_num=${param.noti_num}" class="btn btn-edit">수정</a>
+			    <button type="button" class="btn btn-cancel btn-delete-notice" data-num="${param.noti_num}">삭제</button>
+			</div>
+			`;
+		}
+		content.html(output);
+	}
+
+	// 삭제 기능
+	$(document).on('click', '.btn-delete-notice', function(){
+		if(!confirm('정말 삭제하시겠습니까?')) return;
+		const noti_num = $(this).data('num');
+		const csrfHeader = $('meta[name="csrf-header"]').attr('content');
+		const csrfToken = $('meta[name="csrf-token"]').attr('content');
+		$.ajax({
+			url: '/notice/delete/' + noti_num,
+			type: 'post',
+			beforeSend: function(xhr){
+				if(csrfHeader && csrfToken) {
+					xhr.setRequestHeader(csrfHeader, csrfToken);
+				}
+			},
+			success: function(param){
+				if(param.result === 'success'){
+					alert('삭제되었습니다.');
+					location.reload();
+				}else if(param.result === 'notWriter'){
+					alert('작성자만 삭제할 수 있습니다.');
+				}else{
+					alert('삭제 실패');
+				}
+			},
+			error: function(){
+				alert('네트워크 오류');
+			}
+		});
 	});
 	
 }); 

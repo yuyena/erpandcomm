@@ -39,10 +39,12 @@ public class NoticeRestController {
 		
 		if (notice != null) {
 			mapAjax.put("result", "success");
+			mapAjax.put("noti_num", notice.getNoti_num());
 			mapAjax.put("noti_content", notice.getNoti_content());
 			mapAjax.put("noti_date", notice.getNoti_date());
 			mapAjax.put("user_num", notice.getUser_num());
 			mapAjax.put("author_name", notice.getMemberVO() != null ? notice.getMemberVO().getUser_name() : "작성자 없음");
+			mapAjax.put("login_user_num", principal.getMemberVO().getUser_num());
 
 		} else {
 			mapAjax.put("result", "notFound");

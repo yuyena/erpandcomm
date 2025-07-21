@@ -95,6 +95,8 @@ public class MemberUserController {
 
 	    // 모델에 담아서 뷰로 전달
 	    model.addAttribute("member", member);
+	    // photo_name도 명시적으로 전달 (필요시)
+	    model.addAttribute("photo_name", member.getPhoto_name());
 
 	    // ERP 스타일 사원정보 화면으로 이동
 	    return "views/member/memberInfo";
@@ -155,55 +157,52 @@ public class MemberUserController {
 //		return "redirect:/member/myPage";
 //	}
 //	
-//	// 프로필 사진 출력(로그인 전용)
-//	@PreAuthorize("isAuthenticated")
-//	@GetMapping("/photoView")
-//	public String getProfile(@AuthenticationPrincipal PrincipalDetails principal, HttpServletRequest request, Model model) {
-//		
-//		try {
-//			MemberVO user = principal.getMemberVO();
-//			log.debug("<<photoView>> : {}", user);
-//			MemberVO memberVO = memberService.selectMember(user.getMem_num());
-//			viewProfile(memberVO, request, model);
-//		} catch(Exception e) {
-//			getBasicProfileImage(request, model);
-//		}
-//		
-//		return "imageView";
-//	}
-//	
-//	// 프로필 사진 출력(회원번호 지정)
-//	@GetMapping("/viewProfile")
-//	public String getProfileByMem_num(long mem_num, HttpServletRequest request, Model model) {
-//		
-//		MemberVO memberVO = memberService.selectMember(mem_num);
-//		viewProfile(memberVO, request, model);
-//		
-//		return "imageView";
-//		
-//	}
-//	
-//	// 프로필 사진 처리를 위한 공통 코드
-//	public void viewProfile(MemberVO memberVO, HttpServletRequest request, Model model) {
-//		
-//		if (memberVO == null || memberVO.getPhoto_name() == null) {
-//			// DB에 저장된 프로필 이미지가 없기 대문에 기본 이미지 호출
-//			getBasicProfileImage(request, model);
-//		} else {
-//			model.addAttribute("imageFile", memberVO.getPhoto());
-//			model.addAttribute("filename", memberVO.getPhoto_name());
-//		} // if
-//		
-//	}
-//	
-//	// 기본 이미지 읽기
-//	public void getBasicProfileImage(HttpServletRequest request, Model model) {
-//		
-//		byte[] readbyte = FileUtil.getBytes(request.getServletContext().getRealPath("/assets/image_bundle/face.png"));
-//		model.addAttribute("imageFile", readbyte);
-//		model.addAttribute("filename", "face.png");
-//		
-//	}
+	// 프로필 사진 출력(로그인 전용)
+//    @PreAuthorize("isAuthenticated")
+//    @GetMapping("/photoView")
+//    public String getProfile(@AuthenticationPrincipal PrincipalDetails principal, HttpServletRequest request, Model model) {
+//        try {
+//            MemberVO user = principal.getMemberVO();
+//            log.debug("<<photoView>> : {}", user);
+//            MemberVO memberVO = memberService.selectMember(user.getUser_num());
+//            viewProfile(memberVO, request, model);
+//        } catch(Exception e) {
+//            getBasicProfileImage(request, model);
+//        }
+//        return "imageView";
+//    }
+
+    // 프로필 사진 출력(회원번호 지정)
+    @GetMapping("/viewProfile")
+    public String getProfileByMem_num(long mem_num, HttpServletRequest request, Model model) {
+        MemberVO memberVO = memberService.selectMember(mem_num);
+        viewProfile(memberVO, request, model);
+        return "imageView";
+    }
+
+    // 프로필 사진 처리를 위한 공통 코드
+    public void viewProfile(MemberVO memberVO, HttpServletRequest request, Model model) {
+        if (memberVO == null || memberVO.getPhoto_name() == null) {
+            getBasicProfileImage(request, model);
+        } else {
+            String realPath = request.getServletContext().getRealPath("/images/profile/" + memberVO.getPhoto_name());
+            java.io.File file = new java.io.File(realPath);
+            if (!file.exists()) {
+                getBasicProfileImage(request, model);
+                return;
+            }
+            byte[] imageBytes = kr.spring.util.FileUtil.getBytes(realPath);
+            model.addAttribute("imageFile", imageBytes);
+            model.addAttribute("filename", memberVO.getPhoto_name());
+        }
+    }
+
+    // 기본 이미지 읽기
+    public void getBasicProfileImage(HttpServletRequest request, Model model) {
+        byte[] readbyte = FileUtil.getBytes(request.getServletContext().getRealPath("/assets/image_bundle/face.png"));
+        model.addAttribute("imageFile", readbyte);
+        model.addAttribute("filename", "face.png");
+    }
 //	
 //	// 비밀번호 찾기
 //	@GetMapping("/sendPassword")

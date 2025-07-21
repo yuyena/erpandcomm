@@ -1,5 +1,6 @@
 package kr.spring.notice.controller;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +10,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,10 +18,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import kr.spring.member.vo.PrincipalDetails;
 import kr.spring.notice.service.NoticeService;
 import kr.spring.notice.vo.NoticeVO;
 import kr.spring.util.PagingUtil;
+import kr.spring.util.ValidationUtil;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -105,6 +110,70 @@ public class NoticeUserController {
 		
 		return "redirect:/notice/noticeList";
 	}
+
+    // 공지사항 수정 폼 진입
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/update")
+    public String noticeModifyForm(@RequestParam long noti_num,
+                                  @AuthenticationPrincipal PrincipalDetails principal,
+                                  Model model) {
+        NoticeVO noticeVO = noticeService.selectNotice(noti_num);
+        // 작성자만 접근 가능
+        if (principal.getMemberVO().getUser_num() != noticeVO.getUser_num()) {
+            // 로그인한 회원번호와 작성한 회원번호 불일치
+            return "views/common/accessDenied";
+        }
+        model.addAttribute("noticeVO", noticeVO);
+        return "views/notice/noticeModifyForm";
+    }
+
+    // 공지사항 수정 처리
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/update")
+    public String updateNotice(@Valid NoticeVO noticeVO, BindingResult result, HttpServletRequest request,
+                              Model model, @AuthenticationPrincipal PrincipalDetails principal) throws IllegalStateException, IOException {
+    	
+    	log.debug("<<공지 수정>> : {}", noticeVO);
+    	
+        NoticeVO db_notice = noticeService.selectNotice(noticeVO.getNoti_num());
+        // 작성자만 수정 가능
+        if (principal.getMemberVO().getUser_num() != db_notice.getUser_num()) {
+            return "views/common/accessDenied";
+        }
+        
+        // 유효성 체크 결과 오류가 있으면 폼 호출
+        if (result.hasErrors()) {
+			// 유효성 체크 결과 오류 필드 출력
+        	ValidationUtil.printErrorFields(result);
+        	return "views/notice/noticeModifyForm";
+		} // if
+        
+        noticeService.updateNotice(noticeVO);
+        
+        model.addAttribute("message", "공지 수정 완료!");
+        model.addAttribute("url", request.getContextPath()+"/notice/noticeList");
+        
+        return "views/common/resultAlert";
+    }
+    
+    // 공지 삭제
+    @PreAuthorize("isAuthenticated")
+    @GetMapping("/delete")
+    public String submitDelete(long noti_num, HttpServletRequest request,
+    						   @AuthenticationPrincipal PrincipalDetails principal) {
+    	
+    	log.debug("<<공지 삭제>> noti_num : {}", noti_num);
+    	
+    	NoticeVO db_notice = noticeService.selectNotice(noti_num);
+    	
+    	if (principal.getMemberVO().getUser_num() != db_notice.getUser_num()) {
+			return "views/common/accessDenied";
+		} // if
+    	
+    	noticeService.deleteNotice(noti_num);
+    	
+    	return "redirect:/notice/noticeList";
+    }
 
 }
 
