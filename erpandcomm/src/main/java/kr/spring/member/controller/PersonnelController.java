@@ -20,7 +20,7 @@ public class PersonnelController {
     
     @GetMapping("/attendance")
     public String attendance() {
-        return "views/personnel/attendance";
+        return "views/personnel/attendanceList";
     }
     
     @GetMapping("/vacation")
