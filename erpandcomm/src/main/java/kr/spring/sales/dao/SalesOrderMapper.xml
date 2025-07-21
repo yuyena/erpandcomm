@@ -79,4 +79,14 @@
         DELETE FROM sales_order_detail WHERE sales_order_num = #{sales_order_num}
     </delete>
 
+    <select id="getMonthlySalesStats" resultType="java.util.Map">
+        SELECT
+            TO_CHAR(order_date, 'YYYY-MM') AS "month",
+            SUM(total_price) AS "total"
+        FROM sales_order
+        WHERE EXTRACT(YEAR FROM order_date) = EXTRACT(YEAR FROM SYSDATE)
+        GROUP BY TO_CHAR(order_date, 'YYYY-MM')
+        ORDER BY "month" ASC
+    </select>
+
 </mapper> 

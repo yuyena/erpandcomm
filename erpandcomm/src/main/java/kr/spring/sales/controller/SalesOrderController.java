@@ -12,6 +12,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 import java.util.Date;
@@ -260,5 +261,11 @@ public class SalesOrderController {
         salesOrderService.deleteSalesOrderDetail(sales_order_num);
         
         return "redirect:/sales/orderList";
+    }
+
+    @GetMapping("/stats/monthly")
+    @ResponseBody
+    public List<Map<String, Object>> getMonthlyStats() {
+        return salesOrderService.getMonthlySalesStats();
     }
 } 

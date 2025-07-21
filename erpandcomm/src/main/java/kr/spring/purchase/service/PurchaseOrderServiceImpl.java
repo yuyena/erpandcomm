@@ -2,6 +2,10 @@ package kr.spring.purchase.service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
+import java.time.YearMonth;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -69,6 +73,24 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
     @Override
     public List<Map<String, Object>> getMonthlyPurchaseStats() {
-        return purchaseOrderMapper.getMonthlyPurchaseStats();
+        List<Map<String, Object>> dbData = purchaseOrderMapper.getMonthlyPurchaseStats();
+        Map<String, Object> dataMap = dbData.stream()
+                .collect(Collectors.toMap(
+                        m -> (String) m.get("month"),
+                        m -> m.get("total")
+                ));
+
+        int currentYear = YearMonth.now().getYear();
+        List<Map<String, Object>> fullData = IntStream.rangeClosed(1, 12)
+                .mapToObj(month -> {
+                    String monthStr = String.format("%d-%02d", currentYear, month);
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("month", monthStr);
+                    map.put("total", dataMap.getOrDefault(monthStr, 0));
+                    return map;
+                })
+                .collect(Collectors.toList());
+
+        return fullData;
     }
 } 

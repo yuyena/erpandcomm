@@ -84,7 +84,7 @@
             TO_CHAR(order_date, 'YYYY-MM') AS "month",
             SUM(total_price) AS "total"
         FROM purchase_order
-        WHERE order_date >= ADD_MONTHS(TRUNC(SYSDATE, 'MM'), -5) AND order_date &lt; TRUNC(SYSDATE, 'MM') + 1
+        WHERE EXTRACT(YEAR FROM order_date) = EXTRACT(YEAR FROM SYSDATE)
         GROUP BY TO_CHAR(order_date, 'YYYY-MM')
         ORDER BY "month" ASC
     </select>

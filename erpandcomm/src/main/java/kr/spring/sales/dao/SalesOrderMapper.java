@@ -1,6 +1,7 @@
 package kr.spring.sales.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
@@ -27,4 +28,6 @@ public interface SalesOrderMapper {
     void updateSalesOrderDetail(SalesOrderDetailVO detail);
     // 판매주문 상세 삭제 (주문번호 기준 전체 삭제)
     void deleteSalesOrderDetail(long sales_order_num);
+
+    List<Map<String, Object>> getMonthlySalesStats();
 } 

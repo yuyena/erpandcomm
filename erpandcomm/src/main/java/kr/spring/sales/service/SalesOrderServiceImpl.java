@@ -1,6 +1,11 @@
 package kr.spring.sales.service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
+import java.time.YearMonth;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,6 +16,7 @@ import kr.spring.sales.vo.SalesOrderVO;
 import kr.spring.sales.vo.SalesOrderDetailVO;
 
 @Service
+@Transactional
 public class SalesOrderServiceImpl implements SalesOrderService {
     @Autowired
     private SalesOrderMapper salesOrderMapper;
@@ -64,5 +70,28 @@ public class SalesOrderServiceImpl implements SalesOrderService {
     @Transactional
     public void deleteSalesOrderDetail(long sales_order_num) {
         salesOrderMapper.deleteSalesOrderDetail(sales_order_num);
+    }
+
+    @Override
+    public List<Map<String, Object>> getMonthlySalesStats() {
+        List<Map<String, Object>> dbData = salesOrderMapper.getMonthlySalesStats();
+        Map<String, Object> dataMap = dbData.stream()
+                .collect(Collectors.toMap(
+                        m -> (String) m.get("month"),
+                        m -> m.get("total")
+                ));
+
+        int currentYear = YearMonth.now().getYear();
+        List<Map<String, Object>> fullData = IntStream.rangeClosed(1, 12)
+                .mapToObj(month -> {
+                    String monthStr = String.format("%d-%02d", currentYear, month);
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("month", monthStr);
+                    map.put("total", dataMap.getOrDefault(monthStr, 0));
+                    return map;
+                })
+                .collect(Collectors.toList());
+
+        return fullData;
     }
 } 
