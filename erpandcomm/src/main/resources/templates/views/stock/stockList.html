@@ -124,10 +124,10 @@
                         </td>
                         <td th:text="${#dates.format(product.product_date, 'yyyy-MM-dd')}"></td>
                         <td>
-                            <a th:href="@{/stock/detail/{num}(num=${product.product_num})}" 
-                               style="color: #007bff; text-decoration: none;">상세</a>
+                            <a th:href="@{/product/stock/history(product_num=${product.product_num})}" 
+                               style="color: #007bff; text-decoration: none;">히스토리</a>
                             |
-                            <a th:href="@{/stock/update/{num}(num=${product.product_num})}" 
+                            <a th:href="@{/product/stock/update(product_num=${product.product_num})}"
                                style="color: #28a745; text-decoration: none;">수정</a>
                         </td>
                     </tr>

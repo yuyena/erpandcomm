@@ -21,12 +21,12 @@
             <h1>재고 히스토리</h1>
             <div class="product-info">
                 <div class="product-details">
-                    <div class="product-name">노트북 A1</div>
-                    <div class="product-status status-active">판매중</div>
+                    <div class="product-name" th:text="${product.product_name}">상품명</div>
+                    <div class="product-status status-active" th:text="${product.status == 1 ? '판매중' : '판매중단'}">상태</div>
                 </div>
                 <div class="current-stock">
                     <h3>현재 재고</h3>
-                    <div class="stock-amount">152 개</div>
+                    <div class="stock-amount" th:text="${product.current_quantity != null ? product.current_quantity + ' 개' : '0 개'}">재고 수량</div>
                 </div>
             </div>
         </div>
@@ -34,20 +34,20 @@
         <div class="main-content">
             <div class="summary-cards">
                 <div class="summary-card">
-                    <h3>총 입고량</h3>
-                    <div class="value">1,250</div>
+                    <h3>최소 재고</h3>
+                    <div class="value" th:text="${product.min_stock}"></div>
                 </div>
                 <div class="summary-card">
-                    <h3>총 출고량</h3>
-                    <div class="value">1,098</div>
+                    <h3>최대 재고</h3>
+                    <div class="value" th:text="${product.max_stock}"></div>
                 </div>
                 <div class="summary-card">
-                    <h3>총 이동 횟수</h3>
-                    <div class="value">47</div>
+                    <h3>버전</h3>
+                    <div class="value" th:text="${product.version_num}"></div>
                 </div>
                 <div class="summary-card">
                     <h3>최근 업데이트</h3>
-                    <div class="value" style="font-size: 1.2em;">07-15</div>
+                    <div class="value" style="font-size: 1.2em;" th:text="${product.updated_date != null ? #dates.format(product.updated_date, 'MM-dd') : '07-15'}">07-15</div>
                 </div>
             </div>
 
@@ -92,86 +92,21 @@
                     </tr>
                 </thead>
                 <tbody id="historyTableBody">
-                    <tr>
-                        <td>MOV-2025-0145</td>
-                        <td class="movement-in">입고</td>
-                        <td><span class="quantity-badge quantity-in">+50</span></td>
-                        <td>2025-07-15 14:30</td>
-                        <td>김재고</td>
-                        <td class="note-cell">신규 입고 - 공급업체 A</td>
+                    <tr th:each="movement : ${stockHistory}" th:if="${stockHistory != null}">
+                        <td th:text="${movement.movement_num}">이동번호</td>
+                        <td th:class="${movement.movement_type == 0 ? 'movement-in' : movement.movement_type == 1 ? 'movement-out' : 'movement-adjust'}"
+                            th:text="${movement.movement_type == 0 ? '입고' : movement.movement_type == 1 ? '출고' : '조정'}">이동유형</td>
+                        <td>
+                            <span th:class="${movement.movement_type == 0 ? 'quantity-badge quantity-in' : movement.movement_type == 1 ? 'quantity-badge quantity-out' : 'quantity-badge quantity-adjust'}"
+                                  th:text="${movement.movement_type == 0 ? '+' + movement.quantity : movement.movement_type == 1 ? '-' + movement.quantity : (movement.quantity > 0 ? '+' + movement.quantity : movement.quantity)}">수량</span>
+                        </td>
+                        <td th:text="${#dates.format(movement.movement_date, 'yyyy-MM-dd HH:mm')}">이동일자</td>
+                        <td th:text="${movement.emp_num}">담당자</td>
+                        <td class="note-cell" th:text="${movement.note}">비고</td>
                     </tr>
-                    <tr>
-                        <td>MOV-2025-0144</td>
-                        <td class="movement-out">출고</td>
-                        <td><span class="quantity-badge quantity-out">-25</span></td>
-                        <td>2025-07-14 16:45</td>
-                        <td>박물류</td>
-                        <td class="note-cell">온라인 주문 출고</td>
-                    </tr>
-                    <tr>
-                        <td>MOV-2025-0143</td>
-                        <td class="movement-out">출고</td>
-                        <td><span class="quantity-badge quantity-out">-15</span></td>
-                        <td>2025-07-14 11:20</td>
-                        <td>이창고</td>
-                        <td class="note-cell">매장 이동</td>
-                    </tr>
-                    <tr>
-                        <td>MOV-2025-0142</td>
-                        <td class="movement-adjust">조정</td>
-                        <td><span class="quantity-badge quantity-adjust">-2</span></td>
-                        <td>2025-07-13 09:15</td>
-                        <td>김재고</td>
-                        <td class="note-cell">재고 조정 - 파손품</td>
-                    </tr>
-                    <tr>
-                        <td>MOV-2025-0141</td>
-                        <td class="movement-in">입고</td>
-                        <td><span class="quantity-badge quantity-in">+100</span></td>
-                        <td>2025-07-12 13:00</td>
-                        <td>박물류</td>
-                        
-                        <td class="note-cell">정기 입고</td>
-                    </tr>
-                    <tr>
-                        <td>MOV-2025-0140</td>
-                        <td class="movement-out">출고</td>
-                        <td><span class="quantity-badge quantity-out">-30</span></td>
-                        <td>2025-07-11 15:30</td>
-                        <td>이창고</td>
-                        <td class="note-cell">대량 주문 출고</td>
-                    </tr>
-                    <tr>
-                        <td>MOV-2025-0139</td>
-                        <td class="movement-out">출고</td>
-                        <td><span class="quantity-badge quantity-out">-8</span></td>
-                        <td>2025-07-10 10:45</td>
-                        <td>김재고</td>
-                        <td class="note-cell">소매 판매</td>
-                    </tr>
-                    <tr>
-                        <td>MOV-2025-0138</td>
-                        <td class="movement-in">입고</td>
-                        <td><span class="quantity-badge quantity-in">+75</span></td>
-                        <td>2025-07-09 14:20</td>
-                        <td>박물류</td>
-                        <td class="note-cell">긴급 입고</td>
-                    </tr>
-                    <tr>
-                        <td>MOV-2025-0137</td>
-                        <td class="movement-adjust">조정</td>
-                        <td><span class="quantity-badge quantity-adjust">+5</span></td>
-                        <td>2025-07-08 16:00</td>
-                        <td>이창고</td>
-                        <td class="note-cell">재고 실사 조정</td>
-                    </tr>
-                    <tr>
-                        <td>MOV-2025-0136</td>
-                        <td class="movement-out">출고</td>
-                        <td><span class="quantity-badge quantity-out">-20</span></td>
-                        <td>2025-07-07 11:30</td>
-                        <td>김재고</td>
-                        <td class="note-cell">온라인 주문 출고</td>
+                    <!-- 데이터가 없을 때 표시 -->
+                    <tr th:if="${stockHistory == null}">
+                        <td colspan="6" style="text-align: center; padding: 20px;">재고 이동 내역이 없습니다.</td>
                     </tr>
                 </tbody>
             </table>
