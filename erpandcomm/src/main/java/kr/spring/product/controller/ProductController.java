@@ -20,12 +20,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import kr.spring.member.service.MemberService;
 import kr.spring.member.vo.MemberVO;
 import kr.spring.member.vo.PrincipalDetails;
 import kr.spring.product.service.ProductService;
 import kr.spring.product.vo.ProductVO;
+import kr.spring.util.ExcelUtil;
 import kr.spring.util.FileUtil;
 import kr.spring.util.PagingUtil;
 import kr.spring.util.StringUtil;
@@ -171,7 +173,7 @@ public class ProductController {
 		return "views/product/productUpdate";
 	}
 	
-	//글 수정
+	//상품 수정
 	@PreAuthorize("isAuthenticated()")
 	@PostMapping("/update")
 	public String submitUpdate(@Valid ProductVO productVO,
@@ -208,5 +210,31 @@ public class ProductController {
 						             +productVO.getProduct_num());
 		
 		return "views/common/resultAlert";
+	}
+	@GetMapping("/excel")
+	public void downloadExcel(
+	    HttpServletResponse response,
+	    @RequestParam(value = "category_num", required = false) String categoryNum,
+	    @RequestParam(value = "keyfield", required = false) String keyfield,
+	    @RequestParam(value = "keyword", required = false) String keyword,
+	    @RequestParam(value = "min_price", required = false) Integer minPrice,
+	    @RequestParam(value = "max_price", required = false) Integer maxPrice,
+	    @RequestParam(value = "order", defaultValue = "1") int order
+	) throws IOException {
+	    
+	    // 검색 조건으로 데이터 조회 (기존 productView와 동일한 로직)
+	    Map<String, Object> map = new HashMap<>();
+	    map.put("category_num", categoryNum);
+	    map.put("keyfield", keyfield);
+	    map.put("keyword", keyword);
+	    map.put("min_price", minPrice);
+	    map.put("max_price", maxPrice);
+	    map.put("order", order);
+	    map.put("start", 1);
+	    map.put("end", 999999);
+	    List<ProductVO> productList = productService.selectList(map);
+	    
+	    // 엑셀 파일 생성
+	    ExcelUtil.createProductExcel(response, productList);
 	}
 }
