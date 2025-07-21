@@ -33,44 +33,44 @@
 			<div class="page-header">
 				<h2 class="page-title-dashboard">대시보드</h2>
 			</div>
-			<div class="welcome-message" style="font-size: 1.5rem; font-weight: bold; color: #2851a3; margin-bottom: 50px; margin-left:24px;">
+			<div class="welcome-message" style="font-size: 2.3rem; font-weight: bold; color: #2851a3; margin-bottom: 50px; margin-left:30px;">
 				<span th:if="${loginMember != null}" th:text="${loginMember.user_name} + ' 님, 환영합니다!'">로그인 사용자 닉네임</span>
 				<span th:if="${loginMember == null}">로그인 해주세요.</span>
 			</div>
-			<div style="background:#fff; border-radius:14px; box-shadow:0 2px 12px rgba(80,120,200,0.07); padding: 24px 80px 18px 80px; max-width:1400px; margin:0 auto 40px auto; width:100%; box-sizing:border-box;">
-				<h3 style="font-size:1.18rem; font-weight:bold; margin-bottom:18px; color:#2851a3;">공지사항</h3>
-				<table style="width:100%; border-collapse:collapse; background:none;">
-					<thead>
-						<tr style="border-bottom:2px solid #e0e6f0;">
-							<th style="padding:14px 10px; text-align:left; color:#2851a3; font-size:1.05rem;">구분</th>
-							<th style="padding:14px 10px; text-align:left; color:#2851a3; font-size:1.05rem;">제목</th>
-							<th style="padding:14px 10px; text-align:left; color:#2851a3; font-size:1.05rem;">날짜</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr th:each="notice, stat : ${noticeList}" th:if="${stat.index} < 3" style="border-bottom:1px solid #e0e6f0; transition:background 0.15s;" onmouseover="this.style.background='#f5f8ff'" onmouseout="this.style.background='none'">
-							<td style="padding:14px 10px; color:#2176e8; font-weight:bold;">중요공지</td>
-							<td style="padding:14px 10px; font-weight:normal;" th:text="${notice.noti_title}"></td>
-							<td style="padding:14px 10px; color:#888;" th:text="${#dates.format(notice.noti_date, 'yyyy-MM-dd')}"></td>
-						</tr>
-						<tr th:if="${noticeList == null or noticeList.size() == 0}">
-							<td colspan="3" style="color:#888; font-size:15px; padding:14px 10px; text-align:center;">공지사항이 없습니다.</td>
-						</tr>
-					</tbody>
-				</table>
-				<div style="text-align:right; margin-top:10px;">
-					<a href="/notice/noticeList" style="font-size:15px; color:#2176e8;">더보기</a>
+			<div style="width:100%; box-sizing:border-box;">
+				<h3 style="font-size:1.5rem; font-weight:bold; margin-bottom:13px; color:#2851a3; padding-left:23px;">공지사항</h3>
+				<div style="background:#fff; border-radius:14px; box-shadow:0 2px 12px rgba(80,120,200,0.07); padding: 5px 30px 12px 10px; width:1200px; margin-left:20px; margin-right:0; box-sizing:border-box;">
+					<table style="width:100%; border-collapse:collapse; background:none;">
+						<tbody>
+							<tr th:each="notice, stat : ${noticeList}" th:if="${stat.index} < 3" style="border-bottom:1px solid #e0e6f0; transition:background 0.15s;" onmouseover="this.style.background='#f5f8ff'" onmouseout="this.style.background='none'">
+								<td style="padding:14px 24px 14px 8px; color:#2176e8; font-weight:bold; text-align:center; width:12%;">중요공지</td>
+								<td style="padding:14px 32px 14px 10px; color:#373737; font-weight:600; text-align:left; width:73%;" th:text="${notice.noti_title}"></td>
+								<td style="padding:14px 10px; color:#888; text-align:center; width:15%;" th:text="${#dates.format(notice.noti_date, 'yyyy-MM-dd')}"></td>
+							</tr>
+							<tr th:if="${noticeList == null or noticeList.size() == 0}">
+								<td colspan="3" style="color:#888; font-size:15px; padding:14px 10px; text-align:center;">공지사항이 없습니다.</td>
+							</tr>
+						</tbody>
+					</table>
+					<div style="text-align:right; margin-top:6px;">
+						<a href="/notice/noticeList" style="font-size:13px; color:#2176e8;">더보기</a>
+					</div>
 				</div>
 			</div>
-			<div style="width:100%; max-width:1400px; margin:0 auto; padding:0 80px;">
-				<div style="font-size:1.6rem; font-weight:bold; color:#2851a3; text-align:center; margin-bottom:28px; letter-spacing:0.5px;">&lt; 나의 매출 현황 &gt;</div>
+			<div style="width:1200px; margin-left:120px; margin-right:0;">
 			</div>
-			<div style="display: flex; flex-direction: row; justify-content: center; gap: 48px; max-width: 1400px; margin: 0 auto; padding: 0 80px;">
-				<div style="background: #fff; border-radius: 16px; box-shadow: 0 2px 12px rgba(80,120,200,0.07); width: 600px; height: 380px; display: flex; align-items: center; justify-content: center;">
-					<canvas id="salesOrderChart" width="520" height="320"></canvas>
+			<div style="display: flex; flex-direction: row; justify-content: flex-start; gap: 48px; width:1200px; margin-left:20px; margin-right:0;">
+				<div style="display: flex; flex-direction: column; align-items: flex-start; width: 600px;">
+					<div style="font-size:1.3rem; font-weight:bold; color:#2851a3; margin-bottom: 6px; margin-left: 6px; margin-top:30px;">판매주문 통계</div>
+					<div style="background: #fff; border-radius: 16px; box-shadow: 0 2px 12px rgba(80,120,200,0.07); width: 100%; height: 380px; display: flex; align-items: center; justify-content: center;">
+						<canvas id="salesOrderChart" width="520" height="320"></canvas>
+					</div>
 				</div>
-				<div style="background: #fff; border-radius: 16px; box-shadow: 0 2px 12px rgba(80,120,200,0.07); width: 600px; height: 380px; display: flex; align-items: center; justify-content: center;">
-					<canvas id="purchaseOrderChart" width="520" height="320"></canvas>
+				<div style="display: flex; flex-direction: column; align-items: flex-start; width: 600px;">
+					<div style="font-size:1.3rem; font-weight:bold; color:#2851a3; margin-bottom: 6px; margin-left: 6px; margin-top:30px;">구매주문 통계</div>
+					<div style="background: #fff; border-radius: 16px; box-shadow: 0 2px 12px rgba(80,120,200,0.07); width: 100%; height: 380px; display: flex; align-items: center; justify-content: center;">
+						<canvas id="purchaseOrderChart" width="520" height="320"></canvas>
+					</div>
 				</div>
 			</div>
 		</main>
@@ -129,17 +129,14 @@ document.addEventListener('DOMContentLoaded', function() {
           }]
         },
         options: {
-          indexAxis: 'y', // 가로 막대
-          indexAxis: 'y',
           plugins: { legend: { display: true, position: 'top', align: 'end' } },
           scales: {
             x: {
-              beginAtZero: true,
-              reverse: true, // 우측에서 시작
               ticks: { display: false },
               grid: { display: false }
             },
             y: {
+              beginAtZero: true,
               ticks: { display: false },
               grid: { display: true }
             }
