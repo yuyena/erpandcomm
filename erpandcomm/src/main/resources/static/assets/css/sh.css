@@ -25,13 +25,6 @@
   gap: 12px;
 }
 
-.page-title {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #3b6fd6;
-    margin: 0;
-}
-
 .sh-box-row label {
   width: 70px;
   font-weight: 500;

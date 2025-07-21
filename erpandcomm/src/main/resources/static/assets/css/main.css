@@ -26,7 +26,12 @@ body {
     padding: 0;
     overflow-x: hidden;
 }
-
+.page-title-dashboard {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #3b6fd6;
+    margin: 0;
+}
 .dashboard-wrapper {
     display: flex;
     flex-direction: row;
@@ -372,11 +377,20 @@ body {
     min-width: 0;
     background: #f8fbff;
     border-radius: 0 0 18px 0;
-    padding: 40px 24px 0 24px;
+    padding: 0 24px 0 24px !important;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     overflow-y: auto;
+}
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 60px;
+    padding: 40px 40px 30px 40px !important;
+    border-bottom: 2px solid #e0e0e0;
+    margin-top: 0 !important;
 }
 
 .main-header {
@@ -391,6 +405,7 @@ body {
     padding-left: 8px;
 }
 
+
 .main-header h2 {
     font-size: 1.5rem;
     font-weight: bold;
@@ -398,64 +413,100 @@ body {
     margin: 0;
 }
 
+.page-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #3b6fd6;
+    margin: 0;
+}
+
+/* 공지사항 심플 테이블 스타일 (대시보드용) */
 .notice-section {
-    background: #f6faff;
-    border-radius: 12px;
-    padding: 24px 24px 8px 24px;
+  background: #fff;
+  border-radius: 8px;
+  padding: 18px 18px 8px 18px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  margin-bottom: 0;
 }
-
 .notice-section h3 {
-    font-size: 1.2rem;
-    font-weight: bold;
-    margin-bottom: 18px;
-    color: #222;
+  font-size: 1.15rem;
+  font-weight: bold;
+  margin-bottom: 18px;
+  color: #222;
 }
-
 .notice-table {
-    width: 100%;
-    border-collapse: collapse;
-    background: #f6faff;
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  margin-bottom: 5px;
 }
-
 .notice-table th, .notice-table td {
-    padding: 12px 10px;
-    text-align: left;
-    font-size: 1rem;
+  padding: 10px 8px;
+  font-size: 1rem;
+  color: #222;
+  text-align: left;
 }
-
 .notice-table th {
-    color: #3b6fd6;
-    border-bottom: 2px solid #e0e0e0;
-    font-weight: bold;
-    background: #f6faff;
+  color: #222;
+  border-bottom: 1.5px solid #dbe3ef;
+  font-weight: bold;
+  background: #fff;
+  font-size: 1rem;
 }
-
-.notice-table tr {
-    border-bottom: 1px solid #e0e0e0;
+.notice-table td {
+  border-bottom: 1px solid #e0e6f0;
+  background: #fff;
+  font-size: 1rem;
 }
-
-.notice-table tr:last-child {
-    border-bottom: none;
+.notice-table tr:last-child td {
+  border-bottom: none;
 }
-
 .important {
-    color: #3b6fd6;
-    font-weight: bold;
-    font-size: 0.98rem;
+  color: #2176e8;
+  font-weight: bold;
+  font-size: 1rem;
+}
+.notice-table td:nth-child(2) {
+  font-weight: bold;
+  color: #222;
+}
+.notice-table td:last-child, .notice-table th:last-child {
+  text-align: right;
+}
+.notice-detail-btn {
+  background: #fff;
+  color: #2176e8;
+  border: 1px solid #dbe3ef;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  font-size: 1rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, color 0.15s;
+}
+.notice-detail-btn:hover {
+  background: #eaf1ff;
+  color: #125ea2;
 }
 
-.notice-detail-btn {
-    background: #3b6fd6;
-    color: #fff;
-    border: none;
-    border-radius: 50%;
-    width: 28px;
-    height: 28px;
-    font-size: 1.2rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.notice-section a,
+.notice-section .btn,
+.notice-section .btn-list {
+  background: none !important;
+  color: #3b6fd6 !important;
+  border: none !important;
+  font-weight: normal !important;
+  border-radius: 0 !important;
+  min-width: 0 !important;
+  height: auto !important;
+  box-shadow: none !important;
+  display: inline !important;
+  align-items: unset !important;
+  gap: 0 !important;
+  padding: 4px 14px !important;
 }
 
 /* 로그인 페이지 중앙 정렬 및 스타일 개선 */
