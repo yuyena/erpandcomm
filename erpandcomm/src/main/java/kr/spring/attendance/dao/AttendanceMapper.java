@@ -3,6 +3,7 @@ package kr.spring.attendance.dao;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -30,7 +31,8 @@ public interface AttendanceMapper {
 	//public void updateAttendance(Long empId);
 	public void updateAttendance(AttendanceVO attendance);
 	
-	// delete (출,퇴근 삭제) 
+	// delete (출,퇴근 삭제)
+	@Delete("DELETE FROM attendance WHERE attendance_id=#{attendanceId}")
 	public void deleteAttendance(Long empId);
 	
 	

@@ -48,7 +48,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 	@Override
 	public void deleteAttendance(Long empId) {
 		// TODO Auto-generated method stub
-		
+		attendanceMapper.deleteAttendance(empId);
 	}
 
 	@Override

@@ -19,7 +19,8 @@
 				<h2>근태 수정</h2>
 			</div>
 			<section class="card-section">
-				<form th:action="@{/personnel/updateForm}" method="post">
+				<!--form을 submit하는 액션 url을 일치시켜야 함 -->	
+				<form th:action="@{/personnel/update}" method="post">
 					<!-- PK: attendanceId를 hidden으로 전달 -->
 					<input type="hidden" name="attendanceId" th:value="${attendance.attendanceId}"/>
 					<!-- 날짜 -->
@@ -30,24 +31,17 @@
 					<!-- 직원번호  -->					 
 					<div class="form-group">
 						<label for="employee_code">직원번호</label>
-						<input type="text" id="employee_code" name="employeeCode" th:value="${attendance.employeeCode}" readonly />
+						<input type="text" id="employee_code" name="employeeCode" th:value="${memberVO.employee_code}" readonly />
 					</div>
 					<!-- 이름 -->				 
 					<div class="form-group">
 						<label for="empName">이름</label>
-						<input type="text" id="user_name" name="empName" th:value="${attendance.empName}" readonly />
+						<input type="text" id="user_name" name="empName" th:value="${memberVO.user_name}" readonly />
 					</div>
 					<!-- 상태 -->
 					<div class="form-group">
 						<label for="status">상태</label>
-						<select id="status" name="status" required>
-							<option value="">상태 선택</option>
-							<option value="present">출근</option>
-							<option value="late">지각</option>
-							<option value="early_leave">조퇴</option>
-							<option value="absent">결근</option>
-							<option value="holiday">휴가</option>
-						</select>
+						<input type="text" id="status" name="status" th:value="${attendance.status}" readonly/>						
 					</div>
 
 						<div class="form-group">
@@ -61,9 +55,10 @@
 							</select>
 						</div>
 						
+			
 						<div class="form-group">
 						<label for="inTime">출근시간</label>
-						<input type="time" id="checkIntime" name="checkIntime" th:value="${attedance.checkIntime}" readonly/>
+						<input type="time" id="checkIntime" name="checkIntime" th:value="${attendance.checkIntime}" readonly/>
 					</div>
 
 					<div class="form-group">

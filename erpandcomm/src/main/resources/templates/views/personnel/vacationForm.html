@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/layout_basic}">
+<head>
+<meta charset="UTF-8">
+<title>휴가등록 폼</title>
+<link rel="stylesheet" th:href="@{/assets/css/main.css}">
+<link rel="stylesheet" th:href="@{/assets/css/yj/vacationForm.css}">
+</head>
+<body>
+<div layout:fragment="content" class="page-main">
+    <div class="dashboard-wrapper">
+        <!-- 사이드바 -->
+        <th:block th:replace="fragments/nav_sidebar :: sidebar"></th:block>
+
+        <!-- 메인 컨텐츠 -->
+        <main class="main-content">
+            <!-- header -->
+            <div class="main-header"></div>
+            
+            <section class="vacation-section">
+                <h3>휴가 신청</h3>
+                
+                <!-- 직원 정보 표시 -->
+                <div class="employee-info">
+                    <span>직원번호:</span> <span th:text="${memberVO.employee_code}"></span> | 
+                    <span>이름:</span> <span th:text="${memberVO.user_name}"></span> | 
+                    <span>부서:</span> <span th:text="${memberVO.department_name}"></span>
+                </div>
+                
+                <form class="vacation-form" method="post" th:action="@{/personnel/vacationForm}">
+                    <!-- 직원 ID (숨김 필드) -->
+                    <input type="hidden" name="empId" th:value="${memberVO.user_num}">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="vacationType">휴가 구분 <span class="required">*</span></label>
+                            <select id="vacationType" name="vacationType" class="vacation-type-select" required>
+                                <option value="">휴가 유형을 선택하세요</option>
+                                <option value="annual">연차</option>
+                                <option value="sick">병가</option>
+                                <option value="personal">개인사유</option>
+                                <option value="maternity">출산휴가</option>
+                                <option value="special">특별휴가</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="startDate">시작일 <span class="required">*</span></label>
+                            <input type="date" id="start_date" name="startDate" class="date-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="endDate">종료일 <span class="required">*</span></label>
+                            <input type="date" id="end_date" name="endDate" class="date-input" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="totalDays">총 일수</label>
+                            <div id="totalDays" class="total-days-display"></div>
+                            <input type="hidden" name="totalDays" id="totalDaysInput" value="0">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row full-width">
+                        <div class="form-group" style="width: 100%; margin-right: 0;">
+                            <label for="reason">사유 <span class="required">*</span></label>
+                            <textarea id="reason" name="reason" placeholder="휴가 사유를 입력하세요..." required></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="button-group">
+                        <button type="submit" class="btn btn-primary">휴가 신청</button>
+                        <button type="button" class="btn btn-secondary" onclick="history.back()">취소</button>
+                    </div>
+                </form>
+            </section>
+        </main>
+    </div>
+</div>
+
+<!-- 페이지 전용 스크립트 -->
+<div layout:fragment="pageScript"></div>
+<script th:src="@{/assets/js/sidebar.js}"></script>
+</body>
+</html>

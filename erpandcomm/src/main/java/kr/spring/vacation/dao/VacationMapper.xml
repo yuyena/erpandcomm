@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.spring.vacation.dao.VacationMapper">
+	<resultMap type="VacationVO" id="vacationMap">
+		<result property="requestId" column="request_id" />
+		<result property="empId" column="emp_id" />
+		<result property="vacationType" column="vacation_type" />
+		<result property="startDate" column="start_date" />
+		<result property="endDate" column="end_date" />
+		<result property="startTime" column="start_time" />
+		<result property="endTime" column="end_time" />
+		<result property="totalDays" column="total_days" />
+		<result property="requestDate" column="request_date" />
+		<result property="requestId" column="updatedAt" />
+		<result property="updatedAt" column="updated_at" />
+	</resultMap>
+
+
+
+	<!-- 휴가 등록 -->
+	<insert id="insertVacation"
+		parameterType="kr.spring.vacation.vo.VacationVO">
+		INSERT INTO vacation_request (
+		request_id,
+		emp_id,
+		vacation_type,
+		start_date,
+		end_date,
+		start_time,
+		end_time,
+		total_days,
+		reason,
+		status,
+		request_date,
+		created_at,
+		updated_at
+		)
+		VALUES (
+		vacation_request_seq.NEXTVAL,
+		#{empId},
+		#{vacationType},
+		#{startDate, jdbcType=VARCHAR},
+		#{endDate, jdbcType=VARCHAR},
+		#{startTime, jdbcType=VARCHAR},
+		#{endTime, jdbcType=VARCHAR},
+		#{totalDays},
+		#{reason, jdbcType=VARCHAR},
+		NVL(#{status, jdbcType=VARCHAR}, 'pending'),
+		SYSDATE,
+		SYSDATE,
+		SYSDATE
+		)
+	</insert>
+
+	<!-- 휴가 목록 -->
+	<select id="selectVacationList" parameterType="long"
+		resultMap="vacationMap">
+		SELECT *
+		FROM vacation_request
+		WHERE emp_id=#{empId}
+	</select>
+
+</mapper>
