@@ -339,6 +339,38 @@
     background: #357ae8;
 }
 
+/* Excel 다운로드 버튼 스타일 */
+.btn-excel {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 700;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+    background: #21a366; /* Excel 그린 */
+    color: #fff !important;
+    min-width: 120px;
+    height: 40px;
+    box-sizing: border-box;
+}
+.btn-excel:hover {
+    background: #17834d;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.12);
+}
+.btn-excel img {
+    width: 20px;
+    height: 20px;
+    margin-right: 4px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
 /* 공통 입력란/셀렉트 스타일 */
 input, select {
     height: 35px;
