@@ -33,12 +33,12 @@
 			<div class="page-header">
 				<h2 class="page-title-dashboard">대시보드</h2>
 			</div>
-			<div class="welcome-message" style="font-size: 2.3rem; font-weight: bold; color: #2851a3; margin-bottom: 50px; margin-left:30px;">
+			<div class="welcome-message" style="font-size: 2.3rem; font-weight: bold; color: #285CC3; margin-bottom: 50px; margin-left:30px;">
 				<span th:if="${loginMember != null}" th:text="${loginMember.user_name} + ' 님, 환영합니다!'">로그인 사용자 닉네임</span>
 				<span th:if="${loginMember == null}">로그인 해주세요.</span>
 			</div>
 			<div style="width:100%; box-sizing:border-box;">
-				<h3 style="font-size:1.5rem; font-weight:bold; margin-bottom:13px; color:#2851a3; padding-left:23px;">공지사항</h3>
+				<h3 style="font-size:1.5rem; font-weight:bold; margin-bottom:13px; color:#285CC3; padding-left:23px;">공지사항</h3>
 				<div style="background:#fff; border-radius:14px; box-shadow:0 2px 12px rgba(80,120,200,0.07); padding: 5px 30px 12px 10px; width:1200px; margin-left:20px; margin-right:0; box-sizing:border-box;">
 					<table style="width:100%; border-collapse:collapse; background:none;">
 						<tbody>
@@ -52,7 +52,7 @@
 							</tr>
 						</tbody>
 					</table>
-					<div style="text-align:right; margin-top:6px;">
+					<div style="text-align:right; margin-top:6px; margin-right:6px">
 						<a href="/notice/noticeList" style="font-size:13px; color:#2176e8;">더보기</a>
 					</div>
 				</div>
@@ -61,18 +61,29 @@
 			</div>
 			<div style="display: flex; flex-direction: row; justify-content: flex-start; gap: 48px; width:1200px; margin-left:20px; margin-right:0;">
 				<div style="display: flex; flex-direction: column; align-items: flex-start; width: 600px;">
-					<div style="font-size:1.3rem; font-weight:bold; color:#2851a3; margin-bottom: 6px; margin-left: 6px; margin-top:30px;">판매주문 통계</div>
+					<div style="font-size:1.3rem; font-weight:bold; color:#285CC3; margin-bottom: 6px; margin-left: 6px; margin-top:30px;">판매주문 통계</div>
 					<div style="background: #fff; border-radius: 16px; box-shadow: 0 2px 12px rgba(80,120,200,0.07); width: 100%; height: 380px; display: flex; align-items: center; justify-content: center;">
 						<canvas id="salesOrderChart" width="520" height="320"></canvas>
 					</div>
 				</div>
 				<div style="display: flex; flex-direction: column; align-items: flex-start; width: 600px;">
-					<div style="font-size:1.3rem; font-weight:bold; color:#2851a3; margin-bottom: 6px; margin-left: 6px; margin-top:30px;">구매주문 통계</div>
+					<div style="font-size:1.3rem; font-weight:bold; color:#285CC3; margin-bottom: 6px; margin-left: 6px; margin-top:30px;">구매주문 통계</div>
 					<div style="background: #fff; border-radius: 16px; box-shadow: 0 2px 12px rgba(80,120,200,0.07); width: 100%; height: 380px; display: flex; align-items: center; justify-content: center;">
 						<canvas id="purchaseOrderChart" width="520" height="320"></canvas>
 					</div>
 				</div>
 			</div>
+			<div style="position:absolute; top:160px; right:40px; width:340px; z-index:2;">
+  <div id="calendar-widget" style="background:#fff; border-radius:12px; box-shadow:0 2px 8px rgba(80,120,200,0.07); padding:40px 22px 16px 22px; min-height:120px;">
+    <div style="font-weight:bold; color:#2851a3; font-size:1.13rem; margin-bottom:12px;">오늘의 일정</div>
+    <div id="calendar-list">
+      <div style="color:#888; font-size:14px;">일정 정보를 불러오는 중...</div>
+    </div>
+    <div style="text-align:right; margin-top:10px;">
+      <a href="/calendar" style="font-size:13px; color:#2176e8;">더보기</a>
+    </div>
+  </div>
+</div>
 		</main>
 	</div>
 </div>
@@ -144,7 +155,26 @@ document.addEventListener('DOMContentLoaded', function() {
         }
       });
     });
-});
+
+  // 오늘의 일정 위젯
+  fetch('/calendar/today')
+    .then(res => res.json())
+    .then(list => {
+      const wrap = document.getElementById('calendar-list');
+      if (!list || list.length === 0) {
+        wrap.innerHTML = '<div style="color:#888; font-size:14px;">오늘 등록된 일정이 없습니다.</div>';
+        return;
+      }
+      wrap.innerHTML = list.map(item =>
+        `<div style='margin-bottom:10px;'>
+          <div style='font-weight:500; color:#2176e8; font-size:1.05rem;'>${item.title}</div>
+          <div style='color:#666; font-size:13px;'>${item.description ? item.description.substring(0,30) : ''}</div>
+          <div style='color:#aaa; font-size:12px;'>${item.created_at ? item.created_at.substring(0,10) : ''} / 공개:${item.is_public === 'Y' ? 'O' : 'X'}</div>
+        </div>`
+      ).join('');
+    });
+
+}); // <-- DOMContentLoaded 닫는 괄호/세미콜론
 
 function toggleNotice(btn) {
   const tr = btn.closest('tr');

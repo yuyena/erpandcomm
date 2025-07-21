@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.spring.calendar.dao.CalendarMapper">
+
+  <select id="selectTodaySchedules" parameterType="map" resultType="kr.spring.calendar.vo.CalendarVO">
+    SELECT *
+    FROM calendar
+    WHERE owner_id = #{ownerId}
+      AND is_public = 'Y'
+      AND TRUNC(created_at) = TRUNC(#{today})
+    ORDER BY created_at DESC
+    FETCH FIRST 3 ROWS ONLY
+  </select>
+
+  <insert id="insertCalendar" parameterType="kr.spring.calendar.vo.CalendarVO">
+    INSERT INTO calendar (calendar_id, title, description, owner_id, is_public, created_at, updated_at)
+    VALUES (calendar_seq.NEXTVAL, #{title}, #{description}, #{owner_id}, #{is_public}, #{created_at}, #{updated_at})
+  </insert>
+
+  <update id="updateCalendar" parameterType="kr.spring.calendar.vo.CalendarVO">
+    UPDATE calendar
+    SET title = #{title},
+        description = #{description},
+        is_public = #{is_public},
+        updated_at = #{updated_at}
+    WHERE calendar_id = #{calendar_id}
+  </update>
+
+  <delete id="deleteCalendar" parameterType="long">
+    DELETE FROM calendar WHERE calendar_id = #{calendar_id}
+  </delete>
+
+  <select id="selectCalendarById" parameterType="long" resultType="kr.spring.calendar.vo.CalendarVO">
+    SELECT * FROM calendar WHERE calendar_id = #{calendar_id}
+  </select>
+
+  <select id="selectList" parameterType="map" resultType="kr.spring.calendar.vo.CalendarVO">
+    SELECT * FROM calendar WHERE owner_id = #{ownerId} ORDER BY created_at DESC
+  </select>
+
+  <select id="selectMonthSchedules" parameterType="map" resultType="kr.spring.calendar.vo.CalendarVO">
+    SELECT * FROM calendar
+    WHERE owner_id = #{ownerId}
+      AND created_at &gt;= #{monthStart}
+      AND created_at &lt;= #{monthEnd}
+    ORDER BY created_at ASC
+  </select>
+
+</mapper> 

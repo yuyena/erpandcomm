@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>캘린더</title>
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
+  <style>
+    body { background: #f5f8ff; font-family: 'Noto Sans KR', Arial, sans-serif; }
+    #calendar { max-width: 900px; margin: 40px auto; background: #fff; border-radius: 14px; box-shadow: 0 2px 12px rgba(80,120,200,0.07); padding: 24px; }
+    .fc-toolbar-title { font-size: 1.5rem; color: #2851a3; }
+    .fc-daygrid-event { font-size: 1rem; }
+  </style>
+</head>
+<body>
+  <div id="calendar"></div>
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var calendarEl = document.getElementById('calendar');
+      var calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        locale: 'ko',
+        headerToolbar: {
+          left: 'prev,next today',
+          center: 'title',
+          right: ''
+        },
+        events: function(fetchInfo, successCallback, failureCallback) {
+          // 월간 일정 조회
+          fetch(`/calendar/month?monthStart=${fetchInfo.startStr}&monthEnd=${fetchInfo.endStr}`)
+            .then(res => res.json())
+            .then(data => {
+              successCallback(data.map(item => ({
+                id: item.calendar_id,
+                title: item.title,
+                start: item.created_at,
+                allDay: true,
+                backgroundColor: item.is_public === 'Y' ? '#2176e8' : '#aaa',
+                borderColor: '#2176e8',
+                extendedProps: item
+              })));
+            });
+        },
+        dateClick: function(info) {
+          const title = prompt('일정 제목을 입력하세요:');
+          if (title) {
+            fetch('/calendar/add', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ title, is_public: 'Y', created_at: info.dateStr })
+            }).then(() => calendar.refetchEvents());
+          }
+        },
+        eventClick: function(info) {
+          const event = info.event;
+          if (confirm(`[수정/삭제]\n수정: 확인, 삭제: 취소`)) {
+            const newTitle = prompt('새 일정 제목:', event.title);
+            if (newTitle && newTitle !== event.title) {
+              fetch('/calendar/update', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ calendar_id: event.id, title: newTitle })
+              }).then(() => calendar.refetchEvents());
+            }
+          } else {
+            if (confirm('정말 삭제하시겠습니까?')) {
+              fetch(`/calendar/delete/${event.id}`, { method: 'DELETE' })
+                .then(() => calendar.refetchEvents());
+            }
+          }
+        }
+      });
+      calendar.render();
+    });
+  </script>
+</body>
+</html> 
