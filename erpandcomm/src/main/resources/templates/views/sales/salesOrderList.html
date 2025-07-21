@@ -78,6 +78,7 @@
             <section style="border: none !important; padding-left: 60px; padding-top: 70px;">
                 <div class="list-header" style="display: flex; justify-content: space-between; align-items: center; max-width: 1000px; margin: 0 auto 12px auto;">
                     <span class="list-title" style="color: #3b6fd6;">판매주문 목록</span>
+                    <input type="button" value="Excel 다운로드" onclick="downloadExcel()" class="btn">
                     <a th:href="@{/sales/orderForm}" class="btn-order-create">판매주문 작성</a>
                 </div>
                 <div class="card" style="max-width: 1000px; margin: 0 auto; background: #fff; border-radius: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); padding: 0 0 24px 0;">
@@ -248,5 +249,21 @@ function singleDateSearch() {
   }
   document.body.appendChild(form);
   form.submit();
+}
+</script>
+<script type="text/javascript">
+function downloadExcel() {
+    var orderNum = $('input[name="orderNum"]').val();
+    var client = $('input[name="client"]').val();
+    var emp = $('input[name="emp"]').val();
+    var startDate = $('input[name="startDate"]').val();
+    var endDate = $('input[name="endDate"]').val();
+    var url = 'excel?';
+    if(orderNum) url += 'orderNum=' + encodeURIComponent(orderNum) + '&';
+    if(client) url += 'client=' + encodeURIComponent(client) + '&';
+    if(emp) url += 'emp=' + encodeURIComponent(emp) + '&';
+    if(startDate) url += 'startDate=' + encodeURIComponent(startDate) + '&';
+    if(endDate) url += 'endDate=' + encodeURIComponent(endDate) + '&';
+    window.open(url, '_blank');
 }
 </script> 

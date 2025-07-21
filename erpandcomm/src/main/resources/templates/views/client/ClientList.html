@@ -53,14 +53,14 @@
             </div>
 
                 <div class="list-header">
-                    <span class="list-title">거래처 목록</span>
+                    <h2 class="page-title">거래처 목록</h2>
                     <a th:href="@{/client/form}" class="btn-write">거래처 등록</a>
                 </div>
             <div class="sh-box">
               <!-- 고객 목록, 공급업체 목록 테이블 flex row -->
                     <!-- 고객 목록 -->
-                <div class="table-container" style="width: 600px; margin-right: 20px;">
-                    <h3 style="margin-bottom: 15px; color: #3b6fd6; font-size: 1.1rem;">고객 목록</h3>
+                <div class="table-container" style="width: 600px; margin-right: 20px; ">
+                    <h3 style="margin-bottom: 15px;margin-top: 15px;margin-left: 15px; color: #3b6fd6; font-size: 1.1rem;">고객 목록</h3>
                     <form id="clientListForm" method="post" th:action="@{/client/deleteSelected}">
                       <table class="custom-table" style="width:85%">
                                                     <thead>
@@ -143,17 +143,17 @@
                     
                     <!-- 공급업체 목록 -->
                 <div class="table-container" style="width: 600px;">
-                    <h3 style="margin-bottom: 15px; color: #3b6fd6; font-size: 1.1rem;">공급업체 목록</h3>
+                    <h3 style="margin-bottom: 15px;margin-top: 15px; color: #3b6fd6; font-size: 1.1rem;">공급업체 목록</h3>
                     <form id="supplierListForm" method="post" th:action="@{/client/deleteSelected}">
                         <table class="custom-table" style="width:85%">
                             <thead>
                                 <tr>
                                     <th style="width:5%"><input type="checkbox" id="allSupplierChk" onclick="toggleAllSupplier(this)"></th>
-                                    <th style="width:9%">이름</th>
+                                    <th style="width:11%">이름</th>
                                     <th style="width:9%">담당자</th>
                                     <th style="width:10%">연락처</th>
                                     <th style="width:8%">상세보기</th>
-                                    <th style="width:18%">수정/삭제</th>
+                                    <th style="width:14%">수정/삭제</th>
                                 </tr>
                             </thead>
                             <tbody>

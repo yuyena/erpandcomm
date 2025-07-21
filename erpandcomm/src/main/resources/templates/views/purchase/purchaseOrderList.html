@@ -75,9 +75,10 @@
                     <canvas id="purchaseMonthlyChart" width="400" height="200" style="display:block;"></canvas>
                 </div>
             </div>
-            <section class="card-section" style="border: none !important; padding-left: 60px; padding-top: 70px;">
+            <section style="border: none !important; padding-left: 60px; padding-top: 70px;">
                 <div class="list-header" style="display: flex; justify-content: space-between; align-items: center; max-width: 1000px; margin: 0 auto 12px auto;">
                     <span class="list-title" style="color: #3b6fd6;">구매주문(발주) 목록</span>
+                    <input type="button" value="Excel 다운로드" onclick="downloadExcel()" class="btn">
                     <a th:href="@{/purchase/orderForm}" class="btn-order-create">구매주문 작성</a>
                 </div>
                 <div class="card" style="max-width: 1000px; margin: 0 auto; background: #fff; border-radius: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); padding: 0 0 24px 0;">
@@ -85,41 +86,41 @@
                         <table class="compact-table">
                             <thead>
                                 <tr>
-                                <th style="width:5%"><input type="checkbox" /></th>
-                                <th style="width:8%">주문 번호</th>
-                                <th style="width:15%">공급 업체</th>
-                                <th style="width:12%">주문일</th>
-                                <th style="width:12%">주문 금액</th>
-                                <th style="width:8%">담당 직원</th>
-                                <th style="width:15%">관리</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr th:each="order : ${list}">
-                                <td><input type="checkbox" th:value="${order.purchase_order_num}" /></td>
-                                <td th:text="${order.purchase_order_num}"></td>
-                                <td th:text="${order.supplier_name}"></td>
-                                <td th:text="${#dates.format(order.order_date, 'yyyy-MM-dd')}"></td>
-                                <td th:text="${#numbers.formatInteger(order.total_price, 0, 'COMMA')} + '원'"></td>
-                                <td th:text="${order.emp_name}"></td>
-                                <td>
-                                    <a th:href="@{/purchase/orderDetail(purchase_order_num=${order.purchase_order_num})}" class="btn-detail">상세보기</a>
-                                    <a th:href="@{/purchase/orderEdit(purchase_order_num=${order.purchase_order_num})}" class="btn-detail" style="background:#2ecc71; margin-right:2px; color:#fff;">수정</a>
-                                    <a th:href="@{/purchase/orderDelete(purchase_order_num=${order.purchase_order_num})}" class="btn-detail" style="background:#e74c3c; margin-left:2px; color:#fff;">삭제</a>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                                    <th style="width:5%"><input type="checkbox" /></th>
+                                    <th style="width:8%">주문 번호</th>
+                                    <th style="width:15%">고객명(거래처)</th>
+                                    <th style="width:12%">주문일</th>
+                                    <th style="width:12%">주문 금액</th>
+                                    <th style="width:8%">담당 직원</th>
+                                    <th style="width:15%">관리</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="order : ${list}">
+                                    <td><input type="checkbox" th:value="${order.purchase_order_num}" /></td>
+                                    <td th:text="${order.purchase_order_num}"></td>
+                                    <td th:text="${order.supplier_name}"></td>
+                                    <td th:text="${#dates.format(order.order_date, 'yyyy-MM-dd')}"></td>
+                                    <td th:text="${#numbers.formatInteger(order.total_price, 0, 'COMMA')} + '원'"></td>
+                                    <td th:text="${order.emp_name}"></td>
+                                    <td>
+                                        <a th:href="@{/purchase/orderDetail(purchase_order_num=${order.purchase_order_num})}" class="btn-detail">상세보기</a>
+                                        <a th:href="@{/purchase/orderEdit(purchase_order_num=${order.purchase_order_num})}" class="btn-detail" style="background:#2ecc71; margin-right:2px; color:#fff;">수정</a>
+                                        <a th:href="@{/purchase/orderDelete(purchase_order_num=${order.purchase_order_num})}" class="btn-detail" style="background:#e74c3c; margin-left:2px; color:#fff;">삭제</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="pagination" th:if="${page != null}">
+                        <a th:each="i : ${#numbers.sequence(1, page.totalPages)}"
+                           th:href="@{/purchase/orderList(page=${i}, startDate=${param.startDate}, endDate=${param.endDate}, supplier=${param.supplier}, emp=${param.emp})}"
+                           th:text="${i}"
+                           th:classappend="${i == page.number + 1} ? 'active'">
+                        </a>
+                    </div>
                 </div>
-                <div class="pagination" th:if="${page != null}">
-                    <a th:each="i : ${#numbers.sequence(1, page.totalPages)}"
-                       th:href="@{/purchase/orderList(page=${i}, startDate=${param.startDate}, endDate=${param.endDate}, supplier=${param.supplier}, emp=${param.emp})}"
-                       th:text="${i}"
-                       th:classappend="${i == page.number + 1} ? 'active'">
-                    </a>
-                </div>
-            </div>
-        </section>
+            </section>
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -248,5 +249,21 @@ function singleDateSearch() {
   }
   document.body.appendChild(form);
   form.submit();
+}
+</script>
+<script type="text/javascript">
+function downloadExcel() {
+    var orderNum = $('input[name="orderNum"]').val();
+    var supplier = $('input[name="supplier"]').val();
+    var emp = $('input[name="emp"]').val();
+    var startDate = $('input[name="startDate"]').val();
+    var endDate = $('input[name="endDate"]').val();
+    var url = 'excel?';
+    if(orderNum) url += 'orderNum=' + encodeURIComponent(orderNum) + '&';
+    if(supplier) url += 'supplier=' + encodeURIComponent(supplier) + '&';
+    if(emp) url += 'emp=' + encodeURIComponent(emp) + '&';
+    if(startDate) url += 'startDate=' + encodeURIComponent(startDate) + '&';
+    if(endDate) url += 'endDate=' + encodeURIComponent(endDate) + '&';
+    window.open(url, '_blank');
 }
 </script>
