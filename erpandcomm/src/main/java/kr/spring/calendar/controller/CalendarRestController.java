@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.servlet.http.HttpSession;
 import java.util.Date;
 import java.util.List;
+import org.springframework.format.annotation.DateTimeFormat;
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/calendar")
@@ -33,14 +35,16 @@ public class CalendarRestController {
     }
 
     @GetMapping("/month")
-    public List<CalendarVO> getMonthSchedules(HttpSession session, @RequestParam Date monthStart, @RequestParam Date monthEnd) {
+    public List<CalendarVO> getMonthSchedules(HttpSession session,
+        @RequestParam("monthStart") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate monthStart,
+        @RequestParam("monthEnd") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate monthEnd) {
         MemberVO loginMember = (MemberVO) session.getAttribute("loginMember");
         if (loginMember == null) return List.of();
         return calendarService.selectMonthSchedules(loginMember.getUser_num(), monthStart, monthEnd);
     }
 
     @GetMapping("/{calendar_id}")
-    public CalendarVO getCalendar(@PathVariable long calendar_id) {
+    public CalendarVO getCalendar(@PathVariable("calendar_id") long calendar_id) {
         return calendarService.selectCalendarById(calendar_id);
     }
 
@@ -49,7 +53,9 @@ public class CalendarRestController {
         MemberVO loginMember = (MemberVO) session.getAttribute("loginMember");
         if (loginMember == null) return 0;
         vo.setOwner_id(loginMember.getUser_num());
-        vo.setCreated_at(new Date());
+        if (vo.getCreated_at() == null) {
+            vo.setCreated_at(new Date());
+        }
         return calendarService.insertCalendar(vo);
     }
 
@@ -59,7 +65,7 @@ public class CalendarRestController {
     }
 
     @DeleteMapping("/delete/{calendar_id}")
-    public int deleteCalendar(@PathVariable long calendar_id) {
+    public int deleteCalendar(@PathVariable("calendar_id") long calendar_id) {
         return calendarService.deleteCalendar(calendar_id);
     }
 } 

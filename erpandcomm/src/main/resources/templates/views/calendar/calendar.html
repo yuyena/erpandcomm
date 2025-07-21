@@ -1,8 +1,10 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <title>캘린더</title>
+  <meta name="csrf-token" th:content="${_csrf.token}">
+  <meta name="csrf-header" th:content="${_csrf.headerName}">
   <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
   <style>
     body { background: #f5f8ff; font-family: 'Noto Sans KR', Arial, sans-serif; }
@@ -15,6 +17,14 @@
   <div id="calendar"></div>
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
   <script>
+    // CSRF 토큰 fetch 요청에 자동 추가
+    function csrfFetch(url, options = {}) {
+      const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+      const header = document.querySelector('meta[name="csrf-header"]').getAttribute('content');
+      options.headers = options.headers || {};
+      if (token && header) options.headers[header] = token;
+      return fetch(url, options);
+    }
     document.addEventListener('DOMContentLoaded', function() {
       var calendarEl = document.getElementById('calendar');
       var calendar = new FullCalendar.Calendar(calendarEl, {
@@ -26,11 +36,13 @@
           right: ''
         },
         events: function(fetchInfo, successCallback, failureCallback) {
-          // 월간 일정 조회
-          fetch(`/calendar/month?monthStart=${fetchInfo.startStr}&monthEnd=${fetchInfo.endStr}`)
+          // YYYY-MM-DD 형식으로 변환
+          const start = fetchInfo.startStr.slice(0, 10);
+          const end = fetchInfo.endStr.slice(0, 10);
+          csrfFetch(`/calendar/month?monthStart=${start}&monthEnd=${end}`)
             .then(res => res.json())
             .then(data => {
-              successCallback(data.map(item => ({
+              successCallback(Array.isArray(data) ? data.map(item => ({
                 id: item.calendar_id,
                 title: item.title,
                 start: item.created_at,
@@ -38,13 +50,13 @@
                 backgroundColor: item.is_public === 'Y' ? '#2176e8' : '#aaa',
                 borderColor: '#2176e8',
                 extendedProps: item
-              })));
+              })) : []);
             });
         },
         dateClick: function(info) {
           const title = prompt('일정 제목을 입력하세요:');
           if (title) {
-            fetch('/calendar/add', {
+            csrfFetch('/calendar/add', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ title, is_public: 'Y', created_at: info.dateStr })
@@ -56,7 +68,7 @@
           if (confirm(`[수정/삭제]\n수정: 확인, 삭제: 취소`)) {
             const newTitle = prompt('새 일정 제목:', event.title);
             if (newTitle && newTitle !== event.title) {
-              fetch('/calendar/update', {
+              csrfFetch('/calendar/update', {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ calendar_id: event.id, title: newTitle })
@@ -64,7 +76,7 @@
             }
           } else {
             if (confirm('정말 삭제하시겠습니까?')) {
-              fetch(`/calendar/delete/${event.id}`, { method: 'DELETE' })
+              csrfFetch(`/calendar/delete/${event.id}`, { method: 'DELETE' })
                 .then(() => calendar.refetchEvents());
             }
           }

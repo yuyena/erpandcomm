@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Mapper;
 import java.util.Date;
 import java.util.List;
+import java.time.LocalDate;
 
 @Mapper
 public interface CalendarMapper {
@@ -14,5 +15,5 @@ public interface CalendarMapper {
     int deleteCalendar(@Param("calendar_id") long calendar_id);
     CalendarVO selectCalendarById(@Param("calendar_id") long calendar_id);
     List<CalendarVO> selectList(@Param("ownerId") long ownerId);
-    List<CalendarVO> selectMonthSchedules(@Param("ownerId") long ownerId, @Param("monthStart") Date monthStart, @Param("monthEnd") Date monthEnd);
+    List<CalendarVO> selectMonthSchedules(@Param("ownerId") long ownerId, @Param("monthStart") LocalDate monthStart, @Param("monthEnd") LocalDate monthEnd);
 } 

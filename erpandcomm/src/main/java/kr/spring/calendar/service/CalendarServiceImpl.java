@@ -5,6 +5,7 @@ import kr.spring.calendar.vo.CalendarVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -28,5 +29,7 @@ public class CalendarServiceImpl implements CalendarService {
     @Override
     public List<CalendarVO> selectList(long ownerId) { return calendarMapper.selectList(ownerId); }
     @Override
-    public List<CalendarVO> selectMonthSchedules(long ownerId, Date monthStart, Date monthEnd) { return calendarMapper.selectMonthSchedules(ownerId, monthStart, monthEnd); }
+    public List<CalendarVO> selectMonthSchedules(long ownerId, LocalDate monthStart, LocalDate monthEnd) {
+        return calendarMapper.selectMonthSchedules(ownerId, monthStart, monthEnd);
+    }
 } 

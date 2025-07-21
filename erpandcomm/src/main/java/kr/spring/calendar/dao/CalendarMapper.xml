@@ -14,7 +14,7 @@
 
   <insert id="insertCalendar" parameterType="kr.spring.calendar.vo.CalendarVO">
     INSERT INTO calendar (calendar_id, title, description, owner_id, is_public, created_at, updated_at)
-    VALUES (calendar_seq.NEXTVAL, #{title}, #{description}, #{owner_id}, #{is_public}, #{created_at}, #{updated_at})
+    VALUES (calendar_seq.NEXTVAL, #{title}, #{description,jdbcType=VARCHAR}, #{owner_id}, #{is_public}, #{created_at}, #{updated_at,jdbcType=TIMESTAMP})
   </insert>
 
   <update id="updateCalendar" parameterType="kr.spring.calendar.vo.CalendarVO">
