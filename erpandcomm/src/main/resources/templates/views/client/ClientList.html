@@ -47,13 +47,13 @@
             </div>
             
             <div style="display: flex; flex-direction: row; justify-content: center; align-items: flex-end; gap: 24px; width: 100%; margin-bottom: 24px;">
-              <div class="card" style="padding: 24px 20px 16px 20px; background: #fff; border-radius: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); width:320px; height:330px; display:flex; align-items:center; justify-content:center;">
+              <div class="card" style="padding: 24px 20px 16px 20px; background: #fff; border-radius: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); width:168px; height:330px; display:flex; align-items:center; justify-content:center;">
                 <div style="display: flex; flex-direction: column; align-items: center; width: 100%; height: 100%;">
                   <div id="clientPieLegend" style="width: 100%; display: flex; flex-direction: column; align-items: flex-end; margin-bottom: 8px;"></div>
                   <canvas id="clientPieChart" style="width: 220px; height: 220px; max-width: 100%; box-sizing: border-box;" width="220" height="220"></canvas>
                 </div>
               </div>
-              <div class="card" style="padding: 24px 20px 16px 20px; background: #fff; border-radius: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); width:400px; height:330px; display:flex; align-items:center; justify-content:center;">
+              <div class="card" style="padding: 24px 20px 16px 20px; background: #fff; border-radius: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); width:432px; height:330px; display:flex; align-items:center; justify-content:center;">
                 <div style="display: flex; flex-direction: column; align-items: center; width: 100%; height: 100%;">
                   <div id="clientSalesLegend" style="width: 100%; display: flex; flex-direction: column; align-items: flex-end; margin-bottom: 8px;"></div>
                   <canvas id="clientSalesChart" style="width: 400px; height: 200px; max-width: 100%; box-sizing: border-box;" width="400" height="200"></canvas>
@@ -260,8 +260,8 @@
               fetch('/client/stats/sales')
                 .then(res => res.json())
                 .then(data => {
-                  const labels = data.map(item => item.name);
-                  const sales = data.map(item => item.sales);
+                  const labels = data.map(item => item.NAME);
+                  const sales = data.map(item => item.SALES);
                   new Chart(salesCtx, {
                     type: 'bar',
                     data: {

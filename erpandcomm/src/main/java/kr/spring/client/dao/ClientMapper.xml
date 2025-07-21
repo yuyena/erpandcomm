@@ -24,11 +24,13 @@
         DELETE FROM client WHERE client_num=#{client_num}
     </delete>
     <select id="selectClientSalesStats" resultType="map">
-        SELECT c.client_name AS name, COALESCE(SUM(s.total_price),0) AS sales
+        SELECT c.client_num, c.client_name AS name, 
+               COALESCE(SUM(d.quantity * d.unit_price), 0) AS sales
         FROM client c
-        LEFT JOIN sales_order s ON c.client_num = s.client_num
+        LEFT JOIN sales_order s ON c.client_num = s.customer_num
+        LEFT JOIN sales_order_detail d ON s.sales_order_num = d.sales_order_num
         WHERE c.client_type = 1
-        GROUP BY c.client_name
+        GROUP BY c.client_num, c.client_name
         ORDER BY sales DESC
     </select>
 </mapper>
