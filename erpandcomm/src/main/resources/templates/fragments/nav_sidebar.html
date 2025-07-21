@@ -55,8 +55,7 @@
               <span class="arrow">&#9654;</span>
             </a>
             <ul class="submenu">
-              <li><a href="#">공지사항</a></li>
-              <li><a href="#">자유게시판</a></li>
+              <li><a th:href="@{/notice/noticeList}">공지사항</a></li>
               <li><a th:href="@{/chat/roomList}">채팅</a></li>
             </ul>
           </li>
@@ -83,14 +82,21 @@
         <div class="date-time" id="currentDateTime"></div>
         <div class="worktime-row">
           <span>출근</span>
-          <input type="time" id="checkInTimeInput" class="check-time" readonly />
+          <input type="time" id="displayCheckInTime" class="check-time" readonly />
         </div>
         <div class="worktime-row">
           <span>퇴근</span>
-          <input type="time" id="checkOutTimeInput" class="check-time" readonly />
+          <input type="time" id="displayCheckOutTime" class="check-time" readonly />
         </div>
       </div>
-
+	  
+	  <form id ="worktimeForm" th:action="@{/personnel/clockIn}" method="post">
+	  <input type="hidden" id="checkInTimeInput" name="checkIntime"/>
+	  <input type="hidden" id="checkOutTimeInput" name="checkOuttime"/>	  
+	  <input type="hidden" id="statusInput" name="status"/>	  
+	  
+	  </form>
+	  
       <div class="worktime-buttons">
         <button type="button" id="checkInBtn" onclick="handleCheckIn()">출근하기</button>
         <button type="button" id="checkOutBtn" onclick="handleCheckOut()" disabled>퇴근하기</button>
