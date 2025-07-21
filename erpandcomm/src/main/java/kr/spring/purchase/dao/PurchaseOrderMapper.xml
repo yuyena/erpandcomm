@@ -14,14 +14,15 @@
     <select id="selectPurchaseOrder" parameterType="long" resultType="kr.spring.purchase.vo.PurchaseOrderVO">
         SELECT po.purchase_order_num,
                po.supplier_num,
-               NVL(c.client_name, '미지정') as supplier_name,
+               NVL(c.client_name, '미지정') as client_name,
                po.order_date,
                po.total_price,
                po.emp_num,
                d.user_name as emp_name
         FROM purchase_order po
         LEFT JOIN client c ON po.supplier_num = c.client_num
-        LEFT JOIN euser_detail d ON po.emp_num = d.user_num
+        LEFT JOIN euser u ON po.emp_num = u.user_num
+        LEFT JOIN euser_detail d ON u.user_num = d.user_num
         WHERE po.purchase_order_num = #{purchase_order_num}
     </select>
 
@@ -32,9 +33,12 @@
             NVL(c.client_name, '미지정') as supplier_name,
             po.order_date,
             po.total_price,
-            po.emp_num
+            po.emp_num,
+            d.user_name as emp_name
         FROM purchase_order po
         LEFT JOIN client c ON po.supplier_num = c.client_num
+        LEFT JOIN euser u ON po.emp_num = u.user_num
+        LEFT JOIN euser_detail d ON u.user_num = d.user_num
         ORDER BY po.purchase_order_num DESC
     </select>
 

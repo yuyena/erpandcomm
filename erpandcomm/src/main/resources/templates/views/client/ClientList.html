@@ -66,16 +66,16 @@
                                                     <thead>
                             <tr>
                             <th style="width:5%"><input type="checkbox" id="allChk" onclick="toggleAll(this)"></th>
-                            <th style="width:9%">이름</th>
+                            <th style="width:9%">거래처명</th>
                             <th style="width:9%">담당자</th>
                             <th style="width:10%">연락처</th>
-                            <th style="width:13%">상세보기</th>
-                            <th style="width:18%">수정/삭제</th>
+                            <th style="width:8%">상세보기</th>
+                            <th style="width:12%">수정/삭제</th>
                             </tr>
                         </thead>
                         <tbody>
                           <th:block th:each="client, stat : ${list}">
-                            <tr th:if="${client.client_type == 1}">
+                            <tr th:if="${client.client_type == 1 or client.client_type == '1'}">
                               <td><input type="checkbox" name="clientChk" th:value="${client.client_num}"></td>
                                 <td th:text="${client.client_name}"></td>
                               <td th:text="${client.contact_person}"></td>
@@ -88,12 +88,11 @@
                                 <a th:href="@{/client/delete(client_num=${client.client_num})}" class="btn-detail" style="background:#e74c3c; margin-left:2px;" onclick="return confirm('정말 삭제하시겠습니까?');">삭제</a>
                               </td>
                             </tr>
-                            <tr th:if="${client.client_type == 1}" th:id="'detail-row-' + ${stat.index}" class="detail-row" style="display:none;">
+                            <tr th:if="${client.client_type == 1 or client.client_type == '1'}" th:id="'detail-row-' + ${stat.index}" class="detail-row" style="display:none;">
                               <td colspan="6">
-                                <b>주소:</b> <span th:text="${client.address1} + ' ' + ${client.address2}"></span>
-                                &nbsp;|&nbsp;
-                                <b>연락처:</b> <span th:text="${client.phone}"></span>
-                                </td>
+                                <b class="detail-label">주소</b> <span th:text="${client.address1} + ' ' + ${client.address2}"></span><br>
+                                <b class="detail-label">연락처</b> <span th:text="${client.phone}"></span>
+                              </td>
                             </tr>
                           </th:block>
                         </tbody>
@@ -118,6 +117,27 @@
                         form.submit();
                       }
                     }
+                    function toggleDetail(btn) {
+                        var idx = btn.getAttribute('data-idx');
+                        var detailRow = document.getElementById('detail-row-' + idx);
+                        // 이미 열려있으면 닫기
+                        if (detailRow.style.display === '' || detailRow.style.display === 'table-row') {
+                            detailRow.style.display = 'none';
+                            btn.textContent = '상세보기';
+                            return;
+                        }
+                        // 모든 상세행 닫기
+                        document.querySelectorAll('.detail-row').forEach(function(row) {
+                            row.style.display = 'none';
+                        });
+                        // 모든 버튼 텍스트 초기화
+                        document.querySelectorAll('.btn-detail').forEach(function(b) {
+                            if(b.tagName === 'BUTTON') b.textContent = '상세보기';
+                        });
+                        // 펼치기
+                        detailRow.style.display = '';
+                        btn.textContent = '닫기';
+                    }
                     </script>
                     </div>
                     
@@ -132,7 +152,7 @@
                                     <th style="width:9%">이름</th>
                                     <th style="width:9%">담당자</th>
                                     <th style="width:10%">연락처</th>
-                                    <th style="width:13%">상세보기</th>
+                                    <th style="width:8%">상세보기</th>
                                     <th style="width:18%">수정/삭제</th>
                                 </tr>
                             </thead>
@@ -153,13 +173,11 @@
                                     </tr>
                                     <tr th:if="${client.client_type == 0}" th:id="'supplier-detail-row-' + ${stat.index}" class="detail-row" style="display:none;">
                                         <td colspan="6">
-                                            <b>주소:</b> <span th:text="${client.address1} + ' ' + ${client.address2}"></span>
-                                            &nbsp;|&nbsp;
-                                            <b>연락처:</b> <span th:text="${client.phone}"></span>
-                                            &nbsp;|&nbsp;
-                                            <b>이메일:</b> <span th:text="${client.email}"></span>
-                                    </td>
-                                </tr>
+                                            <b class="detail-label">　주소</b> <span th:text="${client.address1} + ' ' + ${client.address2}"></span><br>
+                                            <b class="detail-label">연락처</b> <span th:text="${client.phone}"></span><br>
+                                            <b class="detail-label">이메일</b> <span th:text="${client.email}"></span>
+                                        </td>
+                                    </tr>
                                 </th:block>
                             </tbody>
                         </table>
@@ -293,11 +311,11 @@
 }
 /* 상세정보 행만 별도 스타일 */
 .detail-row td {
+    text-align: left !important;
     border-bottom: 1px solid #eee;
     background: #fff;
-    padding: 8px 6px 8px 12px;
+    padding: 20px 20px 20px 100px !important;
     font-size: 9pt;
-    text-align: left;
     color: #222;
     border-top: none;
 }
@@ -366,5 +384,11 @@
 }
 .btn-individual-search:hover, .search-btn:hover {
     background: #0056b3 !important;
+}
+.detail-label {
+  display: inline-block;
+  width: 55px;
+  text-align: left;
+  font-weight: bold;
 }
 </style> 

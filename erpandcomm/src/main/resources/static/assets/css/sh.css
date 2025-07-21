@@ -3,7 +3,6 @@
 .card-section, section, .sh-box, .card, form, fieldset, legend, .table-container {
   border: none !important;
   box-shadow: none;
-  padding-left: 0 !important;
 }
 
 .sh-box {
@@ -117,20 +116,26 @@
 
 /* 간격이 좁은 테이블을 위한 스타일 */
 .compact-table {
-    width: 95% !important;
-    margin: 0 auto;
+    width: 100% !important;
+    border-collapse: collapse !important;
+    background: #fff !important;
+    font-size: 9pt !important;
+}
+.compact-table th, .compact-table td {
+    border-bottom: 1px solid #eee !important;
+    padding: 1px 6px !important;
+    text-align: center !important;
+    min-width: 0 !important;
+    font-size: 9pt !important;
+    height: 20px !important;
 }
 .compact-table th {
-    padding-top: 8px !important;
-    padding-bottom: 8px !important;
-}
-.compact-table td {
-    padding-top: 2px !important;
-    padding-bottom: 2px !important;
+    background: #fafafa !important;
+    font-weight: 600 !important;
 }
 .btn-detail {
     background: #3498db;
-    color: #fff;
+    color: #fff !important;
     border: none;
     border-radius: 6px;
     padding: 4px 11px;
