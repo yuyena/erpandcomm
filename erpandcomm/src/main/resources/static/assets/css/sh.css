@@ -295,28 +295,36 @@
 }
 
 /* 공통 버튼 스타일 */
-.btn, .btn-list, .btn-success, #addProductBtn,
-a.btn, a.btn-list, a.btn-success, a#addProductBtn {
-    height: 40px;
-    font-size: 15px;
+.btn {
+    padding: 8px 16px;
     border: none;
-    border-radius: 8px;
-    color: #fff !important;
-    text-align: center;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 700; /* 굵게 */
+    text-decoration: none;
     display: inline-flex;
     align-items: center;
-    justify-content: center;
-    line-height: 1;
-    vertical-align: middle;
+    gap: 6px;
+    transition: all 0.2s;
+    background: #4081FF;
+    color: #fff !important; /* 하얀색 */
     min-width: 120px;
-    padding: 0 18px;
+    height: 40px;
     box-sizing: border-box;
-    background: #4f8cff;
-    cursor: pointer;
-    transition: background 0.2s;
 }
-.btn-success, #submitOrderBtn {
-    background: #2ecc71;
+.btn:hover {
+    background: #2c5db2;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.12);
+}
+.btn-primary {
+    background: #4081FF;
+    color: #fff !important; /* 하얀색 */
+    font-weight: 700; /* 굵게 */
+}
+.btn-primary:hover {
+    background: #2c5db2;
 }
 .btn-list {
     background: #3498ff;
@@ -367,7 +375,7 @@ input[readonly] {
     box-shadow: 0 1px 6px rgba(0,0,0,0.04);
 }
 .product-table th, .product-table td {
-    padding: 12px 8px;
+    padding: 13px 20px 10px 20px;
     text-align: center;
     border-bottom: 1px solid #eaeaea;
     font-size: 15px;
@@ -524,25 +532,28 @@ form#supplierListForm {
     overflow: hidden;
     box-shadow: 0 1px 6px rgba(0,0,0,0.04);
     margin-bottom: 0;
-    font-size: 1.02rem;
+    font-size: 15px;
 }
+/* detail-table: 좌측 컬럼 가로선 두께, 세로선 표시 명확화 */
 .detail-table th, .detail-table td {
-    padding: 10px 12px;
+    padding: 10px 10px 10px 15px;
     border-bottom: 1px solid #e0e0e0;
     color: #222;
     background: none;
     font-weight: 400;
     text-align: left;
+    border-right: 1.5px solid #d0d6e1;
 }
 .detail-table th {
     background: #f5f7fa;
-    font-weight: 700;
+    font-weight: 600;
     color: #2851a3;
-    border-bottom: 2px solid #bfc9d9;
+    border-bottom: 1px solid #bfc9d9;
     text-align: left;
+    border-right: 1px solid #bfc9d9;
 }
-.detail-table td:last-child, .detail-table th:last-child {
-    text-align: right;
+.detail-table th:last-child, .detail-table td:last-child {
+    border-right: none;
 }
 .detail-table tr:last-child td, .detail-table tr:last-child th {
     border-bottom: none;
@@ -565,7 +576,7 @@ form#supplierListForm {
     margin-top: 8px;
 }
 .product-table th, .product-table td {
-    padding: 13px 8px;
+    padding: 13px 8px 10px;
     text-align: center;
     border-bottom: 1px solid #eaeaea;
     font-size: 1.05rem;
@@ -630,4 +641,8 @@ form#supplierListForm {
     border-radius: 20px;
     font-weight: 600;
     box-shadow: none;
+}
+
+.product-table th, .product-table td {
+    font-size: 15px !important;
 }

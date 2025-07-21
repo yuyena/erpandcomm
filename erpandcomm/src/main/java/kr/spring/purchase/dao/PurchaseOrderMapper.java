@@ -15,6 +15,7 @@ public interface PurchaseOrderMapper {
     void insertPurchaseOrder(PurchaseOrderVO purchaseOrder);
     PurchaseOrderVO selectPurchaseOrder(long purchase_order_num);
     List<PurchaseOrderVO> selectPurchaseOrderList();
+    List<PurchaseOrderVO> selectPurchaseOrderListByMap(Map<String, Object> map);
     void updatePurchaseOrder(PurchaseOrderVO purchaseOrder);
     void deletePurchaseOrder(long purchase_order_num);
 

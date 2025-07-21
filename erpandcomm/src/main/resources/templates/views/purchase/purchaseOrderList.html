@@ -4,9 +4,10 @@
       layout:decorate="~{layouts/layout_basic}">
 <head>
     <meta charset="UTF-8">
-    <title>ERP관리 - 발주 관리</title>
-    <link rel="stylesheet" th:href="@{/assets/css/main.css}">
-    <link rel="stylesheet" th:href="@{/assets/css/sh.css}">
+    <title>구매주문 목록</title>
+    <script type="text/javascript" src="/assets/js/jquery-3.7.1.min.js"></script>
+    <link rel="stylesheet" th:href="@{/assets/css/main.css?v=20240710}">
+    <link rel="stylesheet" th:href="@{/assets/css/sh.css?v=20240710}">
     <th:block th:if="${orderSuccess}">
       <script>alert('주문이 처리되었습니다!');</script>
     </th:block>
@@ -205,6 +206,24 @@
     </main>
 </div>
 </div>
+<div layout:fragment="pageScript">
+<script type="text/javascript">
+function downloadExcel() {
+    var orderNum = $('input[name="orderNum"]').val();
+    var client = $('input[name="client"]').val();
+    var emp = $('input[name="emp"]').val();
+    var startDate = $('input[name="startDate"]').val();
+    var endDate = $('input[name="endDate"]').val();
+    var url = 'excel?';
+    if(orderNum) url += 'orderNum=' + encodeURIComponent(orderNum) + '&';
+    if(client) url += 'client=' + encodeURIComponent(client) + '&';
+    if(emp) url += 'emp=' + encodeURIComponent(emp) + '&';
+    if(startDate) url += 'startDate=' + encodeURIComponent(startDate) + '&';
+    if(endDate) url += 'endDate=' + encodeURIComponent(endDate) + '&';
+    window.open(url, '_blank');
+}
+</script>
+</div>
 <script>
 function singleSearch(field) {
   const form = document.createElement('form');
@@ -251,19 +270,5 @@ function singleDateSearch() {
   form.submit();
 }
 </script>
-<script type="text/javascript">
-function downloadExcel() {
-    var orderNum = $('input[name="orderNum"]').val();
-    var supplier = $('input[name="supplier"]').val();
-    var emp = $('input[name="emp"]').val();
-    var startDate = $('input[name="startDate"]').val();
-    var endDate = $('input[name="endDate"]').val();
-    var url = 'excel?';
-    if(orderNum) url += 'orderNum=' + encodeURIComponent(orderNum) + '&';
-    if(supplier) url += 'supplier=' + encodeURIComponent(supplier) + '&';
-    if(emp) url += 'emp=' + encodeURIComponent(emp) + '&';
-    if(startDate) url += 'startDate=' + encodeURIComponent(startDate) + '&';
-    if(endDate) url += 'endDate=' + encodeURIComponent(endDate) + '&';
-    window.open(url, '_blank');
-}
-</script>
+</body>
+</html>

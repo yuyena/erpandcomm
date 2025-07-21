@@ -13,6 +13,7 @@ public interface SalesOrderService {
     SalesOrderVO selectSalesOrder(long sales_order_num);
     // 판매주문 전체 목록 조회
     List<SalesOrderVO> selectSalesOrderList();
+    List<SalesOrderVO> selectSalesOrderListByMap(Map<String, Object> map);
     // 판매주문 수정
     void updateSalesOrder(SalesOrderVO salesOrder);
     // 판매주문 삭제

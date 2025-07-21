@@ -268,4 +268,26 @@ public class SalesOrderController {
     public List<Map<String, Object>> getMonthlyStats() {
         return salesOrderService.getMonthlySalesStats();
     }
+
+    // 판매주문 목록 엑셀 다운로드
+    @GetMapping("/excel")
+    public void downloadExcel(
+        jakarta.servlet.http.HttpServletResponse response,
+        @RequestParam(value = "orderNum", required = false) String orderNum,
+        @RequestParam(value = "client", required = false) String client,
+        @RequestParam(value = "emp", required = false) String emp,
+        @RequestParam(value = "startDate", required = false) String startDate,
+        @RequestParam(value = "endDate", required = false) String endDate
+    ) throws java.io.IOException {
+        java.util.Map<String, Object> map = new java.util.HashMap<>();
+        map.put("orderNum", orderNum);
+        map.put("client", client);
+        map.put("emp", emp);
+        map.put("startDate", startDate);
+        map.put("endDate", endDate);
+        map.put("start", 1);
+        map.put("end", 999999);
+        java.util.List<SalesOrderVO> list = salesOrderService.selectSalesOrderListByMap(map);
+        kr.spring.util.ExcelUtil.createSalesOrderExcel(response, list);
+    }
 } 

@@ -37,6 +37,11 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     }
 
     @Override
+    public List<PurchaseOrderVO> selectPurchaseOrderListByMap(Map<String, Object> map) {
+        return purchaseOrderMapper.selectPurchaseOrderListByMap(map);
+    }
+
+    @Override
     @Transactional
     public void updatePurchaseOrder(PurchaseOrderVO purchaseOrder) {
         purchaseOrderMapper.updatePurchaseOrder(purchaseOrder);

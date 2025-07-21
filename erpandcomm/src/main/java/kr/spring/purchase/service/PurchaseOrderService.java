@@ -13,6 +13,7 @@ public interface PurchaseOrderService {
     PurchaseOrderVO selectPurchaseOrder(long purchase_order_num);
     // 구매주문 전체 목록 조회
     List<PurchaseOrderVO> selectPurchaseOrderList();
+    List<PurchaseOrderVO> selectPurchaseOrderListByMap(Map<String, Object> map);
     // 구매주문 수정
     void updatePurchaseOrder(PurchaseOrderVO purchaseOrder);
     // 구매주문 삭제

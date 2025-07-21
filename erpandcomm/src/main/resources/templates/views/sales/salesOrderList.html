@@ -5,6 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <title>판매주문 목록</title>
+    <script type="text/javascript" src="/assets/js/jquery-3.7.1.min.js"></script>
     <link rel="stylesheet" th:href="@{/assets/css/main.css?v=20240710}">
     <link rel="stylesheet" th:href="@{/assets/css/sh.css?v=20240710}">
     <th:block th:if="${orderSuccess}">
@@ -205,6 +206,7 @@
         </main>
     </div>
 </div>
+<div layout:fragment="pageScript">
 <script>
 function singleSearch(field) {
   const form = document.createElement('form');
@@ -266,4 +268,7 @@ function downloadExcel() {
     if(endDate) url += 'endDate=' + encodeURIComponent(endDate) + '&';
     window.open(url, '_blank');
 }
-</script> 
+</script>
+</div>
+</body>
+</html> 

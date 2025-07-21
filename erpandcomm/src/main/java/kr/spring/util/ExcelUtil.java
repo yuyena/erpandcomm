@@ -117,4 +117,78 @@ public class ExcelUtil {
         workbook.write(response.getOutputStream());
         workbook.close();
     }
+
+    // 판매주문 목록 엑셀 생성
+    public static void createSalesOrderExcel(HttpServletResponse response, List<kr.spring.sales.vo.SalesOrderVO> orderList) throws IOException {
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        XSSFSheet sheet = workbook.createSheet("판매주문목록");
+        CellStyle headerStyle = createHeaderStyle(workbook);
+        Row headerRow = sheet.createRow(0);
+        String[] headers = {"주문번호", "고객명", "주문일", "총금액", "담당자"};
+        for (int i = 0; i < headers.length; i++) {
+            Cell cell = headerRow.createCell(i);
+            cell.setCellValue(headers[i]);
+            cell.setCellStyle(headerStyle);
+        }
+        CellStyle dataStyle = workbook.createCellStyle();
+        dataStyle.setBorderBottom(BorderStyle.THIN);
+        dataStyle.setBorderTop(BorderStyle.THIN);
+        dataStyle.setBorderRight(BorderStyle.THIN);
+        dataStyle.setBorderLeft(BorderStyle.THIN);
+        CellStyle priceStyle = workbook.createCellStyle();
+        priceStyle.cloneStyleFrom(dataStyle);
+        priceStyle.setAlignment(HorizontalAlignment.RIGHT);
+        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
+        for (int i = 0; i < orderList.size(); i++) {
+            Row row = sheet.createRow(i + 1);
+            kr.spring.sales.vo.SalesOrderVO order = orderList.get(i);
+            createCell(row, 0, order.getSales_order_num(), dataStyle);
+            createCell(row, 1, order.getClient_name(), dataStyle);
+            createCell(row, 2, order.getOrder_date() != null ? sdf.format(order.getOrder_date()) : "", dataStyle);
+            createCell(row, 3, order.getTotal_price(), priceStyle);
+            createCell(row, 4, order.getEmp_name(), dataStyle);
+        }
+        for (int i = 0; i < headers.length; i++) sheet.autoSizeColumn(i);
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.setHeader("Content-Disposition", "attachment; filename=\"sales_order_list.xlsx\"");
+        workbook.write(response.getOutputStream());
+        workbook.close();
+    }
+
+    // 구매주문 목록 엑셀 생성
+    public static void createPurchaseOrderExcel(HttpServletResponse response, List<kr.spring.purchase.vo.PurchaseOrderVO> orderList) throws IOException {
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        XSSFSheet sheet = workbook.createSheet("구매주문목록");
+        CellStyle headerStyle = createHeaderStyle(workbook);
+        Row headerRow = sheet.createRow(0);
+        String[] headers = {"주문번호", "공급처", "주문일", "총금액", "담당자"};
+        for (int i = 0; i < headers.length; i++) {
+            Cell cell = headerRow.createCell(i);
+            cell.setCellValue(headers[i]);
+            cell.setCellStyle(headerStyle);
+        }
+        CellStyle dataStyle = workbook.createCellStyle();
+        dataStyle.setBorderBottom(BorderStyle.THIN);
+        dataStyle.setBorderTop(BorderStyle.THIN);
+        dataStyle.setBorderRight(BorderStyle.THIN);
+        dataStyle.setBorderLeft(BorderStyle.THIN);
+        CellStyle priceStyle = workbook.createCellStyle();
+        priceStyle.cloneStyleFrom(dataStyle);
+        priceStyle.setAlignment(HorizontalAlignment.RIGHT);
+        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
+        for (int i = 0; i < orderList.size(); i++) {
+            Row row = sheet.createRow(i + 1);
+            kr.spring.purchase.vo.PurchaseOrderVO order = orderList.get(i);
+            createCell(row, 0, order.getPurchase_order_num(), dataStyle);
+            createCell(row, 1, order.getSupplier_name() != null ? order.getSupplier_name() : order.getClient_name(), dataStyle);
+            createCell(row, 2, order.getOrder_date() != null ? sdf.format(order.getOrder_date()) : "", dataStyle);
+            createCell(row, 3, order.getTotal_price(), priceStyle);
+            createCell(row, 4, order.getEmp_name(), dataStyle);
+        }
+        for (int i = 0; i < headers.length; i++) sheet.autoSizeColumn(i);
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.setHeader("Content-Disposition", "attachment; filename=\"purchase_order_list.xlsx\"");
+        workbook.write(response.getOutputStream());
+        workbook.close();
+    }
 }

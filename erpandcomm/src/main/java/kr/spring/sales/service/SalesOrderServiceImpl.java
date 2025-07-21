@@ -38,6 +38,11 @@ public class SalesOrderServiceImpl implements SalesOrderService {
     }
 
     @Override
+    public List<SalesOrderVO> selectSalesOrderListByMap(Map<String, Object> map) {
+        return salesOrderMapper.selectSalesOrderListByMap(map);
+    }
+
+    @Override
     @Transactional
     public void updateSalesOrder(SalesOrderVO salesOrder) {
         salesOrderMapper.updateSalesOrder(salesOrder);
