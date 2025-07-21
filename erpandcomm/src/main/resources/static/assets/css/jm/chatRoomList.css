@@ -228,6 +228,11 @@
     }
 }
 
+.chat-room-list-scroll {
+    max-height: 400px; /* 필요에 따라 조정 */
+    overflow-y: auto;
+}
+
 @media (max-width: 1100px) {
     .dashboard-wrapper {
         flex-direction: column;
