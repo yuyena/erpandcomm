@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import kr.spring.client.dao.ClientMapper;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -32,5 +33,10 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public void deleteClient(Long client_num) {
         clientMapper.deleteClient(client_num);
+    }
+
+    @Override
+    public List<Map<String, Object>> selectClientSalesStats() {
+        return clientMapper.selectClientSalesStats();
     }
 } 

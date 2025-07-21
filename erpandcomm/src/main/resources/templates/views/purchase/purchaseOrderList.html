@@ -79,12 +79,14 @@
             <section style="border: none !important; padding-left: 60px; padding-top: 70px;">
                 <div class="list-header" style="display: flex; justify-content: space-between; align-items: center; max-width: 1000px; margin: 0 auto 12px auto;">
                     <span class="list-title" style="color: #3b6fd6;">구매주문(발주) 목록</span>
-                    <button type="button" onclick="downloadExcel()" class="btn-excel">
-                        <img src="/assets/images/excel.png" alt="Excel"> Excel 다운로드
-                    </button>
-                    <a th:href="@{/purchase/orderForm}" class="btn btn-primary">
-                        <img src="/assets/images/write.png" alt="작성" style="width:20px; height:20px; margin-right:4px; vertical-align:middle;"> 주문 작성
-                    </a>
+                    <div style="display: flex; gap: 12px;">
+                        <a th:href="@{/purchase/orderForm}" class="btn btn-primary">
+                            <img src="/assets/images/write.png" alt="작성" style="width:20px; height:20px; margin-right:4px; vertical-align:middle;"> 주문 작성
+                        </a>
+                        <button type="button" onclick="downloadExcel()" class="btn-excel">
+                            <img src="/assets/images/excel.png" alt="Excel"> Excel 다운로드
+                        </button>
+                    </div>
                 </div>
                 <div class="card" style="max-width: 1000px; margin: 0 auto; background: #fff; border-radius: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); padding: 0 0 24px 0;">
                     <div class="table-container">

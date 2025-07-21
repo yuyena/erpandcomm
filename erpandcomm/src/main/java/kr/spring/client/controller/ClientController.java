@@ -7,6 +7,7 @@ import kr.spring.client.vo.ClientVO;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import kr.spring.client.service.ClientService;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/client")
@@ -38,5 +39,11 @@ public class ClientController {
     public String delete(@RequestParam Long client_num) {
         clientService.deleteClient(client_num);
         return "redirect:/client/list";
+    }
+
+    @GetMapping("/stats/sales")
+    @ResponseBody
+    public List<Map<String, Object>> getClientSalesStats() {
+        return clientService.selectClientSalesStats();
     }
 } 
