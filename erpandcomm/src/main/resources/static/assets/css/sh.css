@@ -94,6 +94,26 @@
 .btn-write:hover, .btn-main:hover {
     background: #0056b3 !important;
 }
+
+/* 주문 작성 버튼 전용 스타일 */
+.btn-order-create {
+    display: inline-block;
+    background: #4081FF !important;
+    color: #fff !important;
+    border: none !important;
+    border-radius: 6px !important;
+    padding: 7px 11px !important; 
+    font-weight: bold !important; /* 텍스트 굵게 */
+    font-size: 12px !important;
+    text-decoration: none !important;
+    transition: background 0.2s;
+}
+
+.btn-order-create:hover {
+    background: #0056b3 !important;
+    color: #fff !important;
+}
+
 .custom-table {
     width: 100% !important;
     border-collapse: collapse;
@@ -163,19 +183,38 @@
 .search-row {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 12px;
     background: none;
     margin-bottom: 0;
     width: 100%;
     justify-content: flex-start;
 }
 .search-label {
-    width: 54px;
+    width: 90px;
     color: #222;
     font-weight: 400;
     font-size: 0.89rem;
     text-align: right;
     white-space: nowrap;
+    padding-right: 8px;
+}
+.search-input-wrapper {
+    display: flex;
+    align-items: center;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    flex: 1;
+    background: #fff;
+    padding-right: 4px;
+}
+.search-input-wrapper > .search-input,
+.search-input-wrapper > .search-select {
+    border: none;
+    flex: 1;
+}
+.search-input-wrapper > .search-input:focus,
+.search-input-wrapper > .search-select:focus {
+    outline: none;
 }
 .search-input, .search-select {
     background: #fff;
@@ -435,4 +474,17 @@ form#supplierListForm {
 .total-count strong {
     color: #3b6fd6;
     font-weight: bold;
+}
+.btn-individual-search {
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    margin-left: 0 !important;
+    display: flex;
+    align-items: center;
+    height: 30px;
+}
+.btn-individual-search img {
+    width: 16px;
+    height: 16px;
 }

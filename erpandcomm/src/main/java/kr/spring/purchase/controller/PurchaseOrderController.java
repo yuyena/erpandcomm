@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.Map;
 
 import kr.spring.purchase.service.PurchaseOrderService;
 import kr.spring.purchase.vo.PurchaseOrderVO;
@@ -245,5 +247,11 @@ public class PurchaseOrderController {
         purchaseOrderService.deletePurchaseOrderDetail(purchase_order_num);
         
         return "redirect:/purchase/orderList";
+    }
+
+    @GetMapping("/stats/monthly")
+    @ResponseBody
+    public List<Map<String, Object>> getMonthlyStats() {
+        return purchaseOrderService.getMonthlyPurchaseStats();
     }
 } 

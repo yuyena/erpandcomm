@@ -1,6 +1,7 @@
 package kr.spring.purchase.service;
 
 import java.util.List;
+import java.util.Map;
 
 import kr.spring.purchase.vo.PurchaseOrderVO;
 import kr.spring.purchase.vo.PurchaseOrderDetailVO;
@@ -25,4 +26,6 @@ public interface PurchaseOrderService {
     void updatePurchaseOrderDetail(PurchaseOrderDetailVO detail);
     // 구매주문 상세 삭제 (주문번호 기준 전체 삭제)
     void deletePurchaseOrderDetail(long purchase_order_num);
+
+    List<Map<String, Object>> getMonthlyPurchaseStats();
 } 

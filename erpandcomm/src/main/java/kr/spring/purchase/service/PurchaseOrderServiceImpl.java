@@ -1,6 +1,7 @@
 package kr.spring.purchase.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,12 +12,12 @@ import kr.spring.purchase.vo.PurchaseOrderVO;
 import kr.spring.purchase.vo.PurchaseOrderDetailVO;
 
 @Service
+@Transactional
 public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     @Autowired
     private PurchaseOrderMapper purchaseOrderMapper;
 
     @Override
-    @Transactional
     public void insertPurchaseOrder(PurchaseOrderVO purchaseOrder) {
         purchaseOrderMapper.insertPurchaseOrder(purchaseOrder);
     }
@@ -64,5 +65,10 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     @Transactional
     public void deletePurchaseOrderDetail(long purchase_order_num) {
         purchaseOrderMapper.deletePurchaseOrderDetail(purchase_order_num);
+    }
+
+    @Override
+    public List<Map<String, Object>> getMonthlyPurchaseStats() {
+        return purchaseOrderMapper.getMonthlyPurchaseStats();
     }
 } 

@@ -21,47 +21,53 @@
         <th:block th:replace="fragments/nav_sidebar :: sidebar"></th:block>
         <main class="main-content">
             <div class="page-header">
-                <h2 class="page-title">구매주문 관리</h2>
+                <h2 class="page-title">구매주문(발주) 관리</h2>
                 <div>
                     <span class="total-count">총 <strong th:text="${list.size()}">0</strong>개 주문</span>
                 </div>
             </div>
-            <!-- 검색조건+차트 한 행 배치 (각각 별도 박스) -->
+
             <div class="dashboard-flex-row" style="display: flex; gap: 32px; margin-bottom: 24px; padding-left: 60px;">
                 <div class="card" style="padding: 24px 24px 16px 24px; background: #fff; border-radius: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); flex:1 1 0; min-width:340px; max-width:600px;">
-                    <form class="search-form" th:action="@{/purchase/orderList}" method="get">
+                    <form class="search-form" th:action="@{/purchase/orderList}" method="get" style="position:relative; padding-bottom: 60px;">
+                        <button type="submit" class="search-btn" style="position:absolute; right:12px; bottom:12px; z-index:2; min-width:90px;">전체 검색</button>
                         <div class="search-row">
                             <label class="search-label">주문 번호</label>
-                            <input type="text" name="orderNum" th:value="${param.orderNum}" placeholder="주문번호" class="search-input">
-                            <button type="button" class="btn-individual-search search-btn" onclick="singleSearch('orderNum')">
-                                <img src="/assets/images/search.png" alt="검색" style="width:20px; height:20px; vertical-align:middle;">
-                            </button>
+                            <div class="search-input-wrapper">
+                                <input type="text" name="orderNum" th:value="${param.orderNum}" placeholder="주문번호" class="search-input">
+                                <button type="button" class="btn-individual-search" onclick="singleSearch('orderNum')">
+                                    <img src="/assets/images/search.png" alt="검색">
+                                </button>
+                            </div>
                         </div>
                         <div class="search-row">
                             <label class="search-label">공급처</label>
-                            <input type="text" name="supplier" th:value="${param.supplier}" placeholder="공급처명" class="search-input">
-                            <button type="button" class="btn-individual-search search-btn" onclick="singleSearch('supplier')">
-                                <img src="/assets/images/search.png" alt="검색" style="width:20px; height:20px; vertical-align:middle;">
-                            </button>
+                            <div class="search-input-wrapper">
+                                <input type="text" name="supplier" th:value="${param.supplier}" placeholder="공급처명" class="search-input">
+                                <button type="button" class="btn-individual-search" onclick="singleSearch('supplier')">
+                                    <img src="/assets/images/search.png" alt="검색">
+                                </button>
+                            </div>
                         </div>
                         <div class="search-row">
                             <label class="search-label">담당 직원</label>
-                            <input type="text" name="emp" th:value="${param.emp}" placeholder="직원명" class="search-input">
-                            <button type="button" class="btn-individual-search search-btn" onclick="singleSearch('emp')">
-                                <img src="/assets/images/search.png" alt="검색" style="width:20px; height:20px; vertical-align:middle;">
-                            </button>
+                            <div class="search-input-wrapper">
+                                <input type="text" name="emp" th:value="${param.emp}" placeholder="직원명" class="search-input">
+                                <button type="button" class="btn-individual-search" onclick="singleSearch('emp')">
+                                    <img src="/assets/images/search.png" alt="검색">
+                                </button>
+                            </div>
                         </div>
                         <div class="search-row">
                             <label class="search-label">주문일</label>
-                            <input type="date" name="startDate" th:value="${param.startDate}" class="search-input search-date">
-                            <span style="color:#888;">~</span>
-                            <input type="date" name="endDate" th:value="${param.endDate}" class="search-input search-date">
-                            <button type="button" class="btn-individual-search search-btn" onclick="singleDateSearch()">
-                                <img src="/assets/images/search.png" alt="검색" style="width:20px; height:20px; vertical-align:middle;">
-                            </button>
-                        </div>
-                        <div class="search-actions" style="display:flex; justify-content:center;">
-                            <button type="submit" class="search-btn">전체 검색</button>
+                            <div class="search-input-wrapper">
+                                <input type="date" name="startDate" th:value="${param.startDate}" class="search-input search-date">
+                                <span style="color:#888; padding: 0 4px;">~</span>
+                                <input type="date" name="endDate" th:value="${param.endDate}" class="search-input search-date">
+                                <button type="button" class="btn-individual-search" onclick="singleDateSearch()">
+                                    <img src="/assets/images/search.png" alt="검색">
+                                </button>
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -69,15 +75,16 @@
                     <canvas id="purchaseMonthlyChart" width="400" height="200" style="display:block;"></canvas>
                 </div>
             </div>
-            <section class="card-section" style="border: none !important; padding-left: 60px;">
-                <div class="list-header">
-                    <span class="list-title" style="color: #3b6fd6;">구매주문 목록</span>
-                    <a th:href="@{/purchase/orderForm}" class="btn-main">+ 구매주문 작성</a>
+            <section class="card-section" style="border: none !important; padding-left: 60px; padding-top: 70px;">
+                <div class="list-header" style="display: flex; justify-content: space-between; align-items: center; max-width: 1000px; margin: 0 auto 12px auto;">
+                    <span class="list-title" style="color: #3b6fd6;">구매주문(발주) 목록</span>
+                    <a th:href="@{/purchase/orderForm}" class="btn-order-create">구매주문 작성</a>
                 </div>
-                <div class="table-container">
-                    <table class="compact-table">
-                        <thead>
-                            <tr>
+                <div class="card" style="max-width: 1000px; margin: 0 auto; background: #fff; border-radius: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); padding: 0 0 24px 0;">
+                    <div class="table-container">
+                        <table class="compact-table">
+                            <thead>
+                                <tr>
                                 <th style="width:5%"><input type="checkbox" /></th>
                                 <th style="width:8%">주문 번호</th>
                                 <th style="width:15%">공급 업체</th>
@@ -111,42 +118,49 @@
                        th:classappend="${i == page.number + 1} ? 'active'">
                     </a>
                 </div>
-            </section>
-        </main>
+            </div>
+        </div>
     </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-  const ctx = document.getElementById('purchaseMonthlyChart').getContext('2d');
-  const purchaseMonthlyChart = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: ['1월', '2월', '3월', '4월', '5월', '6월'],
-      datasets: [{
-        label: '월별 구매금액',
-        data: [120000, 95000, 150000, 110000, 130000, 170000],
-        backgroundColor: 'rgba(54, 162, 235, 0.5)'
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: true,
-      plugins: {
-        legend: { display: true }
-      },
-      scales: {
-        y: {
-          beginAtZero: true,
-          ticks: {
-            callback: function(value) {
-              return value.toLocaleString();
-            }
-          }
-        }
-      }
-    }
-  });
+    fetch('/purchase/stats/monthly')
+        .then(response => response.json())
+        .then(data => {
+            const labels = data.map(item => item.month);
+            const totals = data.map(item => item.total);
+
+            const ctx = document.getElementById('purchaseMonthlyChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: '월별 구매금액',
+                        data: totals,
+                        backgroundColor: 'rgba(54, 162, 235, 0.5)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: { display: true }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return value.toLocaleString() + '원';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
 });
 function singleSearch(field) {
   const form = document.createElement('form');

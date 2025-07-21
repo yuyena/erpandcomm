@@ -1,8 +1,10 @@
 package kr.spring.purchase.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Delete;
 
 import kr.spring.purchase.vo.PurchaseOrderVO;
 import kr.spring.purchase.vo.PurchaseOrderDetailVO;
@@ -27,5 +29,8 @@ public interface PurchaseOrderMapper {
     // 구매주문 상세 수정
     void updatePurchaseOrderDetail(PurchaseOrderDetailVO detail);
     // 구매주문 상세 삭제 (주문번호 기준 전체 삭제)
+    @Delete("DELETE FROM purchase_order_detail WHERE purchase_order_num = #{purchase_order_num}")
     void deletePurchaseOrderDetail(long purchase_order_num);
+
+    List<Map<String, Object>> getMonthlyPurchaseStats();
 } 
