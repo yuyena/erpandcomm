@@ -39,18 +39,6 @@ function handleCheckIn() {
 	document.getElementById("checkOutBtn").disabled=false;
 			
 	
-<<<<<<< HEAD
-    document.getElementById("checkInTimeInput").value = timeString;
-    document.getElementById("checkOutTimeInput").value = "-";
-    document.getElementById("checkInBtn").disabled = true;
-    document.getElementById("checkInBtn").textContent = "출근 완료";
-    document.getElementById("checkOutBtn").disabled = false;
-
-	// 서버에 출근 데이터 저장 요청
-	
-	
-=======
->>>>>>> branch 'main' of https://github.com/jaemoon-94/erpandcomm.git
     // 세션 저장(페이지 세션 유지하는 동안 저장)
 	sessionStorage.setItem("checkInTime", timeString);
 	sessionStorage.setItem("status", status);
