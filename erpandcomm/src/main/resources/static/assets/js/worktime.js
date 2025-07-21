@@ -38,6 +38,9 @@ function handleCheckIn() {
     document.getElementById("checkInBtn").textContent = "출근 완료";
     document.getElementById("checkOutBtn").disabled = false;
 
+	// 서버에 출근 데이터 저장 요청
+	
+	
     // 세션 저장(페이지 세션 유지하는 동안 저장)
 	// localStorage는 세션을 종료해도 저장되어 있음
     sessionStorage.setItem("checkInTime", timeString);
