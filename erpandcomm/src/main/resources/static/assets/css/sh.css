@@ -1,8 +1,9 @@
-/* SH 전용 스타일 - modern box, 테두리 제거 */
 
-.card-section, section, .sh-box, .card, form, fieldset, legend {
+
+.card-section, section, .sh-box, .card, form, fieldset, legend, .table-container {
   border: none !important;
   box-shadow: none;
+  padding-left: 0 !important;
 }
 
 .sh-box {
@@ -99,29 +100,44 @@
     border-collapse: collapse;
     background: #fff;
     font-size: 1rem;
-    table-layout: fixed;
+    table-layout: auto !important;
 }
 .custom-table th, .custom-table td {
-    border-bottom: 1px solid #eee;
-    padding: 4px 4px;
-    text-align: center;
+    border-bottom: 1px solid #eee !important;
+    padding: 2px 8px !important;
+    text-align: center !important;
     min-width: 0 !important;
-    padding-left: 0 !important;
-    padding-right: 0 !important;
+    font-size: 9pt !important;
+    height: 28px !important;
 }
 .custom-table th {
     background: #fafafa;
     font-weight: 600;
+}
+
+/* 간격이 좁은 테이블을 위한 스타일 */
+.compact-table {
+    width: 95% !important;
+    margin: 0 auto;
+}
+.compact-table th {
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
+}
+.compact-table td {
+    padding-top: 2px !important;
+    padding-bottom: 2px !important;
 }
 .btn-detail {
     background: #3498db;
     color: #fff;
     border: none;
     border-radius: 6px;
-    padding: 6px 16px;
+    padding: 4px 11px;
     text-decoration: none;
-    font-size: 0.95rem;
-    font-weight: 500;
+    font-size: 0.67rem;
+    font-weight: 600;
+    margin: 0 1px;
 }
 .search-box {
     background: #f8f9fa;
@@ -387,4 +403,31 @@ form#supplierListForm {
   width: 100% !important;
   margin: 0 !important;
   padding: 0 !important;
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 60px;
+    padding: 40px 40px 30px 40px;
+    border-bottom: 2px solid #e0e0e0;
+}
+.page-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #3b6fd6;
+    margin: 0;
+}
+.total-count {
+    font-size: 1rem;
+    color: #666;
+    background-color: #fff;
+    padding: 8px 16px;
+    border-radius: 20px;
+    box-shadow: 0 2px 6px rgba(90,150,255,0.08);
+}
+.total-count strong {
+    color: #3b6fd6;
+    font-weight: bold;
 }
