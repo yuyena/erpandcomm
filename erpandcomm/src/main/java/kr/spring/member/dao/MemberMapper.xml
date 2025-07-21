@@ -64,7 +64,7 @@
 		SET
 		  phone=#{phone},
 		  email=#{email},
-		  extension_num=#{extension_num}r
+		  extension_num=#{extension_num}
 		WHERE user_num=#{user_num}
 	</update>
 	

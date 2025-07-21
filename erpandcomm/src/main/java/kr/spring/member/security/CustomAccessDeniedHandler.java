@@ -4,9 +4,11 @@ import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.csrf.InvalidCsrfTokenException;
 import org.springframework.security.web.csrf.MissingCsrfTokenException;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.FlashMap;
 import org.springframework.web.servlet.FlashMapManager;
@@ -66,6 +68,9 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
 			
 			// 동작 상에서는 토큰이 없어졌는데 로그아웃 눌렀을때 로그인페이지로 이동되게
 			if (request.getRequestURI().equals("/member/logout")) {
+				// 완전한 로그아웃 처리
+				SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
+				logoutHandler.logout(request, response, SecurityContextHolder.getContext().getAuthentication());
 				response.sendRedirect("/member/login");
 				return;
 			} // if
