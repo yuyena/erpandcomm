@@ -119,4 +119,30 @@ body { background: #f5f8ff; font-family: 'Noto Sans KR', Arial, sans-serif; }
 #calendar .fc-daygrid-day,
 #calendar .fc-col-header-cell {
   border: none !important;
+}
+.btn-detail {
+    background: #3498db;
+    color: #fff !important;
+    border: none;
+    border-radius: 6px;
+    padding: 4px 11px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0 1px;
+}
+.btn-primary {
+    background: #4081FF;
+    color: #fff !important;
+    font-weight: 700;
+    font-size: 14px;
+}
+#schedule-table th, #schedule-table td {
+    font-size: 14px;
+}
+#schedule-table td {
+    text-align: center;
+}
+.schedule-detail-row td {
+    text-align: center;
 } 
