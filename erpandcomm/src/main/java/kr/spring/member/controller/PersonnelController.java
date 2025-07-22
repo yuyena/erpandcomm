@@ -38,6 +38,7 @@ public class PersonnelController {
         return "views/personnel/vacationList";
     }
     
+    
     @GetMapping("/salary")
     public String salary() {
         return "views/personnel/salary";

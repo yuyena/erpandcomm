@@ -14,6 +14,7 @@
 		<result property="updatedAt" column="updated_at" />
 	</resultMap>
 
+
 	<!-- 휴가 등록 -->
 	<insert id="insertVacation"
 		parameterType="kr.spring.vacation.vo.VacationVO">
