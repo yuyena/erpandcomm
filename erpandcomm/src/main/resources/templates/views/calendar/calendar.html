@@ -15,100 +15,155 @@
     <main class="main-content">
       <div class="page-header" style="margin-bottom:32px;">
         <h2 class="page-title" style="font-size:1.6rem; font-weight:bold; color:#285CC3;">캘린더</h2>
-        <button id="calendar-add-btn" style="background:#2176e8; color:#fff; border:none; border-radius:6px; font-size:1rem; font-weight:500; padding:8px 22px; margin-left:auto; cursor:pointer;">일정 등록</button>
       </div>
-      <div style="width:1100px; margin:0 auto;">
-        <div class="card" style="background:#fff; border-radius:14px; box-shadow:0 2px 12px rgba(80,120,200,0.07); padding:40px;">
-          <div id="calendar"></div>
+      <div style="width:100%; margin:0 auto; display:flex; flex-direction:row; gap:40px; align-items:flex-start;">
+        <!-- 캘린더(좌측) -->
+        <div class="card" style="background:#fff; border-radius:14px; box-shadow:0 2px 12px rgba(80,120,200,0.07); padding:0; width:50%; min-width:0; margin:0; position:relative;">
+          <div id="calendar" style="max-width:900px; margin:0 auto;"></div>
+          <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+          <script>
+            // CSRF 토큰 fetch 요청에 자동 추가
+            function csrfFetch(url, options = {}) {
+              const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+              const header = document.querySelector('meta[name="csrf-header"]').getAttribute('content');
+              options.headers = options.headers || {};
+              if (token && header) options.headers[header] = token;
+              return fetch(url, options);
+            }
+            function renderScheduleTable(list) {
+              const tbody = document.getElementById('schedule-tbody');
+              tbody.innerHTML = '';
+              if (!Array.isArray(list) || list.length === 0) {
+                const tr = document.createElement('tr');
+                const td = document.createElement('td');
+                td.colSpan = 4;
+                td.textContent = '일정이 없습니다.';
+                td.style.textAlign = 'center';
+                tr.appendChild(td);
+                tbody.appendChild(tr);
+                return;
+              }
+              list.forEach(item => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                  <td style=\"padding:7px 6px; font-size:1rem;\">${item.title}</td>
+                  <td style=\"padding:7px 6px; font-size:1rem;\">${item.created_at ? item.created_at.slice(0,10) : ''}</td>
+                  <td style=\"padding:7px 6px; font-size:1rem;\">
+                    <button class='btn-detail' style='background:#fff; border:1.5px solid #2176e8; color:#2176e8; border-radius:6px; font-size:0.95rem; padding:4px 12px; cursor:pointer;' onclick='toggleDetail(this)'>상세보기</button>
+                  </td>
+                  <td style=\"padding:7px 6px; min-width:100px; display:flex; gap:4px;\">
+                    <button onclick=\"editSchedule(${item.calendar_id}, ${JSON.stringify(item.title)}, ${JSON.stringify(item.description||'')}, ${JSON.stringify(item.created_at ? item.created_at.slice(0,10) : '')})\" style='background:#2176e8; color:#fff; border:none; border-radius:6px; font-size:0.95rem; padding:5px 10px; margin-right:2px; cursor:pointer;'>수정</button>
+                    <button onclick=\"deleteSchedule(${item.calendar_id})\" style='background:#e74c3c; color:#fff; border:none; border-radius:6px; font-size:0.95rem; padding:5px 10px; margin-left:2px; cursor:pointer;'>삭제</button>
+                  </td>
+                `;
+                tbody.appendChild(tr);
+                // 상세 내용(숨김)
+                const detailTr = document.createElement('tr');
+                detailTr.style.display = 'none';
+                detailTr.className = 'schedule-detail-row';
+                detailTr.innerHTML = `<td colspan='4' style='background:#f8faff; color:#333; font-size:1rem; padding:16px 18px 16px 32px; border-bottom:1px solid #eaeaea;'>${item.description ? item.description.replace(/\n/g, '<br>') : '내용 없음'}</td>`;
+                tbody.appendChild(detailTr);
+              });
+            }
+            function editSchedule(id, title, desc, date) {
+              const newTitle = prompt('새 일정 제목:', title);
+              if (newTitle && newTitle !== title) {
+                csrfFetch('/calendar/update', {
+                  method: 'PUT',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ calendar_id: id, title: newTitle })
+                }).then(() => { calendar.refetchEvents(); fetchTable(); });
+              }
+            }
+            function deleteSchedule(id) {
+              if (confirm('정말 삭제하시겠습니까?')) {
+                csrfFetch(`/calendar/delete/${id}`, { method: 'DELETE' })
+                  .then(() => { calendar.refetchEvents(); fetchTable(); });
+              }
+            }
+            function toggleDetail(btn) {
+              const tr = btn.closest('tr');
+              const next = tr.nextElementSibling;
+              if (next && next.classList.contains('schedule-detail-row')) {
+                next.style.display = next.style.display === 'none' ? '' : 'none';
+                btn.textContent = next.style.display === 'none' ? '상세보기' : '닫기';
+              }
+            }
+            let calendar;
+            function fetchTable() {
+              // 현재 달 범위 가져오기
+              const view = calendar.view;
+              const start = view.currentStart.toISOString().slice(0, 10);
+              const end = view.currentEnd.toISOString().slice(0, 10);
+              csrfFetch(`/calendar/month?monthStart=${start}&monthEnd=${end}`)
+                .then(res => res.json())
+                .then(data => renderScheduleTable(data));
+            }
+            document.addEventListener('DOMContentLoaded', function() {
+              var calendarEl = document.getElementById('calendar');
+              console.log('calendarEl:', calendarEl); // 캘린더 DOM 확인용
+              calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                locale: 'ko',
+                headerToolbar: { left: 'prev,next today', center: 'title', right: '' },
+                dayCellContent: function(arg) { return arg.date.getDate(); },
+                events: function(fetchInfo, successCallback, failureCallback) {
+                  const start = fetchInfo.startStr.slice(0, 10);
+                  const end = fetchInfo.endStr.slice(0, 10);
+                  csrfFetch(`/calendar/month?monthStart=${start}&monthEnd=${end}`)
+                    .then(res => res.json())
+                    .then(data => {
+                      successCallback(Array.isArray(data) ? data.map(item => ({
+                        id: item.calendar_id,
+                        title: item.title,
+                        start: item.created_at,
+                        allDay: true,
+                        backgroundColor: item.is_public === 'Y' ? '#2176e8' : '#aaa',
+                        borderColor: '#2176e8',
+                        extendedProps: item
+                      })) : []);
+                    });
+                },
+                dateClick: function(info) {
+                  const title = prompt('일정 제목을 입력하세요:');
+                  if (title) {
+                    csrfFetch('/calendar/add', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({ title, is_public: 'Y', created_at: info.dateStr })
+                    }).then(() => { calendar.refetchEvents(); fetchTable(); });
+                  }
+                },
+                eventClick: function(info) {
+                  editSchedule(info.event.id, info.event.title, info.event.extendedProps.description || '', info.event.startStr);
+                },
+                datesSet: function() { fetchTable(); }
+              });
+              calendar.render();
+              fetchTable();
+            });
+          </script>
+        </div>
+        <!-- 일정 테이블(우측) -->
+        <div class="card" style="background:#fff; border-radius:14px; box-shadow:0 2px 12px rgba(80,120,200,0.07); padding:32px; width:50%; min-width:0;">
+          <h3 style="font-size:1.1rem; font-weight:bold; color:#285CC3; margin-bottom:18px;">일정 목록</h3>
+          <table id="schedule-table" style="width:100%; border-collapse:collapse;">
+            <thead>
+              <tr style="background:#f5f8ff;">
+                <th style="padding:8px 6px; font-size:1rem; color:#285CC3;">제목</th>
+                <th style="padding:8px 6px; font-size:1rem; color:#285CC3;">날짜</th>
+                <th style="padding:8px 6px; font-size:1rem; color:#285CC3;">상세</th>
+                <th style="padding:8px 6px; font-size:1rem; color:#285CC3;">관리</th>
+              </tr>
+            </thead>
+            <tbody id="schedule-tbody">
+              <!-- JS로 일정 행 렌더링 -->
+            </tbody>
+          </table>
         </div>
       </div>
     </main>
   </div>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
-<script>
-  // CSRF 토큰 fetch 요청에 자동 추가
-  function csrfFetch(url, options = {}) {
-    const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-    const header = document.querySelector('meta[name="csrf-header"]').getAttribute('content');
-    options.headers = options.headers || {};
-    if (token && header) options.headers[header] = token;
-    return fetch(url, options);
-  }
-  document.addEventListener('DOMContentLoaded', function() {
-    var calendarEl = document.getElementById('calendar');
-    var calendar = new FullCalendar.Calendar(calendarEl, {
-      initialView: 'dayGridMonth',
-      locale: 'ko',
-      headerToolbar: {
-        left: 'prev,next today',
-        center: 'title',
-        right: ''
-      },
-      dayCellContent: function(arg) {
-        return arg.date.getDate();
-      },
-      events: function(fetchInfo, successCallback, failureCallback) {
-        const start = fetchInfo.startStr.slice(0, 10);
-        const end = fetchInfo.endStr.slice(0, 10);
-        csrfFetch(`/calendar/month?monthStart=${start}&monthEnd=${end}`)
-          .then(res => res.json())
-          .then(data => {
-            successCallback(Array.isArray(data) ? data.map(item => ({
-              id: item.calendar_id,
-              title: item.title,
-              start: item.created_at,
-              allDay: true,
-              backgroundColor: item.is_public === 'Y' ? '#2176e8' : '#aaa',
-              borderColor: '#2176e8',
-              extendedProps: item
-            })) : []);
-          });
-      },
-      dateClick: function(info) {
-        showAddModal(info.dateStr);
-      },
-      eventClick: function(info) {
-        showEditModal(info.event);
-      }
-    });
-    calendar.render();
-
-    // 일정 등록 모달
-    function showAddModal(dateStr) {
-      const title = prompt('일정 제목을 입력하세요:');
-      if (title) {
-        csrfFetch('/calendar/add', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ title, is_public: 'Y', created_at: dateStr })
-        }).then(() => calendar.refetchEvents());
-      }
-    }
-    // 일정 수정/삭제 모달
-    function showEditModal(event) {
-      const action = confirm(`[수정/삭제]\n수정: 확인, 삭제: 취소`);
-      if (action) {
-        const newTitle = prompt('새 일정 제목:', event.title);
-        if (newTitle && newTitle !== event.title) {
-          csrfFetch('/calendar/update', {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ calendar_id: event.id, title: newTitle })
-          }).then(() => calendar.refetchEvents());
-        }
-      } else {
-        if (confirm('정말 삭제하시겠습니까?')) {
-          csrfFetch(`/calendar/delete/${event.id}`, { method: 'DELETE' })
-            .then(() => calendar.refetchEvents());
-        }
-      }
-    }
-    // 상단 버튼으로도 일정 등록
-    document.getElementById('calendar-add-btn').onclick = function() {
-      showAddModal(new Date().toISOString().slice(0,10));
-    };
-  });
-</script>
 </body>
 </html> 

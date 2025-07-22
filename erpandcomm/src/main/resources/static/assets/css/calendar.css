@@ -1,7 +1,7 @@
 body { background: #f5f8ff; font-family: 'Noto Sans KR', Arial, sans-serif; }
-#calendar { max-width: 1100px; margin: 40px auto; background: #fff; border-radius: 14px; box-shadow: 0 2px 12px rgba(80,120,200,0.07); padding: 40px; }
-.fc-toolbar-title { font-size: 1.7rem; color: #2851a3; }
-.fc-daygrid-event { font-size: 1rem; }
+#calendar { max-width: 990px; margin: 40px auto; background: #fff; border-radius: 14px; box-shadow: 0 2px 12px rgba(80,120,200,0.07); padding: 36px; }
+.fc-toolbar-title { font-size: 1.53rem; color: #2851a3; }
+.fc-daygrid-event { font-size: 0.9rem; }
 #calendar .fc {
   background: #fff;
   border-radius: 12px;
@@ -11,9 +11,9 @@ body { background: #f5f8ff; font-family: 'Noto Sans KR', Arial, sans-serif; }
   background: #fff !important;
   color: #383838;
   font-weight: 600;
-  font-size: 17px;
+  font-size: 15.3px;
   border: none !important;
-  padding-bottom: 10px !important;
+  padding-bottom: 9px !important;
   position: relative;
 }
 #calendar .fc-col-header-cell::after {
@@ -28,8 +28,8 @@ body { background: #f5f8ff; font-family: 'Noto Sans KR', Arial, sans-serif; }
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 44px;
-  height: 44px;
+  min-height: 39.6px;
+  height: 39.6px;
   padding: 0;
   border-radius: 8px;
   transition: background 0.15s;
@@ -51,12 +51,12 @@ body { background: #f5f8ff; font-family: 'Noto Sans KR', Arial, sans-serif; }
 }
 #calendar .fc-daygrid-day-number {
   display: inline-block;
-  width: 32px;
-  height: 32px;
-  line-height: 32px;
+  width: 28.8px;
+  height: 28.8px;
+  line-height: 28.8px;
   text-align: center;
   vertical-align: middle;
-  font-size: 17px;
+  font-size: 15.3px;
   color: #2851a3;
   font-weight: 600;
   margin: 0;
@@ -72,8 +72,36 @@ body { background: #f5f8ff; font-family: 'Noto Sans KR', Arial, sans-serif; }
   display: block;
 }
 #calendar .fc-header-toolbar {
-  justify-content: flex-end !important;
+  justify-content: flex-start !important;
   display: flex !important;
+}
+/* today 버튼 숨김 */
+#calendar .fc-today-button { display: none !important; }
+/* 월 이동 버튼을 캘린더 양쪽 중앙에 배치 */
+#calendar .fc-header-toolbar .fc-prev-button,
+#calendar .fc-header-toolbar .fc-next-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  background: #2176e8;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  font-size: 1.2rem;
+  box-shadow: 0 2px 8px rgba(80,120,200,0.13);
+  cursor: pointer;
+}
+#calendar .fc-header-toolbar .fc-prev-button {
+  left: -48px;
+}
+#calendar .fc-header-toolbar .fc-next-button {
+  right: -48px;
+}
+#calendar .fc-header-toolbar {
+  position: relative;
 }
 #calendar .fc-scrollgrid,
 #calendar .fc-scrollgrid-section,

@@ -313,9 +313,7 @@
   <!-- 오늘의 일정 제목+등록버튼 flex row 그룹 -->
 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
   <div style="font-weight:bold; color:#2851a3; font-size:1.13rem; margin-left:7px;">오늘의 일정</div>
-  <button id="calendar-add-btn" class="btn-write">
-    <img src="/assets/images/write.png" alt="등록" style="width:16px; height:16px; vertical-align:middle; margin-right:6px;">일정 등록
-  </button>
+  <button id="calendar-add-btn" style="background:#2176e8; color:#fff; border:none; border-radius:6px; font-size:1rem; font-weight:500; padding:8px 22px; margin-left:auto; cursor:pointer;" onclick="location.href='/calendar'">일정 등록</button>
 </div>
 <div id="calendar-widget" style="background:#fff; border-radius:12px; box-shadow:0 2px 8px rgba(80,120,200,0.07); padding:22px 22px 16px 22px; min-height:120px;">
   <div id="calendar-add-form" style="display:none; margin-bottom:10px;"></div>
