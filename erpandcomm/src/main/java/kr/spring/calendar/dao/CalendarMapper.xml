@@ -41,8 +41,8 @@
   <select id="selectMonthSchedules" parameterType="map" resultType="kr.spring.calendar.vo.CalendarVO">
     SELECT * FROM calendar
     WHERE owner_id = #{ownerId}
-      AND created_at &gt;= #{monthStart}
-      AND created_at &lt;= #{monthEnd}
+      AND TRUNC(created_at) &gt;= #{monthStart}
+      AND TRUNC(created_at) &lt;= #{monthEnd}
     ORDER BY created_at ASC
   </select>
 

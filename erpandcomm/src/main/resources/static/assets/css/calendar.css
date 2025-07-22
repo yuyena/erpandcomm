@@ -142,6 +142,9 @@ body { background: #f5f8ff; font-family: 'Noto Sans KR', Arial, sans-serif; }
 #schedule-table td {
     text-align: center;
 }
+#schedule-table th:nth-child(2), #schedule-table td:nth-child(2) {
+    width: 110px;
+}
 .schedule-detail-row td {
     text-align: center;
     font-size: 16px;
