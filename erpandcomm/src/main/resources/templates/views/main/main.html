@@ -246,43 +246,60 @@
 			<div class="page-header">
 				<h2 class="page-title-dashboard">대시보드</h2>
 			</div>
-			<div class="welcome-message" style="font-size: 2.3rem; font-weight: bold; color: #285CC3; margin-bottom: 10px; text-align: right; margin-right: 30px;">
+			<div class="welcome-message" style="font-size: 2.3rem; font-weight: bold; color: #285CC3; margin-bottom: 10px; text-align: right; margin-right: 26px;">
 				<span th:if="${loginMember != null}" th:text="${loginMember.user_name} + ' 님, 환영합니다!'">로그인 사용자 닉네임</span>
 				<span th:if="${loginMember == null}">로그인 해주세요.</span>
 			</div>
-			<div style="width:100%; box-sizing:border-box;">
-				<h3 style="font-size:1.5rem; font-weight:bold; margin-bottom:13px; color:#285CC3; padding-left:23px;">공지사항</h3>
-				<div style="background:#fff; border-radius:14px; box-shadow:0 2px 12px rgba(80,120,200,0.07); padding: 5px 30px 12px 10px; width:600px; margin-left:20px; margin-right:0; box-sizing:border-box;">
-					<table style="width:100%; border-collapse:collapse; background:none;">
-						<tbody>
-							<tr th:each="notice, stat : ${noticeList}" th:if="${stat.index} < 3" style="border-bottom:1px solid #e0e6f0; transition:background 0.15s;" onmouseover="this.style.background='#f5f8ff'" onmouseout="this.style.background='none'">
-								<td style="padding:14px 24px 14px 8px; color:#E95254; font-weight:700; text-align:center; width:12%;">중요공지</td>
-								<td style="padding:14px 32px 14px 10px; color:#373737; font-weight:600; text-align:left; width:50%;" th:text="${notice.noti_title}"></td>
-								<td style="padding:14px 10px; color:#888; text-align:center; width:15%;" th:text="${#dates.format(notice.noti_date, 'yyyy-MM-dd')}"></td>
-							</tr>
-							<tr th:if="${noticeList == null or noticeList.size() == 0}">
-								<td colspan="3" style="color:#888; font-size:15px; padding:14px 10px; text-align:center;">공지사항이 없습니다.</td>
-							</tr>
-						</tbody>
-					</table>
-					<div style="text-align:right; margin-top:6px; margin-right:6px">
-						<a href="/notice/noticeList" style="font-size:13px; color:#2176e8; font-weight:600;">더보기</a>
-					</div>
-				</div>
-			</div>
+			<!-- 공지사항 + 도넛 그래프 묶음 flex row 시작 -->
+<div style="display: flex; flex-direction: row; gap: 30px; width: 100%; margin-left:24px; margin-top:20px; margin-bottom: 32px; align-items: flex-start;">
+  <!-- 공지사항 그룹 -->
+  <div style="display: flex; flex-direction: column; width: 600px; min-width: 320px;">
+    <div style="font-size:1.5rem; font-weight:bold; margin-bottom:10px; color:#285CC3; padding-left:10px;">공지사항</div>
+    <div style="background:#fff; border-radius:14px; box-shadow:0 2px 12px rgba(0,0,0,0.08); padding: 5px 30px 12px 10px; width:100%; min-width:320px;">
+      <table style="width:100%; border-collapse:collapse; background:none;">
+        <tbody>
+          <tr th:each="notice, stat : ${noticeList}" th:if="${stat.index} < 4" style="border-bottom:1px solid #e0e6f0; transition:background 0.15s;" onmouseover="this.style.background='#f5f8ff'" onmouseout="this.style.background='none'">
+            <td style="padding:14px 24px 14px 8px; color:#E95254; font-weight:700; text-align:center; width:12%;">중요공지</td>
+            <td style="padding:14px 32px 14px 10px; color:#373737; font-weight:600; text-align:left; width:50%;" th:text="${notice.noti_title}"></td>
+            <td style="padding:14px 10px; color:#888; text-align:center; width:15%;" th:text="${#dates.format(notice.noti_date, 'yyyy-MM-dd')}"></td>
+          </tr>
+          <tr th:if="${noticeList == null or noticeList.size() == 0}">
+            <td colspan="3" style="color:#888; font-size:15px; padding:14px 10px; text-align:center;">공지사항이 없습니다.</td>
+          </tr>
+        </tbody>
+      </table>
+      <div style="text-align:right; margin-top:6px; margin-right:6px">
+        <a href="/notice/noticeList" style="font-size:13px; color:#2176e8; font-weight:600;">더보기</a>
+      </div>
+    </div>
+  </div>
+  <!-- 도넛 그래프 그룹 -->
+  <div style="display: flex; flex-direction: column; width: 450px; min-width: 320px;">
+    <div style="font-size:1.2rem; font-weight:bold; margin-bottom:10px; color:#285CC3; text-align:left; padding-left:10px;">거래처별 구매 비율</div>
+    <div class="card" style="background: #fff; border-radius: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding: 11px 0 0 0; width:100%; min-width:320px;">
+      <div style="width:100%; display:flex; flex-direction: row; justify-content: center; align-items: flex-start; min-height:32px;">
+        <div style="margin-left:0; margin-right:16px; transform: translateX(-30px);">
+          <canvas id="mainClientPieChart" width="220" height="220" style="display: block;"></canvas>
+        </div>
+        <div id="mainClientPieLegend" style="margin-right:30px;"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- 공지사항 + 도넛 그래프 묶음 flex row 끝 -->
 			<div style="width:1200px; margin-left:120px; margin-right:0; margin-top:25px;">
 			</div>
-			<div style="display: flex; flex-direction: row; justify-content: flex-start; gap: 48px; width:1200px; margin-left:20px; margin-right:0;">
+			<div style="display: flex; flex-direction: row; justify-content: flex-start; gap: 28px; width:1200px; margin-left:20px; margin-right:0;">
 				<div style="display: flex; flex-direction: column; align-items: flex-start; width: 600px;">
-					<div style="font-size:1.3rem; font-weight:bold; color:#285CC3; margin-bottom: 6px; margin-left: 6px; margin-top:30px;">판매주문 통계</div>
-					<div style="background: #fff; border-radius: 16px; box-shadow: 0 2px 12px rgba(80,120,200,0.07); width: 100%; height: 380px; display: flex; align-items: center; justify-content: center;">
-						<canvas id="salesOrderChart" width="520" height="320"></canvas>
+					<div style="font-size:1.3rem; font-weight:bold; color:#285CC3; margin-bottom: 6px; margin-left: 6px; margin-top:0px;">판매주문 통계</div>
+					<div style="background: #fff; border-radius: 16px; box-shadow: 0 4px 18px rgba(80,120,200,0.14); width: 100%; height: 380px; display: flex; align-items: center; justify-content: center;">
+						<canvas id="salesOrderChart" width="505" height="300"></canvas>
 					</div>
 				</div>
 				<div style="display: flex; flex-direction: column; align-items: flex-start; width: 600px;">
-					<div style="font-size:1.3rem; font-weight:bold; color:#285CC3; margin-bottom: 6px; margin-left: 6px; margin-top:30px;">구매주문 통계</div>
-					<div style="background: #fff; border-radius: 16px; box-shadow: 0 2px 12px rgba(80,120,200,0.07); width: 100%; height: 380px; display: flex; align-items: center; justify-content: center;">
-						<canvas id="purchaseOrderChart" width="520" height="320"></canvas>
+					<div style="font-size:1.3rem; font-weight:bold; color:#285CC3; margin-bottom: 6px; margin-left: 6px; margin-top:0px;">구매주문 통계</div>
+					<div style="background: #fff; border-radius: 16px; box-shadow: 0 4px 18px rgba(80,120,200,0.14); width: 100%; height: 380px; display: flex; align-items: center; justify-content: center;">
+						<canvas id="purchaseOrderChart" width="505" height="300"></canvas>
 					</div>
 				</div>
 			</div>
@@ -395,7 +412,45 @@ document.addEventListener('DOMContentLoaded', function() {
       ).join('');
     });
 
-}); // <-- DOMContentLoaded 닫는 괄호/세미콜론
+  // 도넛 그래프 추가 (legend 우측 상단 커스텀)
+  const pieCtx = document.getElementById('mainClientPieChart');
+  if (pieCtx) {
+    const pieLabels = ['A상사', 'B상사', 'C상사'];
+    const pieColors = [
+      'rgba(255, 99, 132, 0.5)',
+      'rgba(54, 162, 235, 0.5)',
+      'rgba(255, 206, 86, 0.5)'
+    ];
+    new Chart(pieCtx, {
+      type: 'doughnut',
+      data: {
+        labels: pieLabels,
+        datasets: [{
+          label: '거래처별 구매금액',
+          data: [300000, 200000, 100000],
+          backgroundColor: pieColors
+        }]
+      },
+      options: {
+        responsive: false,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false }
+        }
+      }
+    });
+    // 커스텀 legend 생성 (세로 정렬)
+    const legendDiv = document.getElementById('mainClientPieLegend');
+    if (legendDiv) {
+      legendDiv.innerHTML = pieLabels.map((label, i) =>
+        `<div style='display:flex; align-items:center; margin-bottom:6px;'>
+          <span style='display:inline-block; width:16px; height:16px; background:${pieColors[i]}; border-radius:3px; margin-right:8px;'></span>
+          <span style='font-size:14px; color:#444;'>${label}</span>
+        </div>`
+      ).join('');
+    }
+  }
+});
 
 function toggleNotice(btn) {
   const tr = btn.closest('tr');
