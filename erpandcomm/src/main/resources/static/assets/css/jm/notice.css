@@ -2,6 +2,11 @@ html, body {
     overflow: hidden !important;
 }
 /* 공지사항 페이지 스타일 */
+.page-main, .dashboard-wrapper, .main-content {
+    min-height: 0 !important;
+    overflow: hidden !important;
+}
+
 .page-main {
     padding: 20px;
 }
@@ -178,8 +183,6 @@ html, body {
 .notice-list-container {
     background: white;
     border-radius: 8px;
-    overflow-y: auto;      /* 세로 스크롤 활성화 */
-    overflow-x: hidden;    /* 가로 스크롤 방지 */
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     max-height: 600px;     /* 원하는 높이로 조정 */
 }

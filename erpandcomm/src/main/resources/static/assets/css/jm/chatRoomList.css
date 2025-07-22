@@ -99,6 +99,8 @@
     word-wrap: break-word;
 }
 
+
+
 .enter-btn {
     display: inline-block;
     padding: 6px 18px;
@@ -224,11 +226,6 @@
         transform: scale(1);
         opacity: 1;
     }
-}
-
-.chat-room-list-scroll {
-    max-height: 700px; /* 필요에 따라 조정 */
-    overflow-y: auto;
 }
 
 @media (max-width: 1100px) {

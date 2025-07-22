@@ -60,15 +60,8 @@
             const token = document.querySelector("meta[name='_csrf']").getAttribute("content");
             const header = document.querySelector("meta[name='_csrf_header']").getAttribute("content");
             
-            function scrollChatToBottom() {
-                var chatMessages = document.getElementById('chatMessages');
-                if (chatMessages) {
-                    chatMessages.scrollTop = chatMessages.scrollHeight;
-                }
-            }
             // 페이지 로드 시 채팅 초기화
             document.addEventListener('DOMContentLoaded', function() {
-                scrollChatToBottom();
                 initChat(roomNum, userNum);
             });
             
