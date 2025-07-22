@@ -46,18 +46,9 @@
                 </div>
             </div>
             
-            <div style="display: flex; flex-direction: row; justify-content: center; align-items: flex-end; gap: 24px; width: 100%; margin-bottom: 24px;">
-              <div class="card" style="padding: 24px 20px 16px 20px; background: #fff; border-radius: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); width:168px; height:330px; display:flex; align-items:center; justify-content:center;">
-                <div style="display: flex; flex-direction: column; align-items: center; width: 100%; height: 100%;">
-                  <div id="clientPieLegend" style="width: 100%; display: flex; flex-direction: column; align-items: flex-end; margin-bottom: 8px;"></div>
-                  <canvas id="clientPieChart" style="width: 220px; height: 220px; max-width: 100%; box-sizing: border-box;" width="220" height="220"></canvas>
-                </div>
-              </div>
-              <div class="card" style="padding: 24px 20px 16px 20px; background: #fff; border-radius: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); width:432px; height:330px; display:flex; align-items:center; justify-content:center;">
-                <div style="display: flex; flex-direction: column; align-items: center; width: 100%; height: 100%;">
-                  <div id="clientSalesLegend" style="width: 100%; display: flex; flex-direction: column; align-items: flex-end; margin-bottom: 8px;"></div>
-                  <canvas id="clientSalesChart" style="width: 400px; height: 200px; max-width: 100%; box-sizing: border-box;" width="400" height="200"></canvas>
-                </div>
+            <div class="card" style="width: 800px; padding: 0; margin: 0 auto 24px auto; background: #fff; border-radius: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08);">
+              <div style="width:800px; min-height:200px; margin:0 auto; text-align:center;">
+                <canvas id="clientPieChart" style="display: inline-block; width: 400px; height: 400px; box-sizing: border-box;" width="400" height="400"></canvas>
               </div>
             </div>
 
@@ -237,54 +228,29 @@
             <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
             <script>
             document.addEventListener('DOMContentLoaded', function() {
-              // 고객/공급업체 수 차트
-              const pieCtx = document.getElementById('clientPieChart').getContext('2d');
-              new Chart(pieCtx, {
+              const ctx = document.getElementById('clientPieChart').getContext('2d');
+              const clientPieChart = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
-                  labels: ['고객', '공급업체'],
+                  labels: ['A상사', 'B상사', 'C상사'],
                   datasets: [{
-                    data: [10, 9],
-                    backgroundColor: ['#4f8cff', '#ffd966']
+                    label: '거래처별 구매금액',
+                    data: [300000, 200000, 100000],
+                    backgroundColor: [
+                      'rgba(255, 99, 132, 0.5)',
+                      'rgba(54, 162, 235, 0.5)',
+                      'rgba(255, 206, 86, 0.5)'
+                    ]
                   }]
                 },
                 options: {
+                  responsive: false,
+                  maintainAspectRatio: false,
                   plugins: {
-                    legend: { display: true, position: 'right' }
+                    legend: { display: true }
                   }
                 }
               });
-
-              // 거래처별 매출 차트 (고객 목록 기준)
-              const salesCtx = document.getElementById('clientSalesChart').getContext('2d');
-              fetch('/client/stats/sales')
-                .then(res => res.json())
-                .then(data => {
-                  const labels = data.map(item => item.NAME);
-                  const sales = data.map(item => item.SALES);
-                  new Chart(salesCtx, {
-                    type: 'bar',
-                    data: {
-                      labels: labels,
-                      datasets: [{
-                        label: '매출',
-                        data: sales,
-                        backgroundColor: ['#ffb6c1', '#87cefa', '#ffe4a1']
-                      }]
-                    },
-                    options: {
-                      plugins: {
-                        legend: { display: true, position: 'right' }
-                      },
-                      scales: {
-                        y: {
-                          beginAtZero: true,
-                          ticks: { display: false }
-                        }
-                      }
-                    }
-                  });
-                });
             });
             </script>
         </main>
@@ -425,5 +391,4 @@
   text-align: left;
   font-weight: bold;
 }
-</style> 
 </style> 
