@@ -129,8 +129,10 @@
 	        // 기존 hidden input들 제거
 	        form.querySelectorAll('input[name="selectedMemberNums"]').forEach(input => input.remove());
 	        
-	        // 선택된 멤버들을 hidden input으로 추가
-	        selectedMembers.forEach(memberNum => {
+	        // 오른쪽(선택된 멤버 리스트)에 있는 모든 label의 value를 hidden input으로 추가
+	        selectedList.querySelectorAll('label').forEach(label => {
+	            const cb = label.querySelector('input[type=checkbox]');
+	            const memberNum = cb.value;
 	            const hiddenInput = document.createElement('input');
 	            hiddenInput.type = 'hidden';
 	            hiddenInput.name = 'memberNums';

@@ -28,48 +28,46 @@
                     <h2>채팅방 목록</h2>
                     <a th:href="@{'/chat/createRoom'}" class="create-btn">+ 채팅방 만들기</a>
                 </div>
-                <div class="chat-room-list-scroll">
-                    <table class="chat-room-table">
-                        <thead>
-                            <tr>
-                                <th>번호</th>
-                                <th>방 이름</th>
-                                <th>타입</th>
-                                <th>설명</th>
-                                <th>인원</th>
-                                <th>생성일</th>
-                                <th>관리</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr th:each="room : ${chatRoomList}" th:data-room-num="${room.room_num}">
-                                <td th:text="${room.room_num}"></td>
-                                <td class="room-name-cell">
-                                    <span th:text="${room.room_name}"></span>
-                                    <span th:if="${room.hasUnreadMessages}" class="unread-indicator"></span>
-                                </td>
-                                <td th:text="${room.room_type}"></td>
-                                <td class="description-cell" 
-                                    th:text="${room.description != null ? (room.description.length() > 20 ? room.description.substring(0, 20) + '...' : room.description) : ''}" 
-                                    th:title="${room.description}"></td>
-                                <td>
-                                    <span th:if="${room.room_type == '1:1'}">2</span>
-                                    <span th:if="${room.room_type == 'group'}" th:text="${room.max_members}"></span>
-                                </td>
-                                <td th:text="${#dates.format(room.created_at, 'yyyy-MM-dd')}"></td>
-								<td>
-									<button class="enter-btn" th:data-room-id="${room.room_num}">입장</button>
-									<th:block th:if="${room.role == '방장'}">
-										<button class="delete-btn" th:data-room-id="${room.room_num}">삭제</button>
-									</th:block>
-								</td>
-								</tr>
-                            <tr th:if="${#lists.isEmpty(chatRoomList)}">
-                                <td colspan="7" class="no-chat-room">참여중인 채팅이 없습니다.</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+                <table class="chat-room-table">
+                    <thead>
+                        <tr>
+                            <th>번호</th>
+                            <th>방 이름</th>
+                            <th>타입</th>
+                            <th>설명</th>
+                            <th>인원</th>
+                            <th>생성일</th>
+                            <th>관리</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="room : ${chatRoomList}" th:data-room-num="${room.room_num}">
+                            <td th:text="${room.room_num}"></td>
+                            <td class="room-name-cell">
+                                <span th:text="${room.room_name}"></span>
+                                <span th:if="${room.hasUnreadMessages}" class="unread-indicator"></span>
+                            </td>
+                            <td th:text="${room.room_type}"></td>
+                            <td class="description-cell" 
+                                th:text="${room.description != null ? (room.description.length() > 20 ? room.description.substring(0, 20) + '...' : room.description) : ''}" 
+                                th:title="${room.description}"></td>
+                            <td>
+                                <span th:if="${room.room_type == '1:1'}">2</span>
+                                <span th:if="${room.room_type == 'group'}" th:text="${room.max_members}"></span>
+                            </td>
+                            <td th:text="${#dates.format(room.created_at, 'yyyy-MM-dd')}"></td>
+							<td>
+								<button class="enter-btn" th:data-room-id="${room.room_num}">입장</button>
+								<th:block th:if="${room.role == '방장'}">
+									<button class="delete-btn" th:data-room-id="${room.room_num}">삭제</button>
+								</th:block>
+							</td>
+							</tr>
+                        <tr th:if="${#lists.isEmpty(chatRoomList)}">
+                            <td colspan="7" class="no-chat-room">참여중인 채팅이 없습니다.</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
             <!-- 오른쪽: 채팅창 (동적 삽입) -->
             <div class="chat-room-view-container" id="chatRoomViewContainer">
