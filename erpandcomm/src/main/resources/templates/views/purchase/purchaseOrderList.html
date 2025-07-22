@@ -160,8 +160,9 @@
                     }
 
                     const labels = data.map(item => {
-                        const month = (item.MONTH || item.month).split('-')[1];
-                        return `${parseInt(month, 10)}월`;
+                      const m = (item.MONTH || item.month);
+                      if (m.includes('-')) return parseInt(m.split('-')[1], 10) + '월';
+                      return m.length === 1 ? m + '월' : (m.replace(/^0/, '') + '월');
                     });
                     const totals = data.map(item => item.TOTAL || item.total);
 
@@ -172,7 +173,12 @@
                             datasets: [{
                                 label: '월별 구매금액',
                                 data: totals,
-                                backgroundColor: 'rgba(54, 162, 235, 0.5)'
+                                backgroundColor: [
+                                  '#B3C6FF', '#A3BFFA', '#7EA6F7', '#5B8DEE', '#3A6ED8', '#2C5CC5', '#1E47A2', '#1450B8', '#1C7ED6', '#228BE6', '#339AF0', '#4DABF7'
+                                ],
+                                barThickness: 48,
+                                categoryPercentage: 0.7,
+                                barPercentage: 1.0
                             }]
                         },
                         options: {
@@ -183,9 +189,8 @@
                             },
                             scales: {
                                 x: {
-                                    grid: {
-                                        display: false
-                                    }
+                                    grid: { display: false },
+                                    ticks: { display: true }
                                 },
                                 y: {
                                     beginAtZero: true,
@@ -195,9 +200,7 @@
                                             return value.toLocaleString() + '원';
                                         }
                                     },
-                                    grid: {
-                                        display: false
-                                    }
+                                    grid: { display: false }
                                 }
                             }
                         }

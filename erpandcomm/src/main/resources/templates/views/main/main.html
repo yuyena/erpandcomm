@@ -334,7 +334,11 @@ document.addEventListener('DOMContentLoaded', function() {
   fetch('/sales/stats/monthly')
     .then(res => res.json())
     .then(data => {
-      const labels = data.map(item => (item.MONTH || item.month));
+      const labels = data.map(item => {
+        const m = (item.MONTH || item.month);
+        if (m.includes('-')) return parseInt(m.split('-')[1], 10) + '월';
+        return m.length === 1 ? m + '월' : (m.replace(/^0/, '') + '월');
+      });
       const totals = data.map(item => item.TOTAL || item.total);
       new Chart(document.getElementById('salesOrderChart').getContext('2d'), {
         type: 'bar',
@@ -343,14 +347,19 @@ document.addEventListener('DOMContentLoaded', function() {
           datasets: [{
             label: '판매주문',
             data: totals,
-            backgroundColor: 'rgba(79,140,255,0.5)'
+            backgroundColor: [
+              '#B3C6FF', '#A3BFFA', '#7EA6F7', '#5B8DEE', '#3A6ED8', '#2C5CC5', '#1E47A2', '#1450B8', '#1C7ED6', '#228BE6', '#339AF0', '#4DABF7'
+            ],
+            barThickness: 48,
+            categoryPercentage: 0.7,
+            barPercentage: 1.0
           }]
         },
         options: {
           plugins: { legend: { display: true, position: 'top', align: 'end' } },
           scales: {
             x: {
-              ticks: { display: false },
+              ticks: { display: true },
               grid: { display: false }
             },
             y: {
@@ -366,7 +375,11 @@ document.addEventListener('DOMContentLoaded', function() {
   fetch('/purchase/stats/monthly')
     .then(res => res.json())
     .then(data => {
-      const labels = data.map(item => (item.MONTH || item.month));
+      const labels = data.map(item => {
+        const m = (item.MONTH || item.month);
+        if (m.includes('-')) return parseInt(m.split('-')[1], 10) + '월';
+        return m.length === 1 ? m + '월' : (m.replace(/^0/, '') + '월');
+      });
       const totals = data.map(item => item.TOTAL || item.total);
       new Chart(document.getElementById('purchaseOrderChart').getContext('2d'), {
         type: 'bar',
@@ -375,14 +388,19 @@ document.addEventListener('DOMContentLoaded', function() {
           datasets: [{
             label: '구매주문',
             data: totals,
-            backgroundColor: 'rgba(255,206,86,0.5)'
+            backgroundColor: [
+              '#B3C6FF', '#A3BFFA', '#7EA6F7', '#5B8DEE', '#3A6ED8', '#2C5CC5', '#1E47A2', '#1450B8', '#1C7ED6', '#228BE6', '#339AF0', '#4DABF7'
+            ],
+            barThickness: 48,
+            categoryPercentage: 0.7,
+            barPercentage: 1.0
           }]
         },
         options: {
           plugins: { legend: { display: true, position: 'top', align: 'end' } },
           scales: {
             x: {
-              ticks: { display: false },
+              ticks: { display: true },
               grid: { display: false }
             },
             y: {
