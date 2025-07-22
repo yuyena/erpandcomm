@@ -22,7 +22,64 @@
       color: #3b6fd6 !important;
       margin: 0 !important;
     }
-    </style>
+    /* 미니 달력 ERP 스타일 */
+#mini-calendar .fc {
+  background: #fff;
+  border-radius: 12px;
+  font-family: 'Noto Sans KR', Arial, sans-serif;
+}
+#mini-calendar .fc-col-header-cell {
+  background: #e6f0ff;
+  color: #2851a3;
+  font-weight: 600;
+  font-size: 15px;
+  border: none;
+}
+#mini-calendar .fc-daygrid-day-frame {
+  min-height: 36px;
+  padding: 2px 0;
+  border-radius: 8px;
+  transition: background 0.15s;
+}
+#mini-calendar .fc-day-today {
+  background: #e3f0ff !important;
+  border-radius: 8px;
+  border: 1.5px solid #4081ff;
+  color: #2851a3;
+}
+#mini-calendar .fc-daygrid-day:hover {
+  background: #f0f6ff;
+  cursor: pointer;
+}
+#mini-calendar .fc-daygrid-day.fc-day-selected {
+  background: #d0e6ff !important;
+  border-radius: 8px;
+  border: 1.5px solid #2851a3;
+}
+#mini-calendar .fc-daygrid-day-number {
+  font-size: 15px;
+  color: #2851a3;
+  font-weight: 500;
+}
+/* 토요일(6번째 컬럼) 연한 파랑, 일요일(1번째 컬럼) 빨간색 */
+#mini-calendar .fc-day-sat .fc-daygrid-day-number { color: #4a90e2 !important; }
+#mini-calendar .fc-day-sun .fc-daygrid-day-number { color: #e95254 !important; }
+#mini-calendar .fc-toolbar-title {
+  color: #285CC3 !important;
+  font-weight: bold;
+}
+#mini-calendar .fc-scrollgrid,
+#mini-calendar .fc-scrollgrid-section,
+#mini-calendar .fc-scrollgrid-sync-table,
+#mini-calendar .fc-col-header,
+#mini-calendar .fc-daygrid-body {
+  border: none !important;
+}
+#mini-calendar .fc-daygrid-day,
+#mini-calendar .fc-col-header-cell {
+  border: none !important;
+}
+</style>
 <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
 </head>
@@ -275,6 +332,10 @@ function csrfFetch(url, options = {}) {
     headerToolbar: { left: '', center: 'title', right: '' },
     locale: 'ko',
     selectable: true,
+    // 날짜 셀 숫자만 표시
+    dayCellContent: function(arg) {
+      return arg.date.getDate().toString();
+    },
     dateClick: function(info) {
       fetch(`/calendar/month?monthStart=${info.dateStr}&monthEnd=${info.dateStr}`)
         .then(res => res.json())
