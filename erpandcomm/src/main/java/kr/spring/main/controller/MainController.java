@@ -28,7 +28,7 @@ public class MainController {
         java.util.Map<String, Object> noticeMap = new java.util.HashMap<>();
         noticeMap.put("order", 1);
         noticeMap.put("start", 1);
-        noticeMap.put("end", 3);
+        noticeMap.put("end", 4);
         java.util.List<NoticeVO> noticeList = noticeService.selectList(noticeMap);
         model.addAttribute("noticeList", noticeList);
         return "views/main/main";
@@ -42,7 +42,7 @@ public class MainController {
         java.util.Map<String, Object> noticeMap = new java.util.HashMap<>();
         noticeMap.put("order", 1);
         noticeMap.put("start", 1);
-        noticeMap.put("end", 3);
+        noticeMap.put("end", 4);
         java.util.List<NoticeVO> noticeList = noticeService.selectList(noticeMap);
         model.addAttribute("noticeList", noticeList);
         return "views/main/main";
