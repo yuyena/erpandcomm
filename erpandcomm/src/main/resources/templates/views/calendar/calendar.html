@@ -6,12 +6,7 @@
   <meta name="csrf-token" th:content="${_csrf.token}">
   <meta name="csrf-header" th:content="${_csrf.headerName}">
   <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
-  <style>
-    body { background: #f5f8ff; font-family: 'Noto Sans KR', Arial, sans-serif; }
-    #calendar { max-width: 900px; margin: 40px auto; background: #fff; border-radius: 14px; box-shadow: 0 2px 12px rgba(80,120,200,0.07); padding: 24px; }
-    .fc-toolbar-title { font-size: 1.5rem; color: #2851a3; }
-    .fc-daygrid-event { font-size: 1rem; }
-  </style>
+  <link rel="stylesheet" href="/assets/css/calendar.css">
 </head>
 <body>
   <div id="calendar"></div>
@@ -34,6 +29,10 @@
           left: 'prev,next today',
           center: 'title',
           right: ''
+        },
+        dayCellContent: function(arg) {
+          // 날짜 숫자만 표시 (ex: 1, 2, 3 ...)
+          return arg.date.getDate();
         },
         events: function(fetchInfo, successCallback, failureCallback) {
           // YYYY-MM-DD 형식으로 변환
