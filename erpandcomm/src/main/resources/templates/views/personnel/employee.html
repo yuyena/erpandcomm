@@ -48,7 +48,7 @@
                         <span>직원 관리</span>
                         <div style="display: flex; gap: 8px;">
                             <button type="button" onclick="location.href='/personnel/employee/register'" class="btn btn-primary">직원 등록</button>
-                            <button class="btn-secondary">직원 수정</button>
+                            <button type="button" class="btn-secondary" onclick="editSelectedEmployee()">직원 수정</button>
                             <button class="btn-danger">직원 삭제</button>
                         </div>
                     </div>
@@ -78,6 +78,14 @@
     </div>
 </div>
 
-<div layout:fragment="pageScript"></div>
+<div layout:fragment="pageScript">
+    <script>
+        function editSelectedEmployee() {
+            // 실제로는 체크박스로 선택된 직원의 ID를 가져와서 수정 페이지로 이동
+            // 임시로 1번 직원의 수정 페이지로 이동하도록 구현
+            window.location.href = '/personnel/employee/1/edit';
+        }
+    </script>
+</div>
 </body>
 </html>

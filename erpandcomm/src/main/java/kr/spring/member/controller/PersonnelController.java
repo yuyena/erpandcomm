@@ -23,6 +23,11 @@ public class PersonnelController {
         return "views/personnel/employee_register";
     }
     
+    @GetMapping("/employee/{employeeId}/edit")
+    public String employeeEdit() {
+        return "views/personnel/employee_edit";
+    }
+    
     @GetMapping("/attendance")
     public String attendance() {
         return "views/personnel/attendanceList";

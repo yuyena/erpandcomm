@@ -36,6 +36,12 @@ public class DepartmentController {
         return "views/personnel/department_register";
     }
     
+    // 부서 수정 폼
+    @GetMapping("/department/edit")
+    public String departmentEditForm() {
+        return "views/personnel/department_edit";
+    }
+    
     // 부서 등록 처리
     @PostMapping("/department/register")
     public String departmentRegister(DepartmentVO department, Model model) {

@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout_basic}">
+<head>
+    <meta charset="UTF-8">
+    <title>Office ERP - 직원수정</title>
+    <link rel="stylesheet" th:href="@{/assets/css/main.css}">
+    <style>
+        /* Base Styles */
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --success-color: #4bb543;
+            --info-color: #4895ef;
+            --warning-color: #f9c74f;
+            --danger-color: #f94144;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --border-color: #e9ecef;
+            --text-muted: #6c757d;
+        }
+        
+        body {
+            background-color: #f5f7fb;
+            color: #333;
+            font-family: 'Noto Sans KR', 'Segoe UI', sans-serif;
+        }
+        
+        .form-container {
+            max-width: 1250px; /* Increased width by 50px */
+            margin: 20px auto;
+            padding: 0;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            width: 95%; /* Ensure it's responsive */
+        }
+        
+        /* Fix form layout issues */
+        .form-sections {
+            padding: 0 30px 30px;
+        }
+        
+        .form-section {
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .form-section.active {
+            display: block;
+        }
+        
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            margin-right: -15px;
+            margin-left: -15px;
+        }
+        
+        .col-md-12 { width: 100%; padding: 0 15px; }
+        .col-md-6 { width: 50%; padding: 0 15px; }
+        .col-md-4 { width: 33.333333%; padding: 0 15px; }
+        .col-md-3 { width: 25%; padding: 0 15px; }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: inline-block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #495057;
+        }
+        
+        .form-group .text-danger {
+            color: #dc3545;
+            margin-left: 4px;
+        }
+        
+        .form-group .form-text {
+            display: block;
+            margin-top: 0.25rem;
+            font-size: 0.875em;
+            color: #6c757d;
+        }
+        
+        .form-control {
+            display: block;
+            width: 100%;
+            padding: 0.375rem 0.75rem;
+            font-size: 1rem;
+            font-weight: 400;
+            line-height: 1.5;
+            color: #212529;
+            background-color: #fff;
+            background-clip: padding-box;
+            border: 1px solid #ced4da;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            border-radius: 0.375rem;
+            transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+        }
+        
+        .form-control:focus {
+            color: #212529;
+            background-color: #fff;
+            border-color: #86b7fe;
+            outline: 0;
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+        }
+        
+        .input-group {
+            position: relative;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: stretch;
+            width: 100%;
+        }
+        
+        .input-group-text {
+            display: flex;
+            align-items: center;
+            padding: 0.375rem 0.75rem;
+            font-size: 1rem;
+            font-weight: 400;
+            line-height: 1.5;
+            color: #212529;
+            text-align: center;
+            white-space: nowrap;
+            background-color: #e9ecef;
+            border: 1px solid #ced4da;
+            border-radius: 0.375rem;
+        }
+        
+        .input-group > .form-control,
+        .input-group > .form-select {
+            position: relative;
+            flex: 1 1 auto;
+            width: 1%;
+            min-width: 0;
+        }
+        
+        .input-group:not(.has-validation) > :not(:last-child):not(.dropdown-toggle):not(.dropdown-menu),
+        .input-group:not(.has-validation) > .dropdown-toggle:nth-last-child(n+3) {
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+        
+        .input-group > :not(:first-child):not(.dropdown-menu):not(.valid-tooltip):not(.valid-feedback):not(.invalid-tooltip):not(.invalid-feedback) {
+            margin-left: -1px;
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+        
+        /* Employee Profile Header */
+        .employee-profile-header {
+            display: flex;
+            align-items: center;
+            padding: 30px;
+            background: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
+            color: white;
+            position: relative;
+        }
+        
+        .profile-avatar {
+            position: relative;
+            margin-right: 25px;
+        }
+        
+        .profile-avatar img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 4px solid rgba(255, 255, 255, 0.2);
+            object-fit: cover;
+        }
+        
+        .online-status {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            width: 16px;
+            height: 16px;
+            background-color: #4ade80;
+            border: 2px solid white;
+            border-radius: 50%;
+        }
+        
+        .online-status.active {
+            background-color: #4ade80;
+        }
+        
+        .profile-info {
+            flex: 1;
+        }
+        
+        .profile-name {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .profile-name h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .position {
+            font-size: 18px;
+            font-weight: 500;
+            opacity: 0.9;
+        }
+        
+        .badges {
+            display: flex;
+            gap: 8px;
+            margin-left: 15px;
+        }
+        
+        .badge {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .badge-primary {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        .badge-success {
+            background-color: rgba(75, 181, 67, 0.9);
+        }
+        
+        .badge-info {
+            background-color: rgba(72, 149, 239, 0.9);
+        }
+        
+        .profile-meta {
+            display: flex;
+            gap: 20px;
+            margin-top: 15px;
+        }
+        
+        .meta-item {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .meta-item i {
+            margin-right: 8px;
+            width: 16px;
+            text-align: center;
+        }
+        
+        .profile-actions {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 500;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+        }
+        
+        .btn i {
+            margin-right: 6px;
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border-color: rgba(255, 255, 255, 0.3);
+            color: white;
+        }
+        
+        .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .btn-primary {
+            background: white;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        .btn-primary:hover {
+            background: rgba(255, 255, 255, 0.9);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Form Navigation */
+        .form-navigation {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 1px solid var(--border-color);
+            padding: 0 30px;
+        }
+        
+        .nav-item {
+            padding: 16px 20px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .nav-item:hover, .nav-item.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+        
+        .nav-item i {
+            font-size: 16px;
+        }
+        
+        /* Form Sections */
+        .form-sections {
+            padding: 0 30px 30px;
+        }
+        
+        .form-section {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .form-section.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 30px 0 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .section-header h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--dark-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .section-header h3 i {
+            color: var(--primary-color);
+        }
+        
+        .btn-sm {
+            padding: 5px 12px;
+            font-size: 13px;
+        }
+        
+        .form-header {
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eaeaea;
+        }
+        
+        .form-header h1 {
+            color: #2c3e50;
+            font-size: 1.5rem;
+            margin: 0;
+            font-weight: 600;
+        }
+        
+        .employee-id {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+        
+        .form-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f9fafb;
+            border-radius: 6px;
+            border: 1px solid #eaeaea;
+        }
+        
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin: 0 0 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eaeaea;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: #4a5568;
+            font-size: 0.9rem;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            font-size: 0.92rem;
+            transition: all 0.2s;
+            background-color: #fff;
+        }
+        
+        .form-control:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+            outline: none;
+        }
+        
+        .form-control:disabled {
+            background-color: #f3f4f6;
+            cursor: not-allowed;
+        }
+        
+        .photo-upload {
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+        
+        .photo-upload-btn:hover {
+            background: #f1f5f9;
+        }
+        
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eaeaea;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border-radius: 4px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+            border: 1px solid transparent;
+        }
+        
+        .btn-outline-secondary {
+            color: #6c757d;
+            border-color: #6c757d;
+        }
+        
+        .btn-outline-secondary:hover {
+            color: #fff;
+            background-color: #6c757d;
+            border-color: #6c757d;
+        }
+        
+        .btn-cancel {
+            background: #f8fafc;
+            color: #4b5563;
+            border-color: #d1d5db;
+        }
+        
+        .btn-cancel:hover {
+            background: #f1f5f9;
+        }
+        
+        .btn-save {
+            background: #3b82f6;
+            color: white;
+        }
+        
+        .btn-save:hover {
+            background: #2563eb;
+        }
+        
+        .required:after {
+            content: ' *';
+            color: #ef4444;
+        }
+        
+        .form-note {
+            font-size: 0.75rem;
+            color: #6b7280;
+            margin-top: 4px;
+            font-style: italic;
+        }
+        
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-container {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div layout:fragment="content" class="page-main">
+    <div class="dashboard-wrapper">
+        <!-- 사이드바 -->
+        <th:block th:replace="fragments/nav_sidebar :: sidebar"></th:block>
+
+        <!-- 메인 컨텐츠 -->
+        <main class="main-content">
+            <div class="form-container">
+                <!-- Employee Profile Header -->
+                <div class="employee-profile-header">
+                    <div class="profile-avatar">
+                        <div class="avatar-placeholder">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <span class="online-status active"></span>
+                    </div>
+                    <div class="profile-info">
+                        <div class="profile-name">
+                            <h1>김철수 <span class="position">차장</span></h1>
+                            <div class="badges">
+                                <span class="badge badge-primary">#EMP-2023-0456</span>
+                                <span class="badge badge-success">재직중</span>
+                                <span class="badge badge-info">정규직</span>
+                            </div>
+                        </div>
+                        <div class="profile-meta">
+                            <div class="meta-item">
+                                <i class="fas fa-id-card"></i>
+                                <span>사원번호: <strong>EMP-2023-0456</strong></span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="far fa-calendar-alt"></i>
+                                <span>입사일: <strong>2020-11-15</strong> (3년 8개월)</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="fas fa-building"></i>
+                                <span>소속: <strong>기술연구소 AI개발팀</strong></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="profile-actions">
+                        <button class="btn btn-outline">
+                            <i class="fas fa-print"></i> 인사카드 출력
+                        </button>
+                        <button class="btn btn-primary">
+                            <i class="fas fa-save"></i> 저장하기
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="form-navigation">
+                    <a href="#basic-info" class="nav-item active"><i class="fas fa-user"></i> 기본 정보</a>
+                    <a href="#work-info" class="nav-item"><i class="fas fa-briefcase"></i> 근무 정보</a>
+                    <a href="#contact-info" class="nav-item"><i class="fas fa-address-book"></i> 연락처 정보</a>
+                    <a href="#salary-info" class="nav-item"><i class="fas fa-won-sign"></i> 급여 정보</a>
+                    <a href="#documents" class="nav-item"><i class="fas fa-file-alt"></i> 서류 관리</a>
+                </div>
+                
+                <div class="form-sections">
+                    <!-- 기본 정보 섹션 -->
+                    <div id="basic-info" class="form-section active">
+                        <div class="section-header">
+                            <h3><i class="fas fa-user-circle"></i> 기본 정보</h3>
+                            <div class="section-actions">
+                                <button type="button" class="btn btn-sm btn-outline">
+                                    <i class="fas fa-history"></i> 변경 이력
+                                </button>
+                            </div>
+                        </div>
+                
+                <form id="employeeEditForm" class="form-sections">
+                    <input type="hidden" name="userNum" th:value="${employee.userNum}">
+                    
+                    <!-- Personal Information Section -->
+                    <div id="personal" class="form-section active">
+                        <div class="section-header">
+                            <h3><i class="fas fa-user"></i> 기본 정보</h3>
+                            <button type="button" class="btn btn-sm btn-outline"><i class="fas fa-edit"></i> 수정</button>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>사원번호</label>
+                                    <input type="text" class="form-control" value="EMP-2023-0456" disabled>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>아이디</label>
+                                    <input type="text" class="form-control" value="kimchulsoo" disabled>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>이름 (한글) <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" value="김철수" required>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>이름 (영문)</label>
+                                    <input type="text" class="form-control" value="Chul-Soo Kim">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>생년월일</label>
+                                    <input type="date" class="form-control" value="1990-05-15">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>성별</label>
+                                    <select class="form-control">
+                                        <option value="M">남성</option>
+                                        <option value="F">여성</option>
+                                        <option value="O">기타</option>
+                                        <option value="N">선택 안함</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="form-group">
+                                    <label>주민등록번호</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" value="900515" maxlength="6">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">-</span>
+                                        </div>
+                                        <input type="password" class="form-control" value="1******" maxlength="7">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-outline-secondary" type="button"><i class="fas fa-eye"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>이메일 <span class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <input type="email" class="form-control" value="chulsoo.kim" required>
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">@</span>
+                                        </div>
+                                        <select class="form-control" style="flex: 0 0 120px;">
+                                            <option>company.com</option>
+                                            <option>gmail.com</option>
+                                            <option>naver.com</option>
+                                            <option>hanmail.net</option>
+                                            <option>nate.com</option>
+                                            <option>daum.net</option>
+                                            <option>직접입력</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>휴대전화 <span class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <select class="form-control" style="flex: 0 0 80px;">
+                                            <option>010</option>
+                                            <option>011</option>
+                                            <option>016</option>
+                                            <option>017</option>
+                                            <option>018</option>
+                                            <option>019</option>
+                                        </select>
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">-</span>
+                                        </div>
+                                        <input type="text" class="form-control" value="1234" maxlength="4">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">-</span>
+                                        </div>
+                                        <input type="text" class="form-control" value="5678" maxlength="4">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>주소</label>
+                                    <div class="input-group mb-2">
+                                        <input type="text" class="form-control" id="postcode" placeholder="우편번호" value="12345">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-outline-secondary" type="button" id="findAddress">주소 찾기</button>
+                                        </div>
+                                    </div>
+                                    <input type="text" class="form-control mb-2" id="address" placeholder="기본주소" value="서울특별시 강남구 테헤란로 123">
+                                    <input type="text" class="form-control" id="detailAddress" placeholder="상세주소" value="한국아이티빌딩 10층">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>입사일</label>
+                                    <input type="date" class="form-control" value="2023-03-15">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>퇴사일</label>
+                                    <input type="date" class="form-control" disabled>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>프로필 사진</label>
+                                    <div class="custom-file">
+                                        <input type="file" class="custom-file-input" id="profileImage" accept="image/*">
+                                        <label class="custom-file-label" for="profileImage">파일 선택</label>
+                                    </div>
+                                    <small class="form-text text-muted">권장 크기: 300x300px, 지원 형식: JPG, PNG, GIF (최대 5MB)</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>자기소개</label>
+                                    <textarea class="form-control" rows="3" placeholder="간단한 자기소개를 입력해주세요.">안녕하세요. 인사팀에서 근무 중인 김철수입니다. 앞으로 열심히 일하겠습니다!</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                        <h3 class="section-title">기본 정보</h3>
+                        <div class="form-grid">
+                            <!-- 사진 업로드 -->
+                            <div class="form-group">
+                                <label>사진</label>
+                                <div class="photo-upload">
+                                    <div class="photo-preview" id="photoPreview">
+                                        <span th:if="${employee.photoName == null}" style="color: #9ca3af;">사진 없음</span>
+                                        <img th:if="${employee.photoName != null}" th:src="@{'/uploads/profile/' + ${employee.photoName}}" alt="프로필 사진">
+                                    </div>
+                                    <div>
+                                        <input type="file" id="photo" name="photo" accept="image/*" style="display: none;">
+                                        <button type="button" class="photo-upload-btn" onclick="document.getElementById('photo').click()">
+                                            사진 선택
+                                        </button>
+                                        <div class="form-note">권장 크기: 3:4 비율</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="employeeCode">사원번호</label>
+                                <input type="text" id="employeeCode" name="employeeCode" class="form-control" th:value="${employee.employeeCode}" disabled>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="userName" class="required">이름</label>
+                                <input type="text" id="userName" name="userName" class="form-control" th:value="${employee.userName}" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="residentRegNum">주민등록번호</label>
+                                <input type="text" id="residentRegNum" name="residentRegNum" class="form-control" th:value="${employee.residentRegNum}" disabled>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="passwd">비밀번호</label>
+                                <input type="password" id="passwd" name="passwd" class="form-control" placeholder="변경 시에만 입력">
+                                <div class="form-note">8자 이상 입력해주세요</div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="passwdConfirm">비밀번호 확인</label>
+                                <input type="password" id="passwdConfirm" class="form-control" placeholder="변경 시에만 입력">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="authority" class="required">권한</label>
+                                <select id="authority" name="authority" class="form-control" required>
+                                    <option value="">권한을 선택하세요</option>
+                                    <option value="ROLE_USER" th:selected="${employee.authority == 'ROLE_USER'}">일반 사용자</option>
+                                    <option value="ROLE_MANAGER" th:selected="${employee.authority == 'ROLE_MANAGER'}">관리자</option>
+                                    <option value="ROLE_ADMIN" th:selected="${employee.authority == 'ROLE_ADMIN'}">최고 관리자</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 근무 정보 섹션 -->
+                    <!-- Work Information Section -->
+                    <div id="employment" class="form-section">
+                        <div class="section-header">
+                            <h3><i class="fas fa-briefcase"></i> 근무 정보</h3>
+                            <button type="button" class="btn btn-sm btn-outline"><i class="fas fa-edit"></i> 수정</button>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>부서 <span class="text-danger">*</span></label>
+                                    <select class="form-control" required>
+                                        <option value="">-- 부서 선택 --</option>
+                                        <option value="1" selected>인사팀</option>
+                                        <option value="2">총무팀</option>
+                                        <option value="3">재무팀</option>
+                                        <option value="4">영업팀</option>
+                                        <option value="5">마케팅팀</option>
+                                        <option value="6">개발팀</option>
+                                        <option value="7">디자인팀</option>
+                                        <option value="8">고객지원팀</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>직급 <span class="text-danger">*</span></label>
+                                    <select class="form-control" required>
+                                        <option value="">-- 직급 선택 --</option>
+                                        <option value="1" selected>사원</option>
+                                        <option value="2">대리</option>
+                                        <option value="3">과장</option>
+                                        <option value="4">차장</option>
+                                        <option value="5">부장</option>
+                                        <option value="6">이사</option>
+                                        <option value="7">상무</option>
+                                        <option value="8">전무</option>
+                                        <option value="9">부사장</option>
+                                        <option value="10">사장</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>직책</label>
+                                    <select class="form-control">
+                                        <option value="">-- 직책 선택 --</option>
+                                        <option value="1">팀원</option>
+                                        <option value="2" selected>팀장</option>
+                                        <option value="3">파트장</option>
+                                        <option value="4">센터장</option>
+                                        <option value="5">본부장</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>고용 형태 <span class="text-danger">*</span></label>
+                                    <select class="form-control" required>
+                                        <option value="FULL_TIME" selected>정규직</option>
+                                        <option value="PART_TIME">계약직</option>
+                                        <option value="TEMPORARY">임시직</option>
+                                        <option value="INTERN">인턴</option>
+                                        <option value="FREELANCER">프리랜서</option>
+                                        <option value="OUTSOURCING">도급</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>근무 상태 <span class="text-danger">*</span></label>
+                                    <select class="form-control" required>
+                                        <option value="WORKING" selected>재직 중</option>
+                                        <option value="ON_LEAVE">휴직 중</option>
+                                        <option value="RESIGNED">퇴사</option>
+                                        <option value="RETIRED">퇴직</option>
+                                        <option value="PROBATION">수습</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>권한 <span class="text-danger">*</span></label>
+                                    <select class="form-control" required>
+                                        <option value="USER">일반 사용자</option>
+                                        <option value="MANAGER">관리자</option>
+                                        <option value="ADMIN" selected>시스템 관리자</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>입사일 <span class="text-danger">*</span></label>
+                                    <input type="date" class="form-control" value="2023-03-15" required>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>계약 만료일</label>
+                                    <input type="date" class="form-control" value="2025-03-14">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>퇴사일</label>
+                                    <input type="date" class="form-control" disabled>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>내선번호</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">02-1234-</span>
+                                        </div>
+                                        <input type="text" class="form-control" value="5678" maxlength="4">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>사무실 위치</label>
+                                    <input type="text" class="form-control" value="본사 10층 1001호">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>직원 카드번호</label>
+                                    <input type="text" class="form-control" value="CARD-EMP-0456" disabled>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>담당 업무</label>
+                                    <textarea class="form-control" rows="3" placeholder="담당하고 있는 주요 업무를 입력해주세요.">- 인사관리 시스템 운영 및 유지보수
+- 채용 프로세스 관리
+- 직원 교육 프로그램 기획 및 운영</textarea>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>비고</label>
+                                    <textarea class="form-control" rows="3" placeholder="기타 참고사항을 입력해주세요.">- 2023년 우수사원상 수상
+- 영어 능통자 (TOEIC 950점)
+- 복지 위원회 위원</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div> class="form-section">
+                        <h3 class="section-title">연락처 정보</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="phone" class="required">휴대전화</label>
+                                <input type="tel" id="phone" name="phone" class="form-control" 
+                                       placeholder="010-1234-5678" th:value="${employee.phone}" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="email" class="required">이메일</label>
+                                <input type="email" id="email" name="email" class="form-control" 
+                                       placeholder="example@company.com" th:value="${employee.email}" required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 추가 정보 섹션 -->
+                    <div class="form-section">
+                        <h3 class="section-title">추가 정보</h3>
+                        <div class="form-group">
+                            <label for="euserDetail">비고</label>
+                            <textarea id="euserDetail" name="euserDetail" class="form-control" rows="4" 
+                                     placeholder="추가 정보를 입력해주세요" th:text="${employee.euserDetail}"></textarea>
+                        </div>
+                    </div>
+                    
+                    <!-- 폼 액션 버튼 -->
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-cancel" onclick="location.href='/personnel/employee'">취소</button>
+                        <button type="button" class="btn btn-save">저장</button>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+</div>
+
+<div layout:fragment="pageScript">
+    <script>
+        // 사진 미리보기 기능
+        document.getElementById('profileImage')?.addEventListener('change', function(e) {
+            if (this.files && this.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.querySelector('.profile-avatar img').src = e.target.result;
+                }
+                reader.readAsDataURL(this.files[0]);
+                
+                // Update file input label
+                const fileName = this.files[0].name;
+                const label = this.nextElementSibling;
+                label.textContent = fileName;
+            }
+        });
+        
+        // Form navigation
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Update active nav item
+                document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Show corresponding section
+                const targetId = this.getAttribute('data-section');
+                document.querySelectorAll('.form-section').forEach(section => {
+                    section.classList.remove('active');
+                });
+                document.getElementById(targetId).classList.add('active');
+                
+                // Update URL hash
+                window.location.hash = targetId;
+            });
+        });
+        
+        // Show/hide password for SSN
+        document.querySelectorAll('.btn-outline-secondary[type="button"]').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const ssnInput = this.closest('.input-group').querySelector('input[type="password"], input[type="text"]');
+                if (ssnInput.type === 'password') {
+                    ssnInput.type = 'text';
+                    this.innerHTML = '<i class="fas fa-eye-slash"></i>';
+                } else {
+                    ssnInput.type = 'password';
+                    this.innerHTML = '<i class="fas fa-eye"></i>';
+                }
+            });
+        });
+        
+        // Address search button (placeholder)
+        document.getElementById('findAddress')?.addEventListener('click', function() {
+            alert('주소 검색 기능이 여기에 구현됩니다. 실제 구현 시에는 주소 검색 API를 연동하세요.');
+            // 실제 구현 시 다음 주소 API나 다른 주소 검색 서비스와 연동
+            // 예: new daum.Postcode({ ... }).open();
+        });
+        
+        // Form submission (prevent default for demo)
+        document.getElementById('employeeEditForm')?.addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('폼 제출이 완료되었습니다. (데모용 알림)');
+            // 실제 구현 시에는 서버로 폼 데이터 전송
+            // this.submit();
+        });
+        
+        // Load section from URL hash
+        window.addEventListener('load', function() {
+            if (window.location.hash) {
+                const targetSection = window.location.hash.substring(1);
+                const navItem = document.querySelector(`.nav-item[data-section="${targetSection}"]`);
+                if (navItem) {
+                    navItem.click();
+                }
+            }
+        });
+    </script>
+</div>
+</body>
+</html>
