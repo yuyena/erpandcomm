@@ -11,11 +11,8 @@
 		<result property="endTime" column="end_time" />
 		<result property="totalDays" column="total_days" />
 		<result property="requestDate" column="request_date" />
-		<result property="requestId" column="updatedAt" />
 		<result property="updatedAt" column="updated_at" />
 	</resultMap>
-
-
 
 	<!-- 휴가 등록 -->
 	<insert id="insertVacation"
@@ -52,12 +49,43 @@
 		)
 	</insert>
 
+	<!-- 휴가 목록 상세 -->
+	<select id = "selectVacationDetail" parameterType="long" resultMap="vacationMap">
+		SELECT * 
+		FROM vacation_request 
+		WHERE request_id = #{requestId}
+	</select> 
+	
+	<!-- 조회/ 조건 목록 -->
+	<sql id="vacationSearch">
+		<if test="startDate != null and startDate != ''">
+			AND start_date <![CDATA[ >= ]]>
+			#{startDate}
+		</if>
+		<if test="endDate != null and endDate != ''">
+			AND end_date <![CDATA[ <= ]]>
+			#{endDate}
+		</if>
+		<if test="vacationType != null and vacationType != ''">
+			AND vacation_type = #{vacationType}
+		</if>
+	</sql>
+	
+	<!-- 조회/조건 -->
+	<select id ="selectList" parameterType="map" resultMap="vacationMap">
+		SELECT *
+		FROM vacation_request
+		WHERE emp_id=#{empId}
+	<include refid="vacationSearch"/>
+	</select>
+	
 	<!-- 휴가 목록 -->
-	<select id="selectVacationList" parameterType="long"
-		resultMap="vacationMap">
+	<select id="selectVacationList" parameterType="map" resultMap="vacationMap">
 		SELECT *
 		FROM vacation_request
 		WHERE emp_id=#{empId}
 	</select>
+	
+	
 
 </mapper>

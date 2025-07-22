@@ -11,7 +11,10 @@
 .main-content {
 	flex: 1;
 	padding: 20px;
-	margin-left: 250px;
+	margin-left: 200px;
+	/*추가*/
+    display: flex;
+    justify-content: center;
 }
 
 .vacation-section {
@@ -98,7 +101,7 @@
 .total-days-display {
 	background-color: #f9f9f9;
 	border: 1px solid #ddd;
-	padding: 12px;
+	padding: 15px;
 	border-radius: 4px;
 	text-align: center;
 	font-weight: bold;

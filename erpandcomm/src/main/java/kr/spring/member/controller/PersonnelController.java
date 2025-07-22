@@ -30,7 +30,7 @@ public class PersonnelController {
     
     @GetMapping("/vacation")
     public String vacation() {
-        return "views/personnel/vacation";
+        return "views/personnel/vacationList";
     }
     
     @GetMapping("/salary")

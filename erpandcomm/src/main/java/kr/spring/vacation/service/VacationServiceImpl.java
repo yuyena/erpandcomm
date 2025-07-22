@@ -1,6 +1,7 @@
 package kr.spring.vacation.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -8,10 +9,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import kr.spring.vacation.dao.VacationMapper;
 import kr.spring.vacation.vo.VacationVO;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Transactional
-public class VacationServicImpl implements VacationService{
+@Slf4j
+public class VacationServiceImpl implements VacationService{
 	@Autowired
 	private VacationMapper vacationMapper;
 
@@ -19,6 +22,7 @@ public class VacationServicImpl implements VacationService{
 	public void insertVacation(VacationVO vacation) {
 		vacation.setTime();
 		vacationMapper.insertVacation(vacation);
+		
 	}
 
 	@Override
@@ -27,17 +31,19 @@ public class VacationServicImpl implements VacationService{
 	}
 
 	@Override
-	public VacationVO selectVacationDetail(Long vacationId) {
-		return null;
+	public VacationVO selectVacationDetail(Long requestId) {
+		return vacationMapper.selectVacationDetail(requestId);
 	}
 
 	@Override
 	public Integer selectTotalVacationDays(Long empId) {
+		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Integer selecUsedVacationDays(Long empId) {
+		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -48,8 +54,17 @@ public class VacationServicImpl implements VacationService{
 	}
 
 	@Override
-	public void cancelVacation(Long vacationId) {
+	public void deleteVacation(Long requestId) {
 		// TODO Auto-generated method stub
-		
+		vacationMapper.deleteVacation(requestId);
 	}
+
+	@Override
+	public List<VacationVO> selectList(Map<String, Object> map) {
+		return vacationMapper.selectList(map);
+	}
+
+	
+
+	
 }
