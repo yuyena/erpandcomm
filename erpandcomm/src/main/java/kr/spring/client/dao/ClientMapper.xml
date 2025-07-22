@@ -12,7 +12,7 @@
     <!-- 거래처 등록 -->
     <insert id="insertClient" parameterType="kr.spring.client.vo.ClientVO">
         INSERT INTO client (client_num, client_name, client_type, contact_person, phone, email, address1, address2)
-        VALUES (#{client_num}, #{client_name}, #{client_type}, #{contact_person}, #{phone}, #{email}, #{address1}, #{address2})
+        VALUES (client_seq.nextval, #{client_name}, #{client_type}, #{contact_person}, #{phone}, #{email}, #{address1}, #{address2})
     </insert>
     <!-- 거래처 수정 -->
     <update id="updateClient" parameterType="kr.spring.client.vo.ClientVO">
