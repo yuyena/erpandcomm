@@ -232,14 +232,13 @@
               const clientPieChart = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
-                  labels: ['A상사', 'B상사', 'C상사'],
+                  labels: ['고객', '공급업체'],
                   datasets: [{
-                    label: '거래처별 구매금액',
-                    data: [300000, 200000, 100000],
+                    label: '거래처 구분',
+                    data: [10, 9],
                     backgroundColor: [
                       'rgba(255, 99, 132, 0.5)',
-                      'rgba(54, 162, 235, 0.5)',
-                      'rgba(255, 206, 86, 0.5)'
+                      'rgba(54, 162, 235, 0.5)'
                     ]
                   }]
                 },
