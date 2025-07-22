@@ -46,9 +46,9 @@
                 </div>
             </div>
             
-            <div class="card" style="width: 800px; padding: 0; margin: 0 auto 24px auto; background: #fff; border-radius: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08);">
-              <div style="width:800px; min-height:200px; margin:0 auto; text-align:center;">
-                <canvas id="clientPieChart" style="display: inline-block; width: 400px; height: 400px; box-sizing: border-box;" width="400" height="400"></canvas>
+            <div class="card" style="width: 530px; padding: 0; margin: 0 auto 18px auto; background: #fff; border-radius: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08);">
+              <div style="width:530px; min-height:132px; margin:0 auto; text-align:center;">
+                <canvas id="clientPieChart" style="display: inline-block; width: 260px; height: 260px; box-sizing: border-box;" width="260" height="260"></canvas>
               </div>
             </div>
 
@@ -56,7 +56,7 @@
                     <h2 class="page-title">거래처 목록</h2>
                     <a th:href="@{/client/form}" class="btn-write">거래처 등록</a>
                 </div>
-            <div class="sh-box">
+            <div class="sh-box" style="display:flex; gap:56px; width:100%; min-width:0; margin:0 auto 32px auto; margin-left:32px;">
               <!-- 고객 목록, 공급업체 목록 테이블 flex row -->
                     <!-- 고객 목록 -->
                 <div class="table-container" style="width: 600px; margin-right: 20px; ">
@@ -285,9 +285,11 @@
 }
 .custom-table th, .custom-table td {
     border-bottom: 1px solid #eee;
-    padding: 2px 8px;
+    padding: 0px 4px;
     text-align: center;
     font-size: 9pt;
+    line-height: 1.2;
+    height: 28px;
 }
 .custom-table th {
     background: #fafafa;
