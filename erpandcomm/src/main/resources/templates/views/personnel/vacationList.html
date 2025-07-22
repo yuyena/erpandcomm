@@ -6,6 +6,8 @@
     <meta charset="UTF-8">
     <title>Office ERP - 휴가관리</title>
     <link rel="stylesheet" th:href="@{/assets/css/main.css}">
+	<link rel="stylesheet" th:href="@{/assets/css/yj/vacationList.css}">
+	
 </head>
 <body>
 <div layout:fragment="content" class="page-main">
@@ -13,18 +15,17 @@
         <!-- 사이드바 -->
         <th:block th:replace="fragments/nav_sidebar :: sidebar"></th:block>
 
-
-
         <!-- 메인 컨텐츠 -->
         <main class="main-content">
             <div class="page-title">
                 <h1 style="color: #1976D2; font-weight: bold; font-size: 1.5rem; margin-bottom: 24px; text-align: left;">인사관리 - 휴가관리</h1>
             </div>
+            	
             <!-- 조회 조건 카드 -->
             <section class="card-section" style="margin-bottom: 24px;">
                 <div class="card" style="border-radius: 12px; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.06); padding: 24px;">
                     <div class="card-header" style="font-weight: bold; font-size: 1.1rem; margin-bottom: 18px;">조회 조건</div>
-                    <form class="search-form" style="display: flex; flex-direction: column; gap: 10px; background: none;">
+                    <form class="search-form" action = "/personnel/vacationList" style="display: flex; flex-direction: column; gap: 10px; background: none;">
                         <div class="search-row" style="display: flex; align-items: center; gap: 16px; background: none;">
                             <label style="width: 80px; color: #222; font-weight: 600;">기간</label>
                             <input type="date" name="startDate" style="width: 140px; background: #f1f3f6; border: none; border-radius: 6px; padding: 7px 12px;">
@@ -33,8 +34,8 @@
                             <button type="button" class="btn" style="background: #444; color: #fff; border: none; border-radius: 6px; margin-left: 8px; min-width: 56px;">검색</button>
                         </div>
                         <div class="search-row" style="display: flex; align-items: center; gap: 16px; background: none;">
-                            <label style="width: 80px; color: #222; font-weight: 600;">직원</label>
-                            <input type="text" name="employee" placeholder="직원명" style="width: 180px; background: #f1f3f6; border: none; border-radius: 6px; padding: 7px 12px;">
+                            <label style="width: 80px; color: #222; font-weight: 600;">휴가 종류</label>
+                            <input type="text" name="vacationType" placeholder="휴가 종류" style="width: 180px; background: #f1f3f6; border: none; border-radius: 6px; padding: 7px 12px;">
                             <button type="button" class="btn" style="background: #444; color: #fff; border: none; border-radius: 6px; margin-left: 8px; min-width: 56px;">검색</button>
                         </div>
                         <div style="display: flex; justify-content: flex-end; margin-top: 6px; background: none;">
@@ -48,7 +49,9 @@
                 <div class="card" style="border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); padding: 24px;">
                     <div class="card-header" style="font-weight: bold; font-size: 1.1rem; margin-bottom: 18px; display: flex; justify-content: space-between; align-items: center;">
                         <span>휴가 관리</span>
-                        <div style="display: flex; gap: 8px;"> 
+                        <div style="display: flex; gap: 8px;">
+								                        
+                            <button class="btn btn-primary" onclick="location.href='/personnel/vacationList'">목록 보기</button>	                        
                             <button class="btn btn-primary" onclick="location.href='/personnel/vacationForm'">휴가 신청</button>
                         </div>
                     </div>
@@ -62,13 +65,35 @@
                                     <th>시작일</th>
                                     <th>종료일</th>
                                     <th>휴가일수</th>
-                                    <th>상태</th>
+                                    <th>신청사유</th>
                                     <th>관리</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <!-- 동적으로 등록할 것 -->
-                            </tbody>
+                                <tr th:each = "vacation: ${vlist}">
+                                	<td><input type="checkbox"></td>
+                                	<td th:text="${vacation.requestDate}"></td>
+                                	<td th:text="${vacation.vacationType}"></td>
+                                	<td th:text="${vacation.startDate}"></td>
+                                	<td th:text="${vacation.endDate}"></td>
+                                	<td th:text="${vacation.totalDays}"></td>
+                                	<td th:text="${vacation.reason}"></td>
+									<td>
+										<!-- <button class="manage-btn edit" th:onclick="|location.href='/personnel/vacationForm?requestId=${vacation.requestId}'|">수정</button> -->
+										<button class="manage-btn delete" th:data-id="${vacation.requestId}" onclick="deleteVacation(this)">삭제</button>
+									</td>
+								</tr>	
+						     </tbody>
+						     <script type="text/javascript">
+									function deleteVacation(btn) {
+										const requestId = btn
+												.getAttribute('data-id');
+										if (confirm('삭제하시겠습니까?')) {
+											location.href = '/personnel/vacationdelete?requestId='
+													+ requestId;
+										}
+									};
+								</script>
                         </table>
                     </div>
                 </div>
