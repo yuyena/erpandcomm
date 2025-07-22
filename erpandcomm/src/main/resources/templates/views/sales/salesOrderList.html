@@ -28,7 +28,7 @@
                     </span>
                 </div>
             </div>
-            <div class="dashboard-flex-row" style="display: flex; gap: 32px; margin-bottom: 24px; padding-left: 60px;">
+            <div class="dashboard-flex-row" style="display: flex; gap: 32px; margin-bottom: 24px; padding-left: 0;">
                 <div class="card" style="padding: 24px; background: #fff; border-radius: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); flex:1 1 0; min-width:340px; max-width:600px;">
                     <form class="search-form" th:action="@{/sales/orderList}" method="get" style="position:relative; padding-bottom: 60px;">
                         <button type="submit" class="search-btn" style="position:absolute; right:12px; bottom:12px; z-index:2; min-width:90px;">전체 검색</button>
@@ -76,8 +76,8 @@
                     <canvas id="salesMonthlyChart" width="400" height="200" style="display:block;"></canvas>
                 </div>
             </div>
-            <section style="border: none !important; padding-left: 60px; padding-top: 70px;">
-                <div class="list-header" style="display: flex; justify-content: space-between; align-items: center; max-width: 1000px; margin: 0 auto 12px auto;">
+            <section style="width:100% !important; margin:0 !important; padding:0 !important; float:left !important;">
+                <div class="list-header" style="display: flex; justify-content: space-between; align-items: center; max-width: 100%; margin: 0 0 12px 0;">
                     <span class="list-title" style="color: #3b6fd6;">판매주문 목록</span>
                     <div style="display: flex; gap: 12px;">
                         <a th:href="@{/sales/orderForm}" class="btn btn-primary">
@@ -88,8 +88,8 @@
                         </button>
                     </div>
                 </div>
-                <div class="card" style="max-width: 1000px; margin: 0 auto; background: #fff; border-radius: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); padding: 0 0 24px 0;">
-                    <div class="table-container">
+                <div class="card" style="width:100% !important; max-width:none !important; margin:0 !important; float:left !important; background: #fff; border-radius: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); padding: 0 0 24px 0;">
+                    <div class="table-container" style="width:100% !important; margin:0 !important; float:left !important;">
                         <table class="compact-table">
                             <thead>
                                 <tr>
@@ -103,7 +103,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr th:each="order : ${list}">
+                                <tr th:each="order, stat : ${list}">
                                     <td><input type="checkbox" th:value="${order.sales_order_num}" /></td>
                                     <td th:text="${order.sales_order_num}"></td>
                                     <td th:text="${order.client_name}"></td>
