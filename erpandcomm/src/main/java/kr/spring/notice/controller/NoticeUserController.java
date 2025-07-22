@@ -62,7 +62,7 @@ public class NoticeUserController {
 		log.debug("<<공지사항>> 전체 레코드 수:{}", count);
 		
 		// 페이지 처리
-		PagingUtil page = new PagingUtil(keyfield, keyword, pageNum, count, 20, 10, "noticeList", "&order="+order);
+		PagingUtil page = new PagingUtil(keyfield, keyword, pageNum, count, 6, 10, "noticeList", "&order="+order);
 		List<NoticeVO> list = null;
 		if(count > 0) {
 			map.put("order", order);

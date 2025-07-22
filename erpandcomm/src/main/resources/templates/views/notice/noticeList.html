@@ -6,7 +6,6 @@
 <head>
     <meta charset="UTF-8">
     <title>Office ERP - 공지사항</title>
-    <link rel="stylesheet" th:href="@{/assets/css/main.css}">
     <link rel="stylesheet" th:href="@{/assets/css/jm/notice.css}">
     <script type="text/javascript" th:src="@{/assets/js/jquery-3.7.1.min.js}"></script>
     <script type="text/javascript" th:src="@{/assets/js/notice.js}"></script>
@@ -87,40 +86,41 @@
             
             <!-- 공지사항 목록 -->
             <th:block th:if="${count > 0}">
-                <div class="notice-list-container">
-                    <div class="notice-item" th:each="notice : ${list}">
-                        <!-- 공지사항 헤더 (클릭 가능) -->
-                        <div class="notice-header" th:attr="data-num=${notice.noti_num}">
-                            <div class="notice-info">
-                                <h3 class="notice-title" th:text="${notice.noti_title}">공지사항 제목</h3>
-                                <div class="notice-summary">
-                                    <span class="notice-author">
-                                        <i class="fa fa-user"></i>
-                                        <span th:text="${notice.memberVO?.user_name ?: '작성자 없음'}">작성자</span>
-                                    </span>
-                                    <span class="notice-date-header">
-                                        <i class="fa fa-calendar-alt"></i>
-                                        <span th:text="${#dates.format(notice.noti_date, 'yyyy-MM-dd')}">2025-07-21</span>
-                                    </span>
+                <div class="notice-area">
+                    <div class="notice-list-scroll">
+                        <div class="notice-list-container">
+                            <div class="notice-item" th:each="notice : ${list}">
+                                <!-- 공지사항 헤더 (클릭 가능) -->
+                                <div class="notice-header" th:attr="data-num=${notice.noti_num}">
+                                    <div class="notice-info">
+                                        <h3 class="notice-title" th:text="${notice.noti_title}">공지사항 제목</h3>
+                                        <div class="notice-summary">
+                                            <span class="notice-author">
+                                                <i class="fa fa-user"></i>
+                                                <span th:text="${notice.memberVO?.user_name ?: '작성자 없음'}">작성자</span>
+                                            </span>
+                                            <span class="notice-date-header">
+                                                <i class="fa fa-calendar-alt"></i>
+                                                <span th:text="${#dates.format(notice.noti_date, 'yyyy-MM-dd')}">2025-07-21</span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <th:block th:if="${notice.user_num == loginMember.user_num}">
+                                        <a th:href="@{/notice/update(noti_num=${notice.noti_num})}" class="btn btn-edit btn-sm">수정</a>
+                                        <a th:href="@{/notice/delete(noti_num=${notice.noti_num})}" class="btn btn-cancel btn-sm">삭제</a>
+                                    </th:block>
+                                    <span class="toggle-btn">+</span>
+                                </div>
+                                <!-- 공지사항 내용 (Ajax로 로딩) -->
+                                <div class="notice-content" style="display: none;">
+                                    <!-- Ajax로 동적 로딩 -->
                                 </div>
                             </div>
-                            <th:block th:if="${notice.user_num == loginMember.user_num}">
-                                <a th:href="@{/notice/update(noti_num=${notice.noti_num})}" class="btn btn-edit btn-sm">수정</a>
-                                <a th:href="@{/notice/delete(noti_num=${notice.noti_num})}" class="btn btn-cancel btn-sm">삭제</a>
-                            </th:block>
-                            <span class="toggle-btn">+</span>
-                        </div>
-                        
-                        <!-- 공지사항 내용 (Ajax로 로딩) -->
-                        <div class="notice-content" style="display: none;">
-                            <!-- Ajax로 동적 로딩 -->
                         </div>
                     </div>
-                </div>
-                
-                <!-- 페이지네이션 -->
-                <div class="pagination-container" th:if="${page}">
-                    <div th:utext="${page}"></div>
+                    <div class="pagination-container" th:if="${page}">
+                        <div th:utext="${page}"></div>
+                    </div>
                 </div>
             </th:block>
             

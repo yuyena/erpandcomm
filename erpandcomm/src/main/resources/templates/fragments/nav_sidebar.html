@@ -105,15 +105,16 @@
 
       <div class="profile-box">
         <img class="profile-img"
-             th:src="${loginMember != null && loginMember.photo_name != null ? '/uploads/' + loginMember.photo_name : '/assets/image_bundle/face.png'}"
+             th:src="${loginMember?.photo_name != null ? '/uploads/' + loginMember.photo_name : '/assets/image_bundle/face.png'}"
              alt="프로필" />
         
         <div class="profile-info">
-          <span class="profile-name" th:text="${loginMember != null ? loginMember.user_name : ''}">이름</span>
+          <span class="profile-name" th:text="${loginMember?.user_name ?: ''}">이름</span>
           <div class="profile-row">
             <span>
-              <span class="profile-subinfo" th:text="${loginMember.department_name}">부서</span>
-              <span class="profile-subinfo" th:if="${positionMap[loginMember.position_num] != null}" th:text="|(${positionMap[loginMember.position_num]})|">(직책)</span>
+              <span class="profile-subinfo" th:text="${loginMember?.department_name ?: '부서'}">부서</span>
+              <span class="profile-subinfo" th:if="${loginMember != null && positionMap[loginMember.position_num] != null}" 
+                    th:text="(${positionMap[loginMember.position_num]})">(직책)</span>
             </span>
             <form method="post" th:action="@{/member/logout}" class="profile-logout-form">
               <button type="submit" class="profile-btn" title="로그아웃">

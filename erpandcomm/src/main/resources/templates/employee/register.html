@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout_basic}">
+<head>
+    <meta charset="UTF-8">
+    <title>Office ERP - 직원등록</title>
+    <link rel="stylesheet" th:href="@{/assets/css/main.css}">
+</head>
+<body>
+<div layout:fragment="content" class="page-main">
+    <div class="dashboard-wrapper">
+        <!-- 사이드바 -->
+        <th:block th:replace="fragments/nav_sidebar :: sidebar"></th:block>
+
+        <!-- 메인 컨텐츠 -->
+        <main class="main-content">
+            <div class="page-title">
+                <h1 style="color: #1976D2; font-weight: bold; font-size: 1.5rem; margin-bottom: 24px; text-align: left;">인사관리 - 직원등록</h1>
+            </div>
+            
+            <!-- 직원 등록 폼 카드 -->
+            <section class="card-section">
+                <div class="card" style="border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); padding: 24px;">
+                    <div class="card-header" style="font-weight: bold; font-size: 1.1rem; margin-bottom: 18px;">
+                        직원 정보 등록
+                    </div>
+                    <!-- 여기에 직원 등록 폼이 들어갑니다 -->
+                    <div style="min-height: 300px; display: flex; align-items: center; justify-content: center; color: #666;">
+                        직원 등록 폼 영역
+                    </div>
+                    <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 20px;">
+                        <button type="button" class="btn" onclick="location.href='/employee/list'" style="background: #f1f3f6; color: #333; border: 1px solid #ddd;">취소</button>
+                        <button type="button" class="btn btn-primary">저장</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+</div>
+
+<div layout:fragment="pageScript">
+    <!-- 페이지별 스크립트가 필요할 경우 여기에 추가 -->
+</div>
+</body>
+</html>

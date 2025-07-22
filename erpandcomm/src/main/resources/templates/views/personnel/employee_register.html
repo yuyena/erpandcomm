@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout_basic}">
+<head>
+    <meta charset="UTF-8">
+    <title>Office ERP - 직원등록</title>
+    <link rel="stylesheet" th:href="@{/assets/css/main.css}">
+    <style>
+        .form-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .form-section {
+            margin-bottom: 24px;
+            background: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin: 0 0 16px 0;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .form-row {
+            margin-bottom: 16px;
+        }
+        .form-group {
+            margin-bottom: 16px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: #555;
+            font-size: 0.9rem;
+        }
+        .form-control {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.92rem;
+            transition: all 0.2s;
+            height: 38px;
+            background-color: #f9f9f9;
+        }
+        .form-control:focus {
+            border-color: #1976D2;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.2);
+        }
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid #eee;
+        }
+        .btn {
+            padding: 8px 14px;
+            border-radius: 4px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+            height: 38px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn-cancel {
+            background: #f5f5f5;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+        .btn-cancel:hover {
+            background: #e0e0e0;
+        }
+        .btn-submit {
+            background: #1976D2;
+            color: white;
+            border: none;
+        }
+        .btn-submit:hover {
+            background: #1565c0;
+        }
+        .photo-upload {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+        .photo-preview {
+            width: 100px;
+            height: 130px;
+            background: #f5f5f5;
+            border: 1px dashed #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            overflow: hidden;
+            flex-shrink: 0;
+            border-radius: 4px;
+        }
+        .photo-preview img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: cover;
+        }
+        .required:after {
+            content: ' *';
+            color: #f44336;
+            font-weight: bold;
+        }
+        .form-note {
+            font-size: 0.76rem;
+            color: #777;
+            margin-top: 4px;
+            line-height: 1.3;
+        }
+        textarea.form-control {
+            min-height: 80px;
+            resize: vertical;
+        }
+        select.form-control {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23555' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 12px;
+            padding-right: 30px;
+        }
+        @media (max-width: 1400px) {
+            .form-group {
+                flex: 1 1 calc(33.333% - 16px);
+            }
+        }
+        @media (max-width: 1024px) {
+            .form-group {
+                flex: 1 1 calc(50% - 16px);
+            }
+        }
+        @media (max-width: 768px) {
+            .form-container {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div layout:fragment="content" class="page-main">
+    <div class="dashboard-wrapper">
+        <!-- 사이드바 -->
+        <th:block th:replace="fragments/nav_sidebar :: sidebar"></th:block>
+
+        <!-- 메인 컨텐츠 -->
+        <main class="main-content">
+            <div class="page-title">
+                <h1 style="color: #1976D2; font-weight: bold; font-size: 1.5rem; margin-bottom: 24px; text-align: left;">인사관리 - 직원등록</h1>
+            </div>
+            
+            <div class="form-container">
+                <form id="employeeForm" th:action="@{/personnel/employee/register}" method="post" enctype="multipart/form-data">
+                    <!-- 기본 정보 섹션 -->
+                    <div class="form-section">
+                        <h3 class="section-title">기본 정보</h3>
+                        <div class="form-row">
+                            <!-- 사진 업로드 -->
+                            <div class="form-group">
+                                <label for="photo">사진</label>
+                                <div class="photo-upload">
+                                    <div class="photo-preview" id="photoPreview">
+                                        <span>사진 미리보기</span>
+                                    </div>
+                                    <div>
+                                        <input type="file" id="photo" name="photo" accept="image/*" style="display: none;">
+                                        <button type="button" class="btn" onclick="document.getElementById('photo').click()">
+                                            사진 선택
+                                        </button>
+                                        <div class="form-note">권장 크기: 3:4 비율</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="employeeCode" class="required">사원번호</label>
+                                <input type="text" id="employeeCode" name="employeeCode" class="form-control" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="userName" class="required">이름</label>
+                                <input type="text" id="userName" name="userName" class="form-control" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="residentRegNum" class="required">주민등록번호</label>
+                                <input type="text" id="residentRegNum" name="residentRegNum" class="form-control" placeholder="- 없이 입력" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="passwd" class="required">비밀번호</label>
+                                <input type="password" id="passwd" name="passwd" class="form-control" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="passwdConfirm" class="required">비밀번호 확인</label>
+                                <input type="password" id="passwdConfirm" class="form-control" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="authority" class="required">권한</label>
+                                <select id="authority" name="authority" class="form-control" required>
+                                    <option value="">선택하세요</option>
+                                    <option value="ROLE_USER">일반 사용자</option>
+                                    <option value="ROLE_MANAGER">관리자</option>
+                                    <option value="ROLE_ADMIN">최고 관리자</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="departmentNum" class="required">부서</label>
+                                <select id="departmentNum" name="departmentNum" class="form-control" required>
+                                    <option value="">선택하세요</option>
+                                    <!-- 부서 데이터가 동적으로 로드될 예정 -->
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="positionNum" class="required">직급</label>
+                                <select id="positionNum" name="positionNum" class="form-control" required>
+                                    <option value="">선택하세요</option>
+                                    <!-- 직급 데이터가 동적으로 로드될 예정 -->
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="gradeNum" class="required">호봉</label>
+                                <select id="gradeNum" name="gradeNum" class="form-control" required>
+                                    <option value="">선택하세요</option>
+                                    <!-- 호봉 데이터가 동적으로 로드될 예정 -->
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    
+                    <!-- 근무 정보 섹션 -->
+                    <div class="form-section">
+                        <h3 class="section-title">근무 정보</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="hireDate" class="required">입사일</label>
+                                <input type="date" id="hireDate" name="hireDate" class="form-control" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="resignationDate">퇴사일</label>
+                                <input type="date" id="resignationDate" name="resignationDate" class="form-control">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="salary" class="required">기본급</label>
+                                <div style="display: flex; align-items: center;">
+                                    <input type="number" id="salary" name="salary" class="form-control" required>
+                                    <span style="margin-left: 8px;">원</span>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="extensionNum">내선번호</label>
+                                <input type="text" id="extensionNum" name="extensionNum" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    
+                    <!-- 연락처 정보 섹션 -->
+                    <div class="form-section">
+                        <h3 class="section-title">연락처 정보</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="phone" class="required">휴대전화</label>
+                                <input type="tel" id="phone" name="phone" class="form-control" placeholder="010-1234-5678" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="email" class="required">이메일</label>
+                                <input type="email" id="email" name="email" class="form-control" placeholder="example@company.com" required>
+                            </div>
+                        </div>
+                    
+                    <!-- 추가 정보 섹션 -->
+                    <div class="form-section">
+                        <h3 class="section-title">추가 정보</h3>
+                        <div class="form-group">
+                            <label for="euserDetail">비고</label>
+                            <textarea id="euserDetail" name="euserDetail" class="form-control" rows="3"></textarea>
+                        </div>
+                    </div>
+                    
+                    <!-- 폼 액션 버튼 -->
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-cancel" onclick="location.href='/personnel/employee'">취소</button>
+                        <button type="submit" class="btn btn-submit">저장</button>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+</div>
+
+<div layout:fragment="pageScript">
+    <script>
+        // 사진 미리보기 기능
+        document.getElementById('photo').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const preview = document.getElementById('photoPreview');
+                    preview.innerHTML = `<img src="${e.target.result}" alt="프로필 이미지">`;
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+        
+        // 폼 유효성 검사
+        document.getElementById('employeeForm').addEventListener('submit', function(e) {
+            const passwd = document.getElementById('passwd').value;
+            const passwdConfirm = document.getElementById('passwdConfirm').value;
+            
+            if (passwd !== passwdConfirm) {
+                e.preventDefault();
+                alert('비밀번호가 일치하지 않습니다.');
+                return false;
+            }
+            
+            // 여기에 추가 유효성 검사를 구현할 수 있습니다.
+            return true;
+        });
+        
+        // 페이지 로드 시 오늘 날짜를 입사일 기본값으로 설정
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('hireDate').value = today;
+        });
+    </script>
+</div>
+</body>
+</html>
