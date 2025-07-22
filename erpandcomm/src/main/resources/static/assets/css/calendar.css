@@ -64,12 +64,11 @@ body { background: #f5f8ff; font-family: 'Noto Sans KR', Arial, sans-serif; }
 }
 #calendar .fc-day-sat .fc-daygrid-day-number { color: #4a90e2 !important; }
 #calendar .fc-day-sun .fc-daygrid-day-number { color: #e95254 !important; }
-#calendar .fc-toolbar-title {
-  color: #383838 !important;
-  font-weight: bold;
-  text-align: right;
-  width: 100%;
-  display: block;
+.fc-toolbar-title {
+    font-size: 1.7rem !important;
+    text-align: center !important;
+    width: 100%;
+    font-weight: bold;
 }
 #calendar .fc-header-toolbar {
   justify-content: flex-start !important;
@@ -138,11 +137,15 @@ body { background: #f5f8ff; font-family: 'Noto Sans KR', Arial, sans-serif; }
     font-size: 14px;
 }
 #schedule-table th, #schedule-table td {
-    font-size: 14px;
+    font-size: 16px;
 }
 #schedule-table td {
     text-align: center;
 }
 .schedule-detail-row td {
     text-align: center;
+    font-size: 16px;
+}
+#schedule-table-title, .schedule-table-title, .card > h3 {
+    font-size: 1.6rem !important;
 } 
