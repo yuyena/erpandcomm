@@ -174,6 +174,7 @@ public class ChatUserController {
 		
 		model.addAttribute("accessMsg", "채팅방이 생성되었습니다.");
 		model.addAttribute("accessUrl", request.getContextPath()+"/chat/roomList");
+		model.addAttribute("accessBtn", "확인");
 		
 		return "views/common/resultView";
 	}
