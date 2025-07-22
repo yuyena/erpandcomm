@@ -18,6 +18,11 @@ public class PersonnelController {
         return "views/personnel/employee";
     }
     
+    @GetMapping("/employee/register")
+    public String employeeRegister() {
+        return "views/personnel/employee_register";
+    }
+    
     @GetMapping("/attendance")
     public String attendance() {
         return "views/personnel/attendanceList";
