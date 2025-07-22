@@ -48,6 +48,7 @@ public class PersonnelController {
         return "views/personnel/evaluation";
     }
     
+    
     @GetMapping("/statistics")
     public String statistics() {
         return "views/personnel/statistics";
