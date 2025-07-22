@@ -137,21 +137,25 @@
 /* 간격이 좁은 테이블을 위한 스타일 */
 .compact-table {
     width: 100% !important;
+    table-layout: fixed !important;
     border-collapse: collapse !important;
     background: #fff !important;
-    font-size: 9pt !important;
+    font-size: 10pt !important;
 }
 .compact-table th, .compact-table td {
     border-bottom: 1px solid #eee !important;
-    padding: 1px 6px !important;
+    padding: 6px 10px !important;
     text-align: center !important;
+    vertical-align: middle !important;
     min-width: 0 !important;
-    font-size: 9pt !important;
-    height: 20px !important;
+    font-size: 10pt !important;
+    height: 32px !important;
+    box-sizing: border-box !important;
 }
 .compact-table th {
     background: #fafafa !important;
-    font-weight: 600 !important;
+    font-weight: 700 !important;
+    color: #2851a3 !important;
 }
 .btn-detail {
     background: #3498db;
