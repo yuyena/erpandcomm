@@ -55,7 +55,7 @@
     overflow-y: auto;
     background: #fff;
     min-height: 320px;
-    max-height: 500px; /* 필요에 따라 조정 */
+    max-height: 700px; /* 필요에 따라 조정 */
 }
 
 /* 메시지 행 스타일 */
