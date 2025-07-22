@@ -377,7 +377,7 @@ body {
     min-width: 0;
     background: #f8fbff;
     border-radius: 0 0 18px 0;
-    padding: 0 24px 0 24px !important;
+    padding: 0 !important;
     min-height: 100vh;
     display: flex;
     flex-direction: column;

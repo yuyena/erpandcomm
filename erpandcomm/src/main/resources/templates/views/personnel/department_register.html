@@ -6,6 +6,165 @@
     <meta charset="UTF-8">
     <title>Office ERP - 부서 등록</title>
     <link rel="stylesheet" th:href="@{/assets/css/main.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .form-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+        
+        .form-section {
+            padding: 24px 32px;
+        }
+        
+        .form-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #eaeef2;
+            margin-bottom: 24px;
+        }
+        
+        .form-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin: 0;
+        }
+        
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 24px;
+            padding-top: 16px;
+            border-top: 1px solid #eaeef2;
+        }
+        
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0 -12px;
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            flex: 1;
+            min-width: 200px;
+            padding: 0 12px;
+            margin-bottom: 16px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #4a5568;
+            font-size: 0.875rem;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 0.9375rem;
+            transition: all 0.2s;
+            background-color: #fff;
+        }
+        
+        .form-control:focus {
+            border-color: #3182ce;
+            box-shadow: 0 0 0 1px #3182ce;
+            outline: none;
+        }
+        
+        .form-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+            padding-right: 2.5rem;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.5rem 1.25rem;
+            border-radius: 6px;
+            font-weight: 500;
+            font-size: 0.9375rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+        }
+        
+        .btn i {
+            margin-right: 6px;
+        }
+        
+        .btn-primary {
+            background-color: #3182ce;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #2c5282;
+        }
+        
+        .btn-secondary {
+            background-color: #e2e8f0;
+            color: #4a5568;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #cbd5e0;
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid #3182ce;
+            color: #3182ce;
+        }
+        
+        .btn-outline:hover {
+            background-color: #ebf8ff;
+        }
+        
+        .required:after {
+            content: ' *';
+            color: #e53e3e;
+        }
+        
+        .form-note {
+            font-size: 0.8125rem;
+            color: #718096;
+            margin-top: 4px;
+            font-style: italic;
+        }
+        
+        .dept-hierarchy {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 12px;
+            margin-top: 8px;
+            font-size: 0.875rem;
+            color: #4a5568;
+        }
+        
+        .dept-hierarchy span {
+            color: #3182ce;
+            font-weight: 500;
+        }
+    </style>
 </head>
 <body>
 <div layout:fragment="content" class="page-main">
@@ -16,62 +175,156 @@
         <!-- 메인 컨텐츠 -->
         <main class="main-content">
             <div class="page-title">
-                <h1 style="color: #1976D2; font-weight: bold; font-size: 1.5rem; margin-bottom: 24px; text-align: left;">부서 등록</h1>
+                <h1 style="color: #1976D2; font-weight: bold; font-size: 1.5rem; margin-bottom: 24px; text-align: left;">
+                    <a href="/personnel/department" class="text-blue-600 hover:text-blue-800">인사관리 - 부서관리</a> / 
+                    <span style="color: #1976D2;">부서 등록</span>
+                </h1>
             </div>
             
-            <section class="card-section">
-                <div class="card" style="border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); padding: 24px;">
-                    <form th:action="@{/personnel/department/register}" method="post" class="form-container">
-                        <div class="form-group">
-                            <label for="departmentCode" style="display: block; margin-bottom: 8px; font-weight: 600;">부서코드</label>
-                            <input type="text" id="departmentCode" name="department_code" 
-                                   class="form-input" placeholder="부서코드를 입력하세요" required>
+            <div class="form-container">
+                <div class="form-section">
+                    <div class="form-header">
+                        <h2 class="form-title"><i class="fas fa-building mr-2"></i> 부서 기본 정보</h2>
+                    </div>
+                    
+                    <form id="deptForm" th:action="@{/personnel/department/register}" method="post">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="deptCode" class="required">부서 코드</label>
+                                <div class="relative">
+                                    <input type="text" id="deptCode" name="deptCode" class="form-control" 
+                                           value="DEPT" readonly style="background-color: #f8f9fa;">
+                                </div>
+                                <p class="form-note">시스템에서 자동으로 부여되는 코드입니다.</p>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="deptName" class="required">부서명</label>
+                                <input type="text" id="deptName" name="deptName" class="form-control" 
+                                       placeholder="예: 마케팅팀, 개발1팀" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="deptEngName">영문 부서명</label>
+                                <input type="text" id="deptEngName" name="deptEngName" class="form-control" 
+                                       placeholder="예: Marketing Team, Development Team">
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="parentDept" class="required">상위 부서</label>
+                                <select id="parentDept" name="parentDept" class="form-control form-select" required>
+                                    <option value="">상위 부서를 선택하세요</option>
+                                    <option value="1">(최상위)</option>
+                                    <option value="2">경영지원본부</option>
+                                    <option value="3">기술연구소</option>
+                                    <option value="4">영업본부</option>
+                                    <option value="5" selected>마케팅본부</option>
+                                </select>
+                                <div class="dept-hierarchy">
+                                    <i class="fas fa-sitemap mr-1"></i> 
+                                    현재 계층: <span>마케팅본부</span> > <span>신규 부서</span>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="deptHead">부서장</label>
+                                <div class="flex">
+                                    <input type="text" id="deptHead" name="deptHead" class="form-control" 
+                                           placeholder="부서장을 검색하세요" style="border-top-right-radius: 0; border-bottom-right-radius: 0;">
+                                    <button type="button" class="btn btn-outline" style="border-top-left-radius: 0; border-bottom-left-radius: 0;">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="deptOrder">정렬 순서</label>
+                                <input type="number" id="deptOrder" name="deptOrder" class="form-control" 
+                                       value="1" min="1">
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="deptStatus" class="required">사용 여부</label>
+                                <select id="deptStatus" name="deptStatus" class="form-control form-select" required>
+                                    <option value="Y" selected>사용</option>
+                                    <option value="N">미사용</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="estDate">설립일자</label>
+                                <input type="date" id="estDate" name="estDate" class="form-control">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="deptType">부서 유형</label>
+                                <select id="deptType" name="deptType" class="form-control form-select">
+                                    <option value="">선택하세요</option>
+                                    <option value="HEADQUARTERS" selected>본부</option>
+                                    <option value="DEPARTMENT">부서</option>
+                                    <option value="TEAM">팀</option>
+                                    <option value="TASK_FORCE">TF</option>
+                                </select>
+                            </div>
                         </div>
                         
                         <div class="form-group">
-                            <label for="departmentName" style="display: block; margin-bottom: 8px; font-weight: 600;">부서명</label>
-                            <input type="text" id="departmentName" name="department_name" 
-                                   class="form-input" placeholder="부서명을 입력하세요" required>
+                            <label for="deptDesc">비고</label>
+                            <textarea id="deptDesc" name="deptDesc" class="form-control" rows="3" 
+                                     placeholder="부서에 대한 추가 설명을 입력하세요"></textarea>
                         </div>
                         
-                        <div class="form-group">
-                            <label for="departmentHead" style="display: block; margin-bottom: 8px; font-weight: 600;">부서장</label>
-                            <select id="departmentHead" name="department_head" class="form-input" required>
-                                <option value="">부서장을 선택하세요</option>
-                                <th:block th:each="member : ${memberList}">
-                                    <option th:value="${member.user_name}" th:text="${member.user_name}"></option>
-                                </th:block>
-                            </select>
-                        </div>
-                        
-
-                        
-                        <div class="form-buttons" style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px;">
-                            <button type="button" class="btn-secondary" onclick="history.back()">취소</button>
-                            <button type="submit" class="btn-primary">등록</button>
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary" onclick="history.back()">
+                                <i class="fas fa-times"></i> 취소
+                            </button>
+                            <button type="reset" class="btn btn-outline">
+                                <i class="fas fa-redo"></i> 초기화
+                            </button>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> 저장
+                            </button>
                         </div>
                     </form>
                 </div>
-            </section>
+            </div>
         </main>
     </div>
 </div>
 
 <div layout:fragment="pageScript">
     <script>
-        // 부서코드 중복 체크
-        document.getElementById('departmentCode').addEventListener('change', function() {
-            const code = this.value;
-            if (code) {
-                fetch(`/personnel/department/checkCode?code=${code}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.exists) {
-                            alert('이미 사용 중인 부서코드입니다.');
-                            this.value = '';
-                        }
-                    });
+        document.addEventListener('DOMContentLoaded', function() {
+            // 부서 코드 자동 생성 (예시)
+            function generateDeptCode() {
+                const prefix = 'DEPT';
+                const randomNum = Math.floor(Math.random() * 9000) + 1000;
+                document.getElementById('deptCode').value = `${prefix}${randomNum}`;
             }
+            
+            // 페이지 로드 시 부서 코드 생성
+            generateDeptCode();
+            
+            // 상위 부서 변경 시 계층 정보 업데이트
+            document.getElementById('parentDept').addEventListener('change', function() {
+                const parentDeptText = this.options[this.selectedIndex].text;
+                const hierarchy = document.querySelector('.dept-hierarchy span:first-child');
+                if (hierarchy) {
+                    hierarchy.textContent = parentDeptText === '(최상위)' ? '최상위' : parentDeptText;
+                }
+            });
+            
+            // 폼 제출 처리 (데모용)
+            document.getElementById('deptForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                alert('부서가 등록되었습니다.');
+                // 실제 구현 시에는 폼 데이터를 서버로 전송하는 로직이 들어갑니다.
+                // this.submit();
+            });
         });
     </script>
 </div>
