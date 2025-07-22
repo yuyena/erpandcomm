@@ -19,6 +19,8 @@
       <div style="width:100%; margin:0 auto; display:flex; flex-direction:row; gap:40px; align-items:flex-start;">
         <!-- 캘린더(좌측) -->
         <div class="card" style="background:#fff; border-radius:14px; box-shadow:0 2px 12px rgba(80,120,200,0.07); padding:0; width:50%; min-width:0; margin:0; position:relative;">
+          <button id="calendar-prev-btn" style="position:absolute; left:-36px; top:50%; transform:translateY(-50%); z-index:2; background:none; border:none; cursor:pointer; width:48px; height:48px; display:flex; align-items:center; justify-content:center; font-size:2rem; color:#2176e8;">&#8592;</button>
+          <button id="calendar-next-btn" style="position:absolute; right:-36px; top:50%; transform:translateY(-50%); z-index:2; background:none; border:none; cursor:pointer; width:48px; height:48px; display:flex; align-items:center; justify-content:center; font-size:2rem; color:#2176e8;">&#8594;</button>
           <div id="calendar" style="max-width:900px; margin:0 auto;"></div>
           <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
           <script>
@@ -36,7 +38,7 @@
               if (!Array.isArray(list) || list.length === 0) {
                 const tr = document.createElement('tr');
                 const td = document.createElement('td');
-                td.colSpan = 4;
+                td.colSpan = 3;
                 td.textContent = '일정이 없습니다.';
                 td.style.textAlign = 'center';
                 tr.appendChild(td);
@@ -48,10 +50,8 @@
                 tr.innerHTML = `
                   <td style=\"padding:7px 6px; font-size:1rem;\">${item.title}</td>
                   <td style=\"padding:7px 6px; font-size:1rem;\">${item.created_at ? item.created_at.slice(0,10) : ''}</td>
-                  <td style=\"padding:7px 6px; font-size:1rem;\">
+                  <td style=\"padding:7px 6px; min-width:180px; display:flex; gap:4px;\">
                     <button class='btn-detail' style='background:#fff; border:1.5px solid #2176e8; color:#2176e8; border-radius:6px; font-size:0.95rem; padding:4px 12px; cursor:pointer;' onclick='toggleDetail(this)'>상세보기</button>
-                  </td>
-                  <td style=\"padding:7px 6px; min-width:100px; display:flex; gap:4px;\">
                     <button onclick=\"editSchedule(${item.calendar_id}, ${JSON.stringify(item.title)}, ${JSON.stringify(item.description||'')}, ${JSON.stringify(item.created_at ? item.created_at.slice(0,10) : '')})\" style='background:#2176e8; color:#fff; border:none; border-radius:6px; font-size:0.95rem; padding:5px 10px; margin-right:2px; cursor:pointer;'>수정</button>
                     <button onclick=\"deleteSchedule(${item.calendar_id})\" style='background:#e74c3c; color:#fff; border:none; border-radius:6px; font-size:0.95rem; padding:5px 10px; margin-left:2px; cursor:pointer;'>삭제</button>
                   </td>
@@ -61,7 +61,7 @@
                 const detailTr = document.createElement('tr');
                 detailTr.style.display = 'none';
                 detailTr.className = 'schedule-detail-row';
-                detailTr.innerHTML = `<td colspan='4' style='background:#f8faff; color:#333; font-size:1rem; padding:16px 18px 16px 32px; border-bottom:1px solid #eaeaea;'>${item.description ? item.description.replace(/\n/g, '<br>') : '내용 없음'}</td>`;
+                detailTr.innerHTML = `<td colspan='3' style='background:#f8faff; color:#333; font-size:1rem; padding:16px 18px 16px 32px; border-bottom:1px solid #eaeaea;'>${item.description ? item.description.replace(/\n/g, '<br>') : '내용 없음'}</td>`;
                 tbody.appendChild(detailTr);
               });
             }
@@ -105,7 +105,7 @@
               calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
                 locale: 'ko',
-                headerToolbar: { left: 'prev,next today', center: 'title', right: '' },
+                headerToolbar: { left: '', center: 'title', right: '' },
                 dayCellContent: function(arg) { return arg.date.getDate(); },
                 events: function(fetchInfo, successCallback, failureCallback) {
                   const start = fetchInfo.startStr.slice(0, 10);
@@ -141,6 +141,9 @@
               });
               calendar.render();
               fetchTable();
+              // 커스텀 네비게이션 버튼 이벤트
+              document.getElementById('calendar-prev-btn').onclick = function() { calendar.prev(); };
+              document.getElementById('calendar-next-btn').onclick = function() { calendar.next(); };
             });
           </script>
         </div>
@@ -151,8 +154,7 @@
             <thead>
               <tr style="background:#f5f8ff;">
                 <th style="padding:8px 6px; font-size:1rem; color:#285CC3;">제목</th>
-                <th style="padding:8px 6px; font-size:1rem; color:#285CC3;">날짜</th>
-                <th style="padding:8px 6px; font-size:1rem; color:#285CC3;">상세</th>
+                <th style="padding:8px 6px; font-size:1rem; color:#285CC3;">작성일</th>
                 <th style="padding:8px 6px; font-size:1rem; color:#285CC3;">관리</th>
               </tr>
             </thead>
