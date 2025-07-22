@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/personnel")
 public class PersonnelController {
     
+	
     @GetMapping("/department")
     public String department() {
         return "views/personnel/department";

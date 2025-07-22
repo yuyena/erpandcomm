@@ -5,7 +5,6 @@ import java.util.Map;
 
 import kr.spring.vacation.vo.VacationVO;
 
-
 public interface VacationService {
 	public void insertVacation(VacationVO vacation);
 	public List<VacationVO> selectVacationList(Long empId);

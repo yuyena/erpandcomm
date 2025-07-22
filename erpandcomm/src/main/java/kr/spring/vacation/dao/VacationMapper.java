@@ -8,7 +8,6 @@ import org.apache.ibatis.annotations.Mapper;
 
 import kr.spring.vacation.vo.VacationVO;
 
-
 @Mapper
 public interface VacationMapper {
 	// 휴가 신청
