@@ -39,18 +39,27 @@ public class AttendanceVO {
 	@NotBlank
 	private String status; // 출근 형태(출근, 결근, 지각, 휴가,조퇴) 
 	
-	// 숫자 형태의 workType 값을 문자열로 변환
-	public String getworkTypeName() {
-		String name;
-		switch(workType) {
-		case "1" : name = "normal"; break;
-		case "2" : name = "overtime"; break;
-		case "3" : name = "night"; break;
-		case "4" : name = "holiday"; break;
-		default : name = "분류오류";
+	public String getStatusName() {
+		switch (status) {
+		case "present": return "출근";
+		case "late": return "지각";
+		case "early_leave": return "조퇴";
+		case "absent": return "결근";
+		case "holiday": return "휴가";
+		default : return "알 수 없음";
 		}
-		return name;
 	}
 	
+	public String getWorkTypeName() {
+		switch (workType) {
+		case "normal": return "정상 근무";
+		case "overtime": return "초과 근무";
+		case "night": return "야간 근무";
+		case "holiday": return "휴일 근무";
+		default : return "알 수 없음";
+		
+		}
+	}
+
 	
 }

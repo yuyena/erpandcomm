@@ -39,4 +39,14 @@ public class VacationVO {
 			}
 		}
 	}
+	public String getVacationTypeName() {
+		switch (vacationType) {
+		case "annual" : return "연차";
+		case "sick" : return "병가";
+		case "personal" : return "개인사유";
+		case "maternity" : return "출산휴가";
+		case "special" : return "특별휴가";
+		default: return "알 수 없음";
+		}
+	}
 }
