@@ -86,6 +86,31 @@
 		WHERE emp_id=#{empId}
 	</select>
 	
-	
-
-</mapper>
+	<!-- selectTotalVacationDays, selectUsedVacationDays, selectRemainingVacationDays -->
+	<!-- 휴가 일수 계산 -->
+	<insert id ="insertVacationBalance" parameterType="kr.spring.vacation.vo.VacationBalanceVO">
+	INSERT INTO vacation_balance (
+		balance_id,
+		emp_id,
+		year,
+		vacation_type,
+		total_days,
+		used_days,
+		remaining_days,
+		carry_over_days,
+		created_at,
+		updated_at
+	) VALUES (
+	    vacation_balance_seq.NEXTVAL,
+	    #{empId},
+	    #{year},
+	    #{vacationType},
+	    #{totalDays},
+	    #{used_days},
+	    #{remainingDays},
+	    #{carryOverDays},
+	    SYSDATE,
+	    SYSDATE
+	)
+	</insert>
+	</mapper>

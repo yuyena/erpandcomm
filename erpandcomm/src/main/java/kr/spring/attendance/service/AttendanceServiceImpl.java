@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import kr.spring.attendance.dao.AttendanceMapper;
 import kr.spring.attendance.vo.AttendanceVO;
+import kr.spring.attendance.vo.SearchVO;
 import kr.spring.member.vo.MemberVO;
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,6 +27,12 @@ public class AttendanceServiceImpl implements AttendanceService {
 		attendanceMapper.insertAttendance(attendance);
 		
 	}
+	
+	@Override
+	public List<AttendanceVO> AttendanceSelectList(SearchVO searchVO) {
+		return attendanceMapper.AttendanceSelectList(searchVO);
+	}
+	
 	// 개별
 	@Override
 	public AttendanceVO selectAttendance(Long empId) {
@@ -61,4 +68,5 @@ public class AttendanceServiceImpl implements AttendanceService {
 	public List<AttendanceVO> selectAttedanceList(Long empId) {
 		return attendanceMapper.selectAttendanceList(empId);
 	}
+	
 }

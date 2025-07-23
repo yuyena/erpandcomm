@@ -132,6 +132,8 @@ public class VacationController {
 		return "redirect:/personnel/vacationList";
 	}
 		
+	// 휴가 일수 부여
+	
 
 	
 }

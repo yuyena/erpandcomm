@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import kr.spring.vacation.dao.VacationMapper;
+import kr.spring.vacation.vo.VacationBalanceVO;
 import kr.spring.vacation.vo.VacationVO;
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,7 +35,17 @@ public class VacationServiceImpl implements VacationService{
 	public VacationVO selectVacationDetail(Long requestId) {
 		return vacationMapper.selectVacationDetail(requestId);
 	}
+	
+	@Override
+	public void deleteVacation(Long requestId) {
+		vacationMapper.deleteVacation(requestId);
+	}
 
+	@Override
+	public List<VacationVO> selectList(Map<String, Object> map) {
+		return vacationMapper.selectList(map);
+	}
+	
 	@Override
 	public Integer selectTotalVacationDays(Long empId) {
 		// TODO Auto-generated method stub
@@ -42,26 +53,21 @@ public class VacationServiceImpl implements VacationService{
 	}
 
 	@Override
-	public Integer selecUsedVacationDays(Long empId) {
+	public Integer selectUsedVacationDays(Long empId) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void updateVacation(VacationVO vacation) {
+	public Integer selectRemainingVacationDays(Long empId) {
 		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void insertVacationBalance(VacationBalanceVO balance) {
+		vacationMapper.insertVacationBalance(balance);
 		
-	}
-
-	@Override
-	public void deleteVacation(Long requestId) {
-		// TODO Auto-generated method stub
-		vacationMapper.deleteVacation(requestId);
-	}
-
-	@Override
-	public List<VacationVO> selectList(Map<String, Object> map) {
-		return vacationMapper.selectList(map);
 	}
 
 	

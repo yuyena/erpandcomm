@@ -53,6 +53,37 @@
     ORDER BY a.attendance_id ASC
 	</select>
 	
+	<!-- 근태 목록 검색/조회 -->
+	<select id="AttendanceSelectList" parameterType="kr.spring.attendance.vo.SearchVO" resultType="kr.spring.attendance.vo.AttendanceVO">
+	SELECT
+	d.user_name AS empName,
+	a.work_date AS workDate, 
+	a.status,
+	a.check_in_time AS checkIntime, 
+	a.check_out_time AS checkOuttime,
+	a.notes
+	FROM attendance a
+	JOIN euser_detail d ON d.user_num = a.emp_id
+	<where>
+		<if test="empId != null">
+			AND a.emp_id = #{empId}
+		</if>
+		<if test="startDate != null and startDate != ''">
+			AND a.work_date <![CDATA[ >= ]]>#{startDate}
+		</if>
+		<if test="endDate != null and endDate != ''">
+			AND a.work_date <![CDATA[ <= ]]> #{endDate}
+		</if>
+		<if test="empName != null and empName != ''">
+			AND d.user_name LIKE '%' || #{empName} || '%'
+		</if>
+		<if test="status != null and status != ''">
+			AND a.status = #{status}
+		</if>
+	</where>
+	ORDER BY a.attendance_id ASC
+</select>
+	
 	<!-- 근태 목록 상세 -->
 	<select id = "selectAttendance" parameterType="long" resultMap = "attendanceMap">
 	SELECT *

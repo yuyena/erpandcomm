@@ -10,6 +10,7 @@ import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 import kr.spring.attendance.vo.AttendanceVO;
+import kr.spring.attendance.vo.SearchVO;
 import kr.spring.member.vo.MemberVO;
 
 @Mapper
@@ -24,6 +25,8 @@ public interface AttendanceMapper {
 	public AttendanceVO selectAttendance(Long empId);
 	// empId에 따른 전체 근태 목록
 	public List<AttendanceVO> selectAttendanceList(Long empId);
+	// 근태 내역 검색 조회(전체)
+	public List<AttendanceVO> AttendanceSelectList(SearchVO searchVO);
 	// 전체 데이터 조회(1개)
 	public MemberVO selectList(Map<String,Object> map);
 	public Integer selectRowCount(Map<String,Object> map);

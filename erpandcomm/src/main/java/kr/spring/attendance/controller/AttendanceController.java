@@ -3,6 +3,7 @@ package kr.spring.attendance.controller;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -22,6 +23,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import kr.spring.attendance.service.AttendanceService;
 import kr.spring.attendance.vo.AttendanceVO;
+import kr.spring.attendance.vo.SearchVO;
 import kr.spring.member.vo.MemberVO;
 import kr.spring.member.vo.PrincipalDetails;
 import kr.spring.util.ValidationUtil;
@@ -42,6 +44,37 @@ public class AttendanceController {
 		return new AttendanceVO();
 	}
 	
+	// 근태 목록 조회
+	@GetMapping("/attendancesearch")
+	public String getAttendanceByEmpId(@AuthenticationPrincipal PrincipalDetails principal,
+			                           @RequestParam(value="startDate", required = false) String startDate,
+			                           @RequestParam(value="endDate", required = false) String endDate,
+			                           @RequestParam(value="empName", required = false) String empName,
+			                           @RequestParam(value="status", required = false) String status,
+			                           Model model) {
+		// 로그인 한 사용자의 empId
+		Long empId = principal.getMemberVO().getUser_num();
+		
+		// 조회조건 생성
+		SearchVO searchVO = new SearchVO();
+		searchVO.setEmpId(empId);
+		searchVO.setEmpName(empName);
+		searchVO.setStartDate(startDate);
+		searchVO.setEndDate(endDate);
+		searchVO.setStatus(status);
+		
+		log.debug("조회 empId: {}", empId);
+		log.debug("serchVO:{}", searchVO);
+		
+		List<AttendanceVO> list = attendanceService.AttendanceSelectList(searchVO);
+		
+		// 모델에 담기
+		model.addAttribute("list", list);
+		model.addAttribute("searchVO", searchVO); // 검색조건도 같이 넘김(화면에서 유지)
+		
+		return "views/personnel/attendanceList";
+	}
+			                           
 	// 근태 등록 폼
 	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/Form")
@@ -177,7 +210,7 @@ public class AttendanceController {
 			attendanceVO.setEmpName(userName);
 			
 			// 수정 처리
-			attendanceService.updateAttendance(attendance);
+			attendanceService.updateAttendance(attendanceVO);
 			
 			model.addAttribute("message", "근태 정보가 수정되었습니다.");
 			model.addAttribute("url", request.getContextPath()+"/personnel/attendanceList");
