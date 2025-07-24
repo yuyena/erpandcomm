@@ -54,6 +54,9 @@ public class AttendanceController {
 			                           Model model) {
 		// 로그인 한 사용자의 empId
 		Long empId = principal.getMemberVO().getUser_num();
+		// 상태 한글 -> 영어코드로 변환
+		String convertedStatus = converStatusToCode(status);
+		
 		
 		// 조회조건 생성
 		SearchVO searchVO = new SearchVO();
@@ -61,7 +64,7 @@ public class AttendanceController {
 		searchVO.setEmpName(empName);
 		searchVO.setStartDate(startDate);
 		searchVO.setEndDate(endDate);
-		searchVO.setStatus(status);
+		searchVO.setStatus(convertedStatus);
 		
 		log.debug("조회 empId: {}", empId);
 		log.debug("serchVO:{}", searchVO);
@@ -74,6 +77,18 @@ public class AttendanceController {
 		
 		return "views/personnel/attendanceList";
 	}
+	
+	private String converStatusToCode(String status) {
+		switch(status) {
+			case "출근" : return "present";
+			case "지각" : return "late";
+			case "조퇴" : return "early_leave";
+			case "결근" : return "absent";
+			case "휴가" : return "holiday";
+			default: return null;
+		}
+	}
+	
 			                           
 	// 근태 등록 폼
 	@PreAuthorize("isAuthenticated()")
@@ -161,6 +176,8 @@ public class AttendanceController {
 								@AuthenticationPrincipal PrincipalDetails principal) {
 		AttendanceVO attendance = attendanceService.selectAttendance(attendanceId);
 		
+		log.debug("<<근태 수정>> : {}", attendanceId);
+		
 		if(principal.getMemberVO().getUser_num() != attendance.getEmpId()) {
 			return "views/common/accessDenide";
 		}
@@ -210,7 +227,7 @@ public class AttendanceController {
 			attendanceVO.setEmpName(userName);
 			
 			// 수정 처리
-			attendanceService.updateAttendance(attendanceVO);
+			attendanceService.updateAttendance(attendance);
 			
 			model.addAttribute("message", "근태 정보가 수정되었습니다.");
 			model.addAttribute("url", request.getContextPath()+"/personnel/attendanceList");

@@ -42,7 +42,7 @@ public class PersonnelController {
     
     @GetMapping("/salary")
     public String salary() {
-        return "views/personnel/salary";
+        return "views/personnel/salaryList";
     }
     
     @GetMapping("/evaluation")

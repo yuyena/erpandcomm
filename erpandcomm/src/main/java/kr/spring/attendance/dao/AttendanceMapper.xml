@@ -96,7 +96,7 @@
 	<update id="updateAttendance" parameterType="attendanceVO">
 		UPDATE attendance 
 		SET
-			check_out_time=#{checkOuttime},
+			check_out_time=#{checkOuttime, jdbcType=VARCHAR},
 			status=#{status},
 			notes=#{notes}
 		WHERE
