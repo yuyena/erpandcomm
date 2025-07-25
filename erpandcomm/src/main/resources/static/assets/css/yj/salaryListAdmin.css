@@ -1,0 +1,403 @@
+* {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 100vw;
+            min-width: 0;
+            margin: 0;
+            padding: 0;
+            background: #eaf1ff;
+            color: #222;
+            font-family: 'Noto Sans KR', '맑은 고딕', Arial, sans-serif;
+            overflow-x: hidden;
+        }
+
+        body {
+            background: #eaf0fa;
+        }
+
+        .page-main {
+            width: 100vw;
+            min-width: 0;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        .page-title-dashboard {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #3b6fd6;
+            margin: 0;
+        }
+
+        .dashboard-wrapper {
+            display: flex;
+            flex-direction: row;
+            width: 100vw;
+            min-width: 0;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            overflow-x: hidden;
+            overflow: visible !important;
+        }
+
+
+        .menu-item {
+            position: relative;
+            margin-bottom: 8px;
+            width: auto !important;
+            margin-left: 0 !important;
+            float: none !important;
+            text-align: left !important;
+        }
+
+        .menu-item > a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 18px 0 24px;
+            font-size: 1.13rem;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 700;
+            width: 100%;
+            min-width: 0;
+            white-space: nowrap;
+            box-sizing: border-box;
+            min-height: 48px;
+            height: 52px;
+            transition: background 0.18s, color 0.18s;
+        }
+
+        .menu-item > a .menu-icon {
+            width: 22px;
+            height: 22px;
+            flex-shrink: 0;
+            display: inline-block;
+        }
+
+        .menu-item > a .menu-text {
+            flex: 1 1 auto;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            text-align: left;
+            display: inline-block;
+        }
+
+        .menu-item > a:hover,
+        .menu-item > a.active {
+            background: #2176e8;
+            color: #fff;
+        }
+
+        .profile-box {
+            display: flex;
+            align-items: center;
+            flex-direction: row;
+            gap: 0;
+            padding: 12px 0 12px 18px;
+            margin-top: auto;
+            background-color: #729FF8;
+            border-radius: 0 0 18px 0;
+            margin-left: 0;
+            margin-right: 0;
+            width: auto !important;
+        }
+
+        .profile-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 10px;
+            background: #fff;
+        }
+
+        .profile-info {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 2px;
+        }
+
+        .profile-name {
+            font-weight: bold;
+            font-size: 14px;
+            color: #fff;
+        }
+
+        .profile-subinfo {
+            font-size: 12px;
+            color: #E1E1E1;
+            display: inline;
+            margin-top: 0;
+            font-weight: bold;
+            margin-right: 4px;
+        }
+
+        .main-content {
+            flex: 1;
+            min-width: 0;
+            background: #f8fbff;
+            border-radius: 0 0 18px 0;
+            padding: 0 !important;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 40px 40px 30px 40px !important;
+            border-bottom: 2px solid #e0e0e0;
+            margin-top: 0 !important;
+        }
+
+        .page-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #3b6fd6;
+            margin: 0;
+        }
+
+        .container {
+            padding: 0 40px 40px 40px;
+        }
+
+        /* 검색 섹션 스타일 */
+        .search-section {
+            background: #fff;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            margin-bottom: 24px;
+        }
+
+        .search-form {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .search-form label {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            font-weight: 500;
+            color: #333;
+            font-size: 0.95rem;
+        }
+
+        .search-form input[type="month"],
+        .search-form input[type="text"] {
+            padding: 10px 12px;
+            border: 1px solid #dbe3ef;
+            border-radius: 8px;
+            font-size: 1rem;
+            background: #f8fafd;
+            transition: border-color 0.2s, background 0.2s;
+            min-width: 160px;
+        }
+
+        .search-form input:focus {
+            outline: none;
+            border-color: #3b6fd6;
+            background: #fff;
+        }
+
+        .search-btn {
+            background: #3b6fd6;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center; 
+            transition: background 0.2s;
+            margin-top: 20px;
+        }
+
+        .search-btn:hover {
+            background: #2176e8;
+        }
+
+        /* 급여 테이블 섹션 */
+        .salary-table-section {
+            background: #fff;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            margin-bottom: 24px;
+        }
+
+        .salary-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .salary-table th,
+        .salary-table td {
+            padding: 14px 12px;
+            text-align: left;
+            border-bottom: 1px solid #e0e6f0;
+        }
+
+        .salary-table th {
+            background: #f8fafd;
+            color: #333;
+            font-weight: bold;
+            font-size: 0.95rem;
+            border-bottom: 2px solid #dbe3ef;
+        }
+
+        .salary-table td {
+            font-size: 0.95rem;
+            color: #555;
+        }
+
+        .salary-table tr:hover {
+            background: #f8fafd;
+        }
+
+        .salary-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* 체크박스 스타일 */
+        .salary-table input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: #3b6fd6;
+            cursor: pointer;
+        }
+
+        /* 숫자 컬럼 오른쪽 정렬 */
+        .salary-table td:nth-child(5),
+        .salary-table td:nth-child(6),
+        .salary-table td:nth-child(7),
+        .salary-table td:nth-child(8),
+        .salary-table th:nth-child(5),
+        .salary-table th:nth-child(6),
+        .salary-table th:nth-child(7),
+        .salary-table th:nth-child(8) {
+            text-align: right;
+        }
+
+        /* 상태 컬럼 스타일 */
+        .status-complete {
+            background: #e8f5e8;
+            color: #2e7d32;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-align: center;
+            display: inline-block;
+        }
+
+        .status-pending {
+            background: #fff3e0;
+            color: #ef6c00;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-align: center;
+            display: inline-block;
+        }
+
+        /* 기능 버튼 영역 */
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            background: #3b6fd6;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 20px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn:hover {
+            background: #2176e8;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+        .btn-secondary:hover {
+            background: #545b62;
+        }
+
+        .btn-success {
+            background: #28a745;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+        }
+
+        /* 반응형 */
+        @media (max-width: 768px) {
+            .dashboard-wrapper {
+                flex-direction: column;
+            }
+            
+            .main-content {
+                border-radius: 0;
+            }
+            
+            .search-form {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .search-form label {
+                margin-bottom: 12px;
+            }
+            
+            .salary-table {
+                font-size: 0.85rem;
+            }
+            
+            .salary-table th,
+            .salary-table td {
+                padding: 8px 6px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
