@@ -16,6 +16,7 @@ public class PayrollVO {
 	private String salaryDay; // 직원 급여 날
 	private String empName; // 직원 이름
 	private int baseSalary; // 기본급
+	private int positionAllowance;//직책 수당
 	private int bonus; // 상여급(보너스)
 	private int dedeductions; //공제액 (총 공제)
 	private int totalPay; // 총 지급액(기본급 + 상여)

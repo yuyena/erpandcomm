@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       layout:decorate="~{layouts/layout_basic}">
 <head>
     <meta charset="UTF-8">
@@ -19,7 +20,6 @@
                 <div class="page-header">
                     <h1 class="page-title">급여 관리</h1>
                 </div>
-                
                 <div class="container">
                     <!-- 🔍 조회 조건 -->
                     <section class="search-section">
@@ -114,9 +114,11 @@
 
                     <!-- 🔘 기능 버튼 -->
                     <div class="action-buttons">
-                        <button class="btn" onclick="location.href='/salary/new'">
+                    <div sec:authorize="hasRole('ROLE_HR')">
+                        <button class="btn" onclick="location.href='/personnel/salaryForm'">
                             ➕ 급여 등록
                         </button>
+                     </div>
                         <button class="btn btn-success">
                             📄 명세서 생성
                         </button>

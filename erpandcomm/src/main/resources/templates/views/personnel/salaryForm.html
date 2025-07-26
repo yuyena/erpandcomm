@@ -1,10 +1,221 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layouts/layout_basic}">
 <head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
+    <meta charset="UTF-8">
+    <title>Office ERP - 급여 등록</title>
+    <link rel="stylesheet" th:href="@{/assets/css/main.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/yj/salaryForm.css}">
+    <style>
+        .salary-input-table {
+            width: 100%;
+            table-layout: auto;
+            border-collapse: collapse;
+        }
+
+        .salary-input-table th,
+        .salary-input-table td {
+            padding: 8px;
+            border: 1px solid #ccc;
+        }
+
+        .form-actions {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        input[type="text"], input[type="month"] {
+            width: 120px;
+        }
+    </style>
 </head>
 <body>
+<div layout:fragment="content" class="page-main">
+    <div class="dashboard-wrapper">
+        <th:block th:replace="fragments/nav_sidebar :: sidebar"></th:block>
 
+        <div class="main-content">
+            <div class="page-header">
+                <h1 class="page-title">급여 등록</h1>
+            </div>
+
+            <div class="container">
+                <form action="/salary/save" method="post" class="salary-table-form">
+                    <div class="table-wrapper">
+                        <table class="salary-input-table">
+                            <thead>
+                                <tr>
+                                    <th>급여월</th>
+                                    <th>직원번호</th>
+                                    <th>이름</th>
+                                    <th>기본급</th>
+                                    <th>직책수당</th>
+                                    <th>상여금</th>
+                                    <th>세금</th>
+                                    <th>보험</th>
+                                    <th>기타공제</th>
+                                    <th>총공제</th>
+                                    <th>총지급</th>
+                                    <th>실지급</th>
+                                    <th>삭제</th>
+                                </tr>
+                            </thead>
+                            <tbody id="salary-table-body">
+                                <tr>
+                                    <td><input type="month" name="salaryMonth" required></td>
+                                    <td><input type="text" name="employeeId" required></td>
+                                    <td><input type="text" name="employeeName" required></td>
+                                    <td><input type="text" name="baseSalary" inputmode="numeric" pattern="[0-9]*" required></td>
+                                    <td><input type="text" name="positionAllowance" inputmode="numeric" pattern="[0-9]*"></td>
+                                    <td><input type="text" name="bonus" inputmode="numeric" pattern="[0-9]*"></td>
+                                    <td><input type="text" name="tax" inputmode="numeric" pattern="[0-9]*"></td>
+                                    <td><input type="text" name="insurance" inputmode="numeric" pattern="[0-9]*"></td>
+                                    <td><input type="text" name="etxDeduction" inputmode="numeric" pattern="[0-9]*"></td>
+                                    <td><input type="text" name="dedeductions" readonly></td>
+                                    <td><input type="text" name="totalPay" readonly></td>
+                                    <td><input type="text" name="actualPay" readonly></td>
+                                    <td><button type="button" onclick="removeRow(this)">❌</button></td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                            	<tr>
+                            		<td colspan ="3" style="text-align: center; font-weight: bold;">합계</td>
+                            		<td id="totalBaseSalary">0</td>
+                            		<td id="totalPositionAllowance">0</td>
+                            		<td id="totalBonus">0</td>
+                            		<td id="totalTax">0</td>
+                            		<td id="totalInsurance">0</td>
+                            		<td id="totalEtxDeduction">0</td>               
+                            		<td id="sum-dedeductions">0</td>
+                            		<td id="sum-totalPay">0</td>
+                            		<td id="sum-actualPay">0</td>
+                            		<td></td>  <!-- 삭제버튼 -->
+                               </tr>		
+                            </tfoot>
+                        </table>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-info" onclick="addRow()">➕ 직원 추가</button>
+                        <button type="submit" class="btn btn-primary">💾 등록하기</button>
+                        <button type="button" class="btn btn-secondary" onclick="location.href='/personnel/salaryList'">취소</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div layout:fragment="pageScript"></div>
+<script>
+function parseNumber(value) {
+    return parseInt((value || '0').replace(/,/g, ''), 10) || 0;
+}
+
+function formatNumber(value) {
+    return value.toLocaleString();
+}
+
+function calculateRow(row) {
+    const getVal = name => parseNumber(row.querySelector(`input[name="${name}"]`)?.value);
+    const setVal = (name, val) => {
+        const el = row.querySelector(`input[name="${name}"]`);
+        if (el) el.value = formatNumber(val);
+    };
+
+    const base = getVal("baseSalary");
+    const position = getVal("positionAllowance");
+    const bonus = getVal("bonus");
+    const tax = getVal("tax");
+    const insurance = getVal("insurance");
+    const etc = getVal("etxDeduction");
+
+    const totalPay = base + position + bonus;
+    const deductions = tax + insurance + etc;
+    const actualPay = totalPay - deductions;
+
+    setVal("totalPay", totalPay);
+    setVal("dedeductions", deductions);
+    setVal("actualPay", actualPay);
+
+    return { base, position, bonus, tax, insurance, etc, deductions, totalPay, actualPay };
+}
+
+function updateAllTotals() {
+    let sum = {
+        base: 0, position: 0, bonus: 0,
+        tax: 0, insurance: 0, etc: 0,
+        deductions: 0, totalPay: 0, actualPay: 0
+    };
+
+    document.querySelectorAll('#salary-table-body tr').forEach(row => {
+        const r = calculateRow(row);
+        sum.base += r.base;
+        sum.position += r.position;
+        sum.bonus += r.bonus;
+        sum.tax += r.tax;
+        sum.insurance += r.insurance;
+        sum.etc += r.etc;
+        sum.deductions += r.deductions;
+        sum.totalPay += r.totalPay;
+        sum.actualPay += r.actualPay;
+    });
+
+    document.getElementById('totalBaseSalary').textContent = formatNumber(sum.base);
+    document.getElementById('totalPositionAllowance').textContent = formatNumber(sum.position);
+    document.getElementById('totalBonus').textContent = formatNumber(sum.bonus);
+    document.getElementById('totalTax').textContent = formatNumber(sum.tax);
+    document.getElementById('totalInsurance').textContent = formatNumber(sum.insurance);
+    document.getElementById('totalEtxDeduction').textContent = formatNumber(sum.etc);
+    document.getElementById('totalDeductions').textContent = formatNumber(sum.deductions);
+    document.getElementById('totalTotalPay').textContent = formatNumber(sum.totalPay);
+    document.getElementById('totalActualPay').textContent = formatNumber(sum.actualPay);
+}
+
+function addRow() {
+    const tbody = document.getElementById('salary-table-body');
+    const newRow = tbody.rows[0].cloneNode(true);
+
+    newRow.querySelectorAll('input').forEach(input => {
+        input.value = '';
+    });
+
+    tbody.appendChild(newRow);
+    updateAllTotals();
+}
+
+function removeRow(btn) {
+    const tbody = document.getElementById('salary-table-body');
+    if (tbody.rows.length > 1) {
+        btn.closest('tr').remove();
+        updateAllTotals();
+    } else {
+        alert("최소 한 명의 직원은 등록해야 합니다.");
+    }
+}
+
+document.addEventListener('input', function (e) {
+    if (e.target.closest('#salary-table-body')) {
+        updateAllTotals();
+    }
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+    updateAllTotals();
+});
+
+document.querySelector('form.salary-table-form').addEventListener('submit', function () {
+    const numericFields = [
+        'baseSalary', 'position'
+]
+});
+</script>
 </body>
 </html>
