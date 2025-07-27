@@ -104,15 +104,15 @@
                     <div class="remaining-info" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
                         <div class="info-item" style="background: #f8f9fa; padding: 16px; border-radius: 6px;">
                             <span style="display: block; margin-bottom: 8px; font-weight: 600; color: #222;">연차휴가</span>
-                            <span class="remaining-days" style="font-size: 1.2rem; font-weight: bold; color: #444;">0일</span>
+                            <span class="remaining-days" style="font-size: 1.2rem; font-weight: bold; color: #444;" th:text="${balance.remainingAnnual + '일'}"></span>
                         </div>
                         <div class="info-item" style="background: #f8f9fa; padding: 16px; border-radius: 6px;">
                             <span style="display: block; margin-bottom: 8px; font-weight: 600; color: #222;">반차휴가</span>
-                            <span class="remaining-days" style="font-size: 1.2rem; font-weight: bold; color: #444;">0일</span>
+                            <span class="remaining-days" style="font-size: 1.2rem; font-weight: bold; color: #444;" th:text="${balance.remainingHalf + '일'}"></span>
                         </div>
                         <div class="info-item" style="background: #f8f9fa; padding: 16px; border-radius: 6px;">
-                            <span style="display: block; margin-bottom: 8px; font-weight: 600; color: #222;">공가</span>
-                            <span class="remaining-days" style="font-size: 1.2rem; font-weight: bold; color: #444;">0일</span>
+                            <span style="display: block; margin-bottom: 8px; font-weight: 600; color: #222;">특별 휴가</span>
+                            <span class="remaining-days" style="font-size: 1.2rem; font-weight: bold; color: #444;" th:text="${balance.remainingSpecial + '일'}"></span>
                         </div>
                     </div>
                 </div>

@@ -45,31 +45,12 @@ public class VacationServiceImpl implements VacationService{
 	public List<VacationVO> selectList(Map<String, Object> map) {
 		return vacationMapper.selectList(map);
 	}
+
+	@Override
+	public VacationBalanceVO selectVacationSummary(Long empId) {
+		return vacationMapper.selectVacationSummary(empId);
+	}
 	
-	@Override
-	public Integer selectTotalVacationDays(Long empId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Integer selectUsedVacationDays(Long empId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Integer selectRemainingVacationDays(Long empId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void insertVacationBalance(VacationBalanceVO balance) {
-		vacationMapper.insertVacationBalance(balance);
-		
-	}
-
 	
 
 	

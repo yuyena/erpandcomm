@@ -13,10 +13,10 @@ public interface VacationService {
 	public List<VacationVO> selectList(Map<String, Object> map);
 	public VacationVO selectVacationDetail(Long requestId);
 	// 휴가 일수 
-	public void insertVacationBalance(VacationBalanceVO balance);
-	public Integer selectTotalVacationDays(Long empId);
-	public Integer selectUsedVacationDays(Long empId);
-	public Integer selectRemainingVacationDays(Long empId);
+	public VacationBalanceVO selectVacationSummary(Long empId);
+	//public Integer selectTotalVacationDays(Long empId);
+	//public Integer selectUsedVacationDays(Long empId);
+	//public Integer selectRemainingVacationDays(Long empId);
 	// 휴가 삭제
 	public void deleteVacation(Long requestId);
 }

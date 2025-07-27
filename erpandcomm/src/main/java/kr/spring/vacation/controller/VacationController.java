@@ -25,6 +25,7 @@ import kr.spring.member.vo.MemberVO;
 import kr.spring.member.vo.PrincipalDetails;
 import kr.spring.util.ValidationUtil;
 import kr.spring.vacation.service.VacationService;
+import kr.spring.vacation.vo.VacationBalanceVO;
 import kr.spring.vacation.vo.VacationVO;
 import lombok.extern.slf4j.Slf4j;
 
@@ -61,11 +62,26 @@ public class VacationController {
 		// empId 하나만 넘기기
 		List<VacationVO> vlist = vacationService.selectList(map); 
 		log.debug("vlist:{}", vlist);
+		// 휴가 통계
+		VacationBalanceVO balance = vacationService.selectVacationSummary(empId);
+		log.debug("balance:{}",balance);
 		
-		model.addAttribute("vlist", vlist);
+		// 기본 휴가 정리
+		if(balance != null) {
+			balance.setAnnual(15);
+			balance.setHalf(10);
+			balance.setSpecial(3);
+			
+		}
+		// 남은 일수 계산
+		balance.setRemainingAnnual(balance.getAnnual() - balance.getUsedAnnual());
+		balance.setRemainingHalf(balance.getHalf() - balance.getUsedHalf());
+		balance.setRemainingSpecial(balance.getSpecial() - balance.getUsedSpecial());
 
-		// 페이지 처리
-		return "views/personnel/vacationList"; // 리스트 보여주는 뷰
+		model.addAttribute("vlist", vlist);
+		model.addAttribute("balance",balance);	// 페이지 처리
+		
+		return "views/personnel/vacationList"; // 리스트, 통계 같이 보여주는 뷰
 	}
 	
 	// 휴가 등록 폼
@@ -82,6 +98,7 @@ public class VacationController {
 		
 		return "views/personnel/vacationForm";
 	}
+	
 	// 휴가 등록처리
 	@PreAuthorize("isAuthenticated()")
 	@PostMapping("/vacationForm")
@@ -131,9 +148,5 @@ public class VacationController {
 		
 		return "redirect:/personnel/vacationList";
 	}
-		
-	// 휴가 일수 부여
-	
-
 	
 }

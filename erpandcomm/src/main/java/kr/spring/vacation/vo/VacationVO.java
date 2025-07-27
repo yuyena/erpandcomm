@@ -26,25 +26,29 @@ public class VacationVO {
 		if (this.startTime == null || this.endTime == null) {
 			switch (vacationType) {
 			case "연차":
+			case "반차":
 			case "병가":
 			case "개인사유":
 			case "특별휴가":
 				this.startTime = "09:00";
 				this.endTime = "18:00";
 				break;
+				/*
 			case "출산휴가":
 				this.startTime = "00:00";
 				this.endTime = "23:59";
 				break;
+			*/
 			}
 		}
 	}
 	public String getVacationTypeName() {
 		switch (vacationType) {
 		case "annual" : return "연차";
+		case "half" : return "반차";
 		case "sick" : return "병가";
 		case "personal" : return "개인사유";
-		case "maternity" : return "출산휴가";
+		// case "maternity" : return "출산휴가";
 		case "special" : return "특별휴가";
 		default: return "알 수 없음";
 		}

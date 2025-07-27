@@ -42,7 +42,7 @@
 		#{endTime, jdbcType=VARCHAR},
 		#{totalDays},
 		#{reason, jdbcType=VARCHAR},
-		NVL(#{status, jdbcType=VARCHAR}, 'pending'),
+		NVL(#{status, jdbcType=VARCHAR}, 'approved'),  <!-- approved: 승인상태로 -->
 		SYSDATE,
 		SYSDATE,
 		SYSDATE
@@ -113,4 +113,19 @@
 	    SYSDATE
 	)
 	</insert>
+	
+	<!-- 휴가 통계 확인 -->
+	<select id="selectVacationSummary" parameterType="long" resultType="kr.spring.vacation.vo.VacationBalanceVO">
+	SELECT 
+		#{empId} as empId,
+		COALESCE(SUM(CASE WHEN vacation_type='annual' AND status = 'approved' THEN total_days ELSE 0 END),0) AS usedAnnual,
+		COALESCE(SUM(CASE WHEN vacation_type='half' AND status = 'approved' THEN total_days ELSE 0 END),0) AS usedHalf,
+		COALESCE(SUM(CASE WHEN vacation_type='special' AND status = 'approved' THEN total_days ELSE 0 END),0) AS usedSpecial
+		FROM vacation_request
+		WHERE emp_id = #{empId}
+	</select>
+	
+	
+	
+	
 	</mapper>

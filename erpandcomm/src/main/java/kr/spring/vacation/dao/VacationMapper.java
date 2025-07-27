@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import kr.spring.vacation.vo.VacationBalanceVO;
 import kr.spring.vacation.vo.VacationVO;
@@ -19,14 +20,14 @@ public interface VacationMapper {
 	public List<VacationVO> selectList(Map<String, Object> map);
 	// 휴가 상세 내역
 	public VacationVO selectVacationDetail(Long requestId);
-	// 휴가 사용 내역 작성
-	public void insertVacationBalance(VacationBalanceVO balance);
+	// 휴가 사용내역 조회
+	public VacationBalanceVO selectVacationSummary(@Param("empId")Long empId);
 	//총 휴가 일수
-	public Integer selectTotalVacationDays(Long empId);
+	//public Integer selectTotalVacationDays(Long empId);
 	// 사용한 휴가 일수 조회
-	public Integer selectUsedVacationDays(Long empId);
+	//public Integer selectUsedVacationDays(Long empId);
 	// 남은 휴가 일수 조회
-	public Integer selectRemainingVacationDays(Long empId);
+	//public Integer selectRemainingVacationDays(Long empId);
 	// 삭제
 	@Delete("DELETE FROM vacation_request WHERE request_id = #{requestId}")
 	public void deleteVacation(Long requestId);
