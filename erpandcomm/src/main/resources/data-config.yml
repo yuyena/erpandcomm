@@ -2,6 +2,6 @@ dataconfig:
   db-url: jdbc:oracle:thin:@211.238.142.200:1521:xe
   db-username: fteam03
   db-password: f1234
-  google-mail-url: dragonyxitkkkz@gmail.com
+  google-mail-url: dragonyxitkkkaz@gmail.com
   google-mail-password: tepmacdqorgmlbfxkzkk
   rememberme-key: hayden
